@@ -3,41 +3,39 @@
     <div class="header-content">
       <!-- Logo -->
       <router-link to="/" class="logo">
-        <img src="/images/logo.png" alt="奇魂的小窝" class="logo-img" />
-        <span class="logo-text">奇魂的小窝</span>
+        <img src="/images/logo.png" alt="濂囬瓊鐨勫皬绐? class="logo-img" />
+        <span class="logo-text">濂囬瓊鐨勫皬绐?/span>
       </router-link>
 
-      <!-- 导航：首页、天梯图、视频、关于 -->
+      <!-- 瀵艰埅锛氶椤点€佸ぉ姊浘銆佽棰戙€佸叧浜?-->
       <nav class="nav">
-        <router-link to="/" class="nav-link" :class="{ active: isActive('/') }">首页</router-link>
-        <router-link to="/tier" class="nav-link" :class="{ active: isActive('/tier') }">天梯图</router-link>
-        <router-link to="/videos" class="nav-link" :class="{ active: isActive('/videos') }">视频</router-link>
-        <router-link to="/about" class="nav-link" :class="{ active: isActive('/about') }">关于</router-link>
+        <router-link to="/" class="nav-link" :class="{ active: isActive('/') }">棣栭〉</router-link>
+        <router-link to="/tier" class="nav-link" :class="{ active: isActive('/tier') }">澶╂鍥?/router-link>
+        <router-link to="/videos" class="nav-link" :class="{ active: isActive('/videos') }">瑙嗛</router-link>
+        <router-link to="/about" class="nav-link" :class="{ active: isActive('/about') }">鍏充簬</router-link>
       </nav>
 
-      <!-- 操作按钮：B站主页 + 充电 + 粉丝群 -->
+      <!-- 鎿嶄綔鎸夐挳锛欱绔欎富椤?+ 鍏呯數 + 绮変笣缇?-->
       <div class="actions">
         <a href="https://space.bilibili.com/3546785037420940" target="_blank" class="bili-btn">
-          <img src="/images/bilibili.svg" alt="B站主页" class="bili-icon" />
-          B站主页
-        </a>
+          <img src="/images/bilibili.svg" alt="B绔欎富椤? class="bili-icon" />
+          B绔欎富椤?        </a>
         <div class="dropdown-wrapper">
           <button class="action-btn charge-btn" @click="toggleDropdown('charge')">
-            🔋 充电
+            馃攱 鍏呯數
           </button>
           <transition name="fade">
             <div v-if="showCharge" class="dropdown" @click.stop>
-              <img src="/images/payment.png" alt="充电收款码" class="dropdown-qr" />
+              <img src="/images/payment.png" alt="鍏呯數鏀舵鐮? class="dropdown-qr" />
             </div>
           </transition>
         </div>
         <div class="dropdown-wrapper">
           <button class="action-btn group-btn" @click="toggleDropdown('fans')">
-            💬 粉丝群
-          </button>
+            馃挰 绮変笣缇?          </button>
           <transition name="fade">
             <div v-if="showFans" class="dropdown" @click.stop>
-              <img src="/images/qrcode.jpg" alt="QQ粉丝群二维码" class="dropdown-qr" />
+              <img src="/images/qrcode.jpg" alt="QQ绮変笣缇や簩缁寸爜" class="dropdown-qr" />
             </div>
           </transition>
         </div>
@@ -54,10 +52,10 @@ const route = useRoute()
 const showCharge = ref(false)
 const showFans = ref(false)
 
-// 计算当前路由是否匹配
+// 璁＄畻褰撳墠璺敱鏄惁鍖归厤
 const isActive = (path: string): boolean => {
   if (path === '/') {
-    // 首页和显卡榜都属于"首页"板块
+    // 棣栭〉鍜屾樉鍗℃閮藉睘浜?棣栭〉"鏉垮潡
     return route.path === '/' || route.path === '/gpu'
   }
   return route.path.startsWith(path)
@@ -99,8 +97,7 @@ onUnmounted(() => {
 
 <style scoped>
 .header {
-  position: sticky;
-  top: 0;
+  position: relative;
   z-index: 100;
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--border);
@@ -141,7 +138,7 @@ onUnmounted(() => {
   background-clip: text;
 }
 
-/* 导航 */
+/* 瀵艰埅 */
 .nav {
   display: flex;
   gap: 0.4rem;
@@ -149,7 +146,7 @@ onUnmounted(() => {
   align-items: center;
 }
 
-/* 普通导航链接（首页、天梯图、视频、关于） */
+/* 鏅€氬鑸摼鎺ワ紙棣栭〉銆佸ぉ姊浘銆佽棰戙€佸叧浜庯級 */
 .nav-link {
   background: #2A2F3A;
   border-radius: 6px;
@@ -177,7 +174,7 @@ onUnmounted(() => {
   border: 1px solid rgba(59, 130, 246, 0.35);
 }
 
-/* 操作按钮区域 */
+/* 鎿嶄綔鎸夐挳鍖哄煙 */
 .actions {
   display: flex;
   gap: 0.5rem;
@@ -185,7 +182,7 @@ onUnmounted(() => {
   flex-shrink: 0;
 }
 
-/* B站按钮完全保持原样 */
+/* B绔欐寜閽畬鍏ㄤ繚鎸佸師鏍?*/
 .bili-btn {
   display: flex;
   align-items: center;
@@ -212,12 +209,12 @@ onUnmounted(() => {
   height: 18px;
 }
 
-/* 下拉容器 */
+/* 涓嬫媺瀹瑰櫒 */
 .dropdown-wrapper {
   position: relative;
 }
 
-/* 充电按钮（蓝色） */
+/* 鍏呯數鎸夐挳锛堣摑鑹诧級 */
 .charge-btn {
   background: #1E88E5;
   border: none;
@@ -240,7 +237,7 @@ onUnmounted(() => {
   transform: translateY(-1px);
 }
 
-/* 粉丝群按钮（绿色） */
+/* 绮変笣缇ゆ寜閽紙缁胯壊锛?*/
 .group-btn {
   background: #2E7D32;
   border: none;
@@ -282,7 +279,7 @@ onUnmounted(() => {
   display: block;
 }
 
-/* 动画 */
+/* 鍔ㄧ敾 */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.2s, transform 0.2s;
@@ -294,7 +291,7 @@ onUnmounted(() => {
   transform: translateY(-8px);
 }
 
-/* 响应式 */
+/* 鍝嶅簲寮?*/
 @media (max-width: 900px) {
   .header-content {
     flex-wrap: wrap;
