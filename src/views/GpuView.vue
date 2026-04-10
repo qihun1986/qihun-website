@@ -1,0 +1,1623 @@
+<template>
+  <div class="home">
+    <!-- 顶部区域：标签 + 轮播图 -->
+    <div class="top-bar">
+      <div class="tabs">
+        <router-link to="/" class="tab-btn" :class="{ active: $route.path === '/' }">CPU榜</router-link>
+        <router-link to="/gpu" class="tab-btn" :class="{ active: $route.path === '/gpu' }">显卡榜</router-link>
+      </div>
+
+      <div class="top-bar-spacer"></div>
+
+      <!-- 顶部轮播图（纯文字占位，与CPU榜一致） -->
+      <a 
+        :href="carouselItems[currentIndex].link" 
+        target="_blank" 
+        rel="noopener"
+        class="top-carousel"
+        @mouseenter="stopAutoPlay" 
+        @mouseleave="startAutoPlay"
+      >
+        <span class="carousel-text">{{ carouselItems[currentIndex].title }}</span>
+        <div class="carousel-dots">
+          <button 
+            v-for="(_, idx) in carouselItems" 
+            :key="idx"
+            :class="{ active: idx === currentIndex }"
+            @click.prevent="goToSlide(idx)"
+            class="dot-btn"
+            :aria-label="`切换到第${idx + 1}张`"
+          ></button>
+        </div>
+      </a>
+    </div>
+
+    <!-- 加载状态 -->
+    <div v-if="loading" class="loading">
+      <div class="spinner"></div>
+      <span>加载中...</span>
+    </div>
+
+    <!-- 错误提示 -->
+    <div v-else-if="error" class="error-box">
+      {{ error }}
+    </div>
+
+    <!-- 表格 -->
+    <div v-else class="table-wrapper" role="region" aria-label="显卡性价比排行榜">
+      <table class="cpu-table">
+        <caption class="sr-only">显卡性价比排行榜 - 基于实测数据</caption>
+        <thead>
+          <tr>
+            <th class="rank-col" scope="col">
+              <div class="rank-header">
+                <span class="rank-count">共{{ filteredGpus.length }}款</span>
+                <span class="rank-label">排名</span>
+              </div>
+            </th>
+            <th scope="col" class="sortable model-col" @click="sort('model')">
+              <div class="th-inner">
+                <span class="th-label">
+                  型号<span class="sort-icon">{{ getSortIcon('model') }}</span>
+                </span>
+                <div class="inline-toggle" @click.stop>
+                  <button
+                    :class="{ active: showMode === 'hot' }"
+                    @click="showMode = 'hot'"
+                    class="toggle-btn"
+                  >热门</button>
+                  <span class="toggle-sep">/</span>
+                  <button
+                    :class="{ active: showMode === 'all' }"
+                    @click="showMode = 'all'; priceType = 'used'"
+                    class="toggle-btn"
+                  >全部</button>
+                </div>
+              </div>
+            </th>
+
+            <!-- 游戏性能（可切换分辨率） -->
+            <th scope="col" class="game-col" @click="sort('game')">
+              <div class="th-inner th-center">
+                <span class="th-label">
+                  游戏性能<span class="sort-icon">{{ getSortIcon('game') }}</span>
+                </span>
+                <!-- 分辨率切换按钮 -->
+                <div class="res-toggle" @click.stop>
+                  <button
+                    v-for="res in ['1080P', '2K', '4K']"
+                    :key="res"
+                    :class="{ active: displayRes === res }"
+                    @click="displayRes = res as any"
+                    class="res-btn"
+                  >{{ res }}</button>
+                </div>
+              </div>
+            </th>
+
+            <!-- 创作效率 -->
+            <th scope="col" class="sortable perf-col" @click="switchToRender()">
+              <div class="th-inner th-center">
+                <span class="th-label">
+                  创作效率
+                  <span class="sort-icon">{{ getSortIcon('render') }}</span>
+                </span>
+              </div>
+            </th>
+
+            <!-- 价格 -->
+            <th scope="col" class="sortable price-col" @click="sort('price')">
+              <div class="th-inner th-center">
+                <span class="th-label">
+                  价格<span class="sort-icon">{{ getSortIcon('price') }}</span>
+                  <span class="price-hint" @click.stop title="点击查看历史价格">ⓘ</span>
+                </span>
+                <div class="inline-toggle" @click.stop>
+                  <button
+                    :class="{ active: priceType === 'new' }"
+                    @click="priceType = 'new'"
+                    class="toggle-btn"
+                  >全新</button>
+                  <span class="toggle-sep">/</span>
+                  <button
+                    :class="{ active: priceType === 'used' }"
+                    @click="priceType = 'used'"
+                    class="toggle-btn"
+                  >二手</button>
+                </div>
+              </div>
+            </th>
+
+            <!-- 性价比 -->
+            <th scope="col" class="sortable value-col" @click="sort('value')">
+              <div class="th-inner th-center">
+                <span class="th-label">
+                  性价比
+                  <span class="sort-icon">{{ getSortIcon('value') }}</span>
+                </span>
+                <div class="inline-toggle value-toggle" @click.stop>
+                  <select
+                    :value="valueMode"
+                    @change="valueMode = ($event.target as HTMLSelectElement).value as any"
+                    class="value-select"
+                  >
+                    <option value="perf1080">1080P性价比</option>
+                    <option value="perf2k">2K性价比</option>
+                    <option value="perf4k">4K性价比</option>
+                    <option value="render">创作性价比</option>
+                  </select>
+                </div>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="(gpu, index) in sortedGpus"
+            :key="gpu.id"
+            class="cpu-row"
+          >
+            <td class="rank">{{ index + 1 }}</td>
+            <td class="model" @click="showSpecs(gpu)">
+              <span class="model-name" :class="getBrandClass(gpu.model)">{{ gpu.model }}</span>
+            </td>
+            <!-- 游戏性能：显示当前分辨率的相对分 -->
+            <td class="game-perf" aria-label="游戏性能">
+              {{ getDisplayGamePerf(gpu) }}
+            </td>
+            <!-- 创作效率：显示相对分 -->
+            <td class="perf" aria-label="创作效率">{{ getRelativeRender(gpu) }}</td>
+            <!-- 价格 -->
+            <td
+              class="price-cell"
+              @click="showPriceChart(gpu)"
+              :title="getPriceTitle(gpu)"
+            >
+              <span v-if="getDisplayPrice(gpu)" class="price-value">
+                {{ getDisplayPrice(gpu) }}
+              </span>
+              <span v-else class="no-price">-</span>
+              <span class="chart-icon" aria-hidden="true">📈</span>
+            </td>
+            <!-- 性价比 -->
+            <td class="value-cell" aria-label="性价比" :title="getPreciseValue(gpu)">
+              {{ getDisplayValue(gpu) }}<span v-if="shouldShowCrown(gpu)" class="crown-icon">👑</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 无数据提示 -->
+    <div v-if="!loading && !error && filteredGpus.length === 0" class="no-data">
+      <p>暂无数据</p>
+    </div>
+
+    <!-- 参数弹窗 -->
+    <div v-if="showSpecsModal" class="modal-overlay" @click.self="closeModals" role="dialog" aria-modal="true">
+      <div class="modal specs-modal">
+        <div class="modal-header">
+          <h3>{{ selectedGpu?.model }}</h3>
+          <button class="close-btn" @click="closeModals" aria-label="关闭">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="specs-grid">
+            <div class="spec-item">
+              <span class="spec-label">显存</span>
+              <span class="spec-value">{{ selectedGpu?.vram || '-' }}</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">流处理器/光追单元</span>
+              <span class="spec-value">{{ selectedGpu?.shader_units || '-' }}</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">核心频率</span>
+              <span class="spec-value">{{ selectedGpu?.game_freq ? `${selectedGpu.game_freq} MHz` : '-' }}</span>
+            </div>
+            <div class="spec-item">
+              <span class="spec-label">TDP</span>
+              <span class="spec-value">{{ selectedGpu?.tdp ? `${selectedGpu.tdp} W` : '-' }}</span>
+            </div>
+          </div>
+          <div class="perf-display">
+            <div class="perf-item">
+              <span class="perf-label">1080P 相对分</span>
+              <span class="perf-value game">{{ getRelativePerf1080(selectedGpu!) }}</span>
+            </div>
+            <div class="perf-item">
+              <span class="perf-label">2K 相对分</span>
+              <span class="perf-value game">{{ getRelativePerf2k(selectedGpu!) }}</span>
+            </div>
+            <div class="perf-item">
+              <span class="perf-label">4K 相对分</span>
+              <span class="perf-value game">{{ getRelativePerf4k(selectedGpu!) }}</span>
+            </div>
+            <div class="perf-item">
+              <span class="perf-label">创作效率</span>
+              <span class="perf-value multi">{{ getRelativeRender(selectedGpu!) }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 价格折线图弹窗 -->
+    <div v-if="showChartModal" class="modal-overlay" @click.self="closeModals" role="dialog" aria-modal="true">
+      <div class="modal chart-modal">
+        <div class="modal-header">
+          <h3>{{ selectedGpu?.model }} - 历史价格</h3>
+          <button class="close-btn" @click="closeModals" aria-label="关闭">×</button>
+        </div>
+        <div class="modal-body">
+          <div ref="chartContainer" class="chart-container"></div>
+          <div v-if="priceChartLoading" class="chart-loading">
+            <div class="spinner"></div>
+            <span>加载历史价格...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue'
+import * as echarts from 'echarts/core'
+import { LineChart } from 'echarts/charts'
+import { TitleComponent, TooltipComponent, GridComponent, LegendComponent } from 'echarts/components'
+import { CanvasRenderer } from 'echarts/renderers'
+import { supabase } from '@/lib/supabase'
+
+echarts.use([LineChart, TitleComponent, TooltipComponent, GridComponent, LegendComponent, CanvasRenderer])
+
+interface Gpu {
+  id: number
+  model: string
+  abs_game_performance_1080p: number | null
+  abs_game_performance_2k: number | null
+  abs_game_performance_4k: number | null
+  render_performance: number | null
+  ai_performance: number | null
+  new_price: number | null
+  used_price: number | null
+  shader_units: string | null
+  game_freq: string | null
+  vram: string | null
+  tdp: number | null
+}
+
+interface PriceHistory {
+  recorded_at: string
+  new_price: number | null
+  used_price: number | null
+}
+
+// 1080P 性价比显示系数（仅1080P模式生效）
+const PERF1080_DISPLAY_MULTIPLIER = 1.05
+
+// 基准显卡配置
+const BENCHMARK_CONFIG = {
+  perf1080: { model: 'NVIDIA RTX 2060 12GB', field: 'abs_game_performance_1080p' as const },
+  perf2k: { model: 'NVIDIA RTX 4060', field: 'abs_game_performance_2k' as const },
+  perf4k: { model: 'NVIDIA RTX 5070', field: 'abs_game_performance_4k' as const },
+  render: { model: 'NVIDIA RTX 4060', field: 'render_performance' as const }
+}
+
+const benchmarkGpu = ref<{
+  perf1080: Gpu | null
+  perf2k: Gpu | null
+  perf4k: Gpu | null
+  render: Gpu | null
+}>({
+  perf1080: null,
+  perf2k: null,
+  perf4k: null,
+  render: null
+})
+
+// ===================== 状态变量 =====================
+// 游戏性能显示分辨率（用户切换，只影响显示）
+const displayRes = ref<'1080P' | '2K' | '4K'>('2K')
+
+// 状态变量
+const gpus = ref<Gpu[]>([])
+const priceHistoryMap = ref<Map<string, PriceHistory[]>>(new Map())
+const loading = ref(true)
+const error = ref('')
+const showMode = ref<'hot' | 'all'>('hot')
+const priceType = ref<'new' | 'used'>('new')
+const valueMode = ref<'perf1080' | 'perf2k' | 'perf4k' | 'render'>('perf2k')
+const sortKey = ref<string>('perf2k')
+const sortOrder = ref<'asc' | 'desc'>('desc')
+
+// 排序专用状态（与显示状态隔离）
+// 记录性价比排序时用的 valueMode 和 priceType
+const sortValueMode = ref<'perf1080' | 'perf2k' | 'perf4k' | 'render'>('perf2k')
+const sortPriceType = ref<'new' | 'used'>('new')
+
+// ===================== 显示状态联动 =====================
+// 切换分辨率时，性价比模式同步切换（游戏相关）
+watch(displayRes, (newRes) => {
+  valueMode.value = newRes === '1080P' ? 'perf1080' : newRes === '2K' ? 'perf2k' : 'perf4k'
+})
+
+// 点击"创作效率"列时：切换到创作性价比并排序
+const switchToRender = () => {
+  valueMode.value = 'render'
+  sort('render')
+}
+// 记录游戏性能排序时用的分辨率
+const sortGameRes = ref<'1080P' | '2K' | '4K'>('2K')
+
+// 弹窗状态
+const showSpecsModal = ref(false)
+const showChartModal = ref(false)
+const selectedGpu = ref<Gpu | null>(null)
+const chartContainer = ref<HTMLElement | null>(null)
+const priceChartLoading = ref(false)
+
+// 轮播图
+const currentIndex = ref(0)
+let autoPlayTimer: ReturnType<typeof setInterval> | null = null
+
+const carouselItems = [
+  { image: '/images/banner1.jpg', link: 'https://www.bilibili.com/video/BV1sxgAzbEg5', title: '最新显卡评测' },
+  { image: '/images/banner2.jpg', link: 'https://space.bilibili.com/3546785037420940', title: 'B站主页' },
+  { image: '/images/banner3.jpg', link: 'https://www.bilibili.com/', title: '显卡天梯图预告' }
+]
+
+const startAutoPlay = () => {
+  stopAutoPlay()
+  autoPlayTimer = setInterval(() => {
+    currentIndex.value = (currentIndex.value + 1) % carouselItems.length
+  }, 5000)
+}
+
+const stopAutoPlay = () => {
+  if (autoPlayTimer) {
+    clearInterval(autoPlayTimer)
+    autoPlayTimer = null
+  }
+}
+
+const goToSlide = (idx: number) => {
+  currentIndex.value = idx
+  startAutoPlay()
+}
+
+// ===================== 品牌颜色判断 =====================
+const isNvidia = (model: string): boolean => {
+  const upper = model?.toUpperCase() || ''
+  return upper.includes('NVIDIA') || upper.includes('RTX') || upper.includes('GTX')
+}
+const isAmd = (model: string): boolean => {
+  const upper = model?.toUpperCase() || ''
+  return upper.includes('AMD') || upper.includes('RX') || upper.includes('RADEON')
+}
+const isIntel = (model: string): boolean => {
+  const upper = model?.toUpperCase() || ''
+  return upper.includes('INTEL') || upper.includes('INTEL ARC')
+}
+
+const getBrandClass = (model: string): string => {
+  if (isNvidia(model)) return 'brand-nvidia'
+  if (isAmd(model)) return 'brand-amd'
+  if (isIntel(model)) return 'brand-intel'
+  return ''
+}
+
+// ===================== 相对性能计算 =====================
+// 1080P 相对分
+const getRelativePerf1080 = (gpu: Gpu | null): string => {
+  if (!gpu || !gpu.abs_game_performance_1080p) return '-'
+  const base = benchmarkGpu.value.perf1080?.abs_game_performance_1080p
+  if (!base) return '-'
+  const relative = (gpu.abs_game_performance_1080p / base) * 100
+  return Math.round(relative).toString()
+}
+
+// 2K 相对分
+const getRelativePerf2k = (gpu: Gpu | null): string => {
+  if (!gpu || !gpu.abs_game_performance_2k) return '-'
+  const base = benchmarkGpu.value.perf2k?.abs_game_performance_2k
+  if (!base) return '-'
+  const relative = (gpu.abs_game_performance_2k / base) * 100
+  return Math.round(relative).toString()
+}
+
+// 4K 相对分
+const getRelativePerf4k = (gpu: Gpu | null): string => {
+  if (!gpu || !gpu.abs_game_performance_4k) return '-'
+  const base = benchmarkGpu.value.perf4k?.abs_game_performance_4k
+  if (!base) return '-'
+  const relative = (gpu.abs_game_performance_4k / base) * 100
+  return Math.round(relative).toString()
+}
+
+// 创作效率相对分
+const getRelativeRender = (gpu: Gpu | null): string => {
+  if (!gpu || !gpu.render_performance) return '-'
+  const base = benchmarkGpu.value.render?.render_performance
+  if (!base) return '-'
+  const relative = (gpu.render_performance / base) * 100
+  return Math.round(relative).toString()
+}
+
+// 根据显示分辨率返回对应的相对分
+const getDisplayGamePerf = (gpu: Gpu): string => {
+  switch (displayRes.value) {
+    case '1080P': return getRelativePerf1080(gpu)
+    case '2K': return getRelativePerf2k(gpu)
+    case '4K': return getRelativePerf4k(gpu)
+    default: return '-'
+  }
+}
+
+// 根据显示分辨率返回对应的原始分（用于排序）
+const getGameRawScore = (gpu: Gpu): number => {
+  switch (displayRes.value) {
+    case '1080P': return gpu.abs_game_performance_1080p || 0
+    case '2K': return gpu.abs_game_performance_2k || 0
+    case '4K': return gpu.abs_game_performance_4k || 0
+    default: return 0
+  }
+}
+
+// 根据排序分辨率返回对应的原始分（用于性价比排序）
+const getSortGameRawScore = (gpu: Gpu): number => {
+  switch (sortGameRes.value) {
+    case '1080P': return gpu.abs_game_performance_1080p || 0
+    case '2K': return gpu.abs_game_performance_2k || 0
+    case '4K': return gpu.abs_game_performance_4k || 0
+    default: return 0
+  }
+}
+
+// ===================== 筛选与价格 =====================
+const filteredGpus = computed(() => {
+  if (showMode.value === 'hot') {
+    return gpus.value.filter(gpu => gpu.new_price && gpu.new_price > 0)
+  }
+  return gpus.value
+})
+
+const getDisplayPrice = (gpu: Gpu): number | null => {
+  return priceType.value === 'new' ? gpu.new_price : gpu.used_price
+}
+
+const getPriceTitle = (gpu: Gpu): string => {
+  const other = priceType.value === 'new' ? gpu.used_price : gpu.new_price
+  const otherLabel = priceType.value === 'new' ? '二手价' : '全新价'
+  if (other) {
+    return `${otherLabel}: ${other} 元`
+  }
+  return '-'
+}
+
+const getSortPrice = (gpu: Gpu): number => {
+  return sortPriceType.value === 'new' ? (gpu.new_price || 999999) : (gpu.used_price || 999999)
+}
+
+// ===================== 性价比 =====================
+// 数据库存的性能分是真实值的10倍，需要除以10还原
+const getPerfScore = (gpu: Gpu, mode: string): number | null => {
+  switch (mode) {
+    case 'perf1080': return gpu.abs_game_performance_1080p ? gpu.abs_game_performance_1080p / 10 : null
+    case 'perf2k': return gpu.abs_game_performance_2k ? gpu.abs_game_performance_2k / 10 : null
+    case 'perf4k': return gpu.abs_game_performance_4k ? gpu.abs_game_performance_4k / 10 : null
+    case 'render': return gpu.render_performance ? gpu.render_performance / 10 : null
+    default: return null
+  }
+}
+
+// 游戏性价比乘数
+const getGameMultiplier = (): number => 20
+// 创作性价比乘数
+const getRenderMultiplier = (): number => 40
+
+// 计算性价比（用于显示，依赖 valueMode）
+const getValueScore = (gpu: Gpu): number => {
+  const price = getDisplayPrice(gpu)
+  if (!price || price <= 0) return 0
+  const perf = getPerfScore(gpu, valueMode.value)
+  if (!perf || perf <= 0) return 0
+  const multiplier = valueMode.value === 'render' ? getRenderMultiplier() : getGameMultiplier()
+  return (perf / price) * multiplier
+}
+
+// 计算性价比（用于排序，依赖 sortValueMode）
+const getSortValueScore = (gpu: Gpu): number => {
+  const price = sortPriceType.value === 'new' ? gpu.new_price : gpu.used_price
+  if (!price || price <= 0) return 0
+  let perf: number | null = null
+  if (sortValueMode.value === 'perf1080' || sortValueMode.value === 'perf2k' || sortValueMode.value === 'perf4k') {
+    perf = getSortGameRawScore(gpu) // 已除以10
+  } else {
+    perf = gpu.render_performance ? gpu.render_performance / 10 : null // 创作分也除以10
+  }
+  if (!perf || perf <= 0) return 0
+  const multiplier = sortValueMode.value === 'render' ? getRenderMultiplier() : getGameMultiplier()
+  return (perf / price) * multiplier
+}
+
+// 显示性价比：仅1080P乘1.05，其他保持原始值，全部四舍五入取整
+const getDisplayValue = (gpu: Gpu): string => {
+  const rawScore = getValueScore(gpu)
+  if (rawScore <= 0) return '-'
+  const multiplier = valueMode.value === 'perf1080' ? PERF1080_DISPLAY_MULTIPLIER : 1
+  return Math.round(rawScore * multiplier).toString()
+}
+
+// 精确值显示（用于title，同样逻辑）
+const getPreciseValue = (gpu: Gpu): string => {
+  const rawScore = getValueScore(gpu)
+  if (rawScore <= 0) return '-'
+  const multiplier = valueMode.value === 'perf1080' ? PERF1080_DISPLAY_MULTIPLIER : 1
+  return `性价比: ${Math.round(rawScore * multiplier)}`
+}
+
+// 计算当前筛选条件下，满足条件的最大原始性价比
+const maxValueScoreInFilter = computed((): number => {
+  let maxScore = 0
+  filteredGpus.value.forEach(gpu => {
+    // 获取当前性价比模式对应的性能分
+    const perf = getDisplayGamePerfForCrown(gpu)
+    // 性能分 >= 100
+    if (parseInt(perf) >= 100) {
+      const rawScore = getValueScore(gpu)
+      if (rawScore > maxScore) {
+        maxScore = rawScore
+      }
+    }
+  })
+  return maxScore
+})
+
+// 根据valueMode获取对应的性能分（用于皇冠判断）
+const getDisplayGamePerfForCrown = (gpu: Gpu): string => {
+  switch (valueMode.value) {
+    case 'perf1080': return getRelativePerf1080(gpu)
+    case 'perf2k': return getRelativePerf2k(gpu)
+    case 'perf4k': return getRelativePerf4k(gpu)
+    case 'render': return getRelativeRender(gpu)
+    default: return '-'
+  }
+}
+
+// 判断是否显示皇冠图标
+const shouldShowCrown = (gpu: Gpu): boolean => {
+  const rawScore = getValueScore(gpu)
+  if (rawScore <= 0) return false
+  
+  // 检查性能分 >= 100
+  const perf = getDisplayGamePerfForCrown(gpu)
+  if (parseInt(perf) < 100) return false
+  
+  // 检查是否为最大原始性价比
+  return rawScore === maxValueScoreInFilter.value && maxValueScoreInFilter.value > 0
+}
+
+// ===================== 排序 =====================
+const sortedGpus = computed(() => {
+  const sorted = [...filteredGpus.value]
+
+  sorted.sort((a, b) => {
+    let aVal: any, bVal: any
+
+    switch (sortKey.value) {
+      case 'model':
+        aVal = a.model.toLowerCase()
+        bVal = b.model.toLowerCase()
+        break
+      // 游戏性能排序：基于当前 displayRes 对应的原始分
+      case 'game':
+        aVal = getGameRawScore(a)
+        bVal = getGameRawScore(b)
+        break
+      case 'render':
+        aVal = a.render_performance || 0
+        bVal = b.render_performance || 0
+        break
+      case 'price':
+        aVal = getSortPrice(a)
+        bVal = getSortPrice(b)
+        break
+      case 'value':
+        aVal = getSortValueScore(a)
+        bVal = getSortValueScore(b)
+        break
+      default:
+        return 0
+    }
+
+    if (sortOrder.value === 'asc') {
+      return aVal > bVal ? 1 : -1
+    } else {
+      return aVal < bVal ? 1 : -1
+    }
+  })
+
+  return sorted
+})
+
+const getSortIcon = (key: string): string => {
+  if (sortKey.value !== key) return '↕'
+  return sortOrder.value === 'asc' ? '↑' : '↓'
+}
+
+const sort = (key: string) => {
+  if (sortKey.value === key) {
+    sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc'
+  } else {
+    sortKey.value = key
+    sortOrder.value = key === 'model' || key === 'price' ? 'asc' : 'desc'
+  }
+
+  // 记录排序时的状态快照
+  if (key === 'value') {
+    sortValueMode.value = valueMode.value
+    sortPriceType.value = priceType.value
+  }
+  if (key === 'price') {
+    sortPriceType.value = priceType.value
+  }
+  if (key === 'game') {
+    // 记录当前显示分辨率作为排序用的分辨率
+    sortGameRes.value = displayRes.value
+    // 点击"游戏性能"列 → 性价比也切到对应分辨率
+    valueMode.value = displayRes.value === '1080P' ? 'perf1080' : displayRes.value === '2K' ? 'perf2k' : 'perf4k'
+  }
+}
+
+// ===================== 弹窗 =====================
+const showSpecs = (gpu: Gpu) => {
+  selectedGpu.value = gpu
+  showSpecsModal.value = true
+}
+
+const showPriceChart = async (gpu: Gpu) => {
+  selectedGpu.value = gpu
+  showChartModal.value = true
+  priceChartLoading.value = true
+
+  await nextTick()
+
+  if (chartContainer.value) {
+    const history = priceHistoryMap.value.get(gpu.model) || []
+    renderChart(history)
+  }
+}
+
+const renderChart = (history: PriceHistory[]) => {
+  if (!chartContainer.value) return
+
+  const chart = echarts.init(chartContainer.value)
+
+  const dates = history.map(h => h.recorded_at.slice(5))
+  const newPrices = history.map(h => h.new_price)
+  const usedPrices = history.map(h => h.used_price)
+
+  const validNew = newPrices.filter(p => p !== null) as number[]
+  const validUsed = usedPrices.filter(p => p !== null) as number[]
+  const minNew = validNew.length > 0 ? Math.min(...validNew) : null
+  const minUsed = validUsed.length > 0 ? Math.min(...validUsed) : null
+
+  const option = {
+    backgroundColor: 'transparent',
+    tooltip: {
+      trigger: 'axis',
+      backgroundColor: '#1a1a2e',
+      borderColor: '#2a2a4a',
+      textStyle: { color: '#e0e0e0' },
+      formatter: (params: any) => {
+        let result = params[0].axisValue + '<br/>'
+        params.forEach((item: any) => {
+          if (item.value !== null) {
+            result += `${item.marker}${item.seriesName}: ${item.value}<br/>`
+          }
+        })
+        return result
+      }
+    },
+    legend: {
+      data: [
+        `全新价${minNew ? ` (最低${minNew})` : ''}`,
+        `二手价${minUsed ? ` (最低${minUsed})` : ''}`
+      ],
+      textStyle: { color: '#a0a0b0' },
+      top: 10
+    },
+    grid: {
+      left: '12%',
+      right: '8%',
+      bottom: '15%',
+      top: '22%'
+    },
+    xAxis: {
+      type: 'category',
+      data: dates,
+      axisLine: { lineStyle: { color: '#2a2a4a' } },
+      axisLabel: { color: '#a0a0b0', rotate: 45, fontSize: 12 }
+    },
+    yAxis: {
+      type: 'value',
+      scale: true,
+      axisLine: { lineStyle: { color: '#2a2a4a' } },
+      axisLabel: { color: '#a0a0b0', formatter: '{value}', fontSize: 12 },
+      splitLine: { lineStyle: { color: '#1a1a2e' } }
+    },
+    series: [
+      {
+        name: `全新价${minNew ? ` (最低${minNew})` : ''}`,
+        type: 'line',
+        data: newPrices,
+        smooth: false,
+        lineStyle: { color: '#3b82f6', width: 2 },
+        itemStyle: { color: '#3b82f6' },
+        connectNulls: true
+      },
+      {
+        name: `二手价${minUsed ? ` (最低${minUsed})` : ''}`,
+        type: 'line',
+        data: usedPrices,
+        smooth: false,
+        lineStyle: { color: '#888888', width: 2, type: 'dashed' },
+        itemStyle: { color: '#888888' },
+        connectNulls: true
+      }
+    ]
+  }
+
+  chart.setOption(option)
+  priceChartLoading.value = false
+
+  const resizeHandler = () => chart.resize()
+  window.addEventListener('resize', resizeHandler)
+}
+
+const closeModals = () => {
+  showSpecsModal.value = false
+  showChartModal.value = false
+}
+
+// ===================== 数据加载 =====================
+const findBenchmarkGpu = (model: string, field: keyof Gpu): Gpu | null => {
+  const found = gpus.value.find(gpu => gpu.model === model)
+  if (found) return found
+  // 模糊匹配
+  const fuzzy = gpus.value.find(gpu => gpu.model.includes(model.replace('NVIDIA ', '')))
+  if (fuzzy) return fuzzy
+  return null
+}
+
+const loadData = async () => {
+  try {
+    loading.value = true
+    error.value = ''
+
+    const { data: gpuData, error: gpuError } = await supabase
+      .from('gpu_current')
+      .select('*')
+      .order('abs_game_performance_2k', { ascending: false })
+
+    if (gpuError) throw gpuError
+
+    gpus.value = gpuData || []
+
+    // 查找基准显卡（必须在 gpus.value 赋值之后）
+    benchmarkGpu.value.perf1080 = findBenchmarkGpu(BENCHMARK_CONFIG.perf1080.model, 'abs_game_performance_1080p')
+    benchmarkGpu.value.perf2k = findBenchmarkGpu(BENCHMARK_CONFIG.perf2k.model, 'abs_game_performance_2k')
+    benchmarkGpu.value.perf4k = findBenchmarkGpu(BENCHMARK_CONFIG.perf4k.model, 'abs_game_performance_4k')
+    benchmarkGpu.value.render = findBenchmarkGpu(BENCHMARK_CONFIG.render.model, 'render_performance')
+
+    const { data: historyData, error: historyError } = await supabase
+      .from('gpu_price_history')
+      .select('*')
+      .order('recorded_at', { ascending: true })
+
+    if (historyError) throw historyError
+
+    const historyMap = new Map<string, PriceHistory[]>()
+    historyData?.forEach(item => {
+      const existing = historyMap.get(item.model) || []
+      existing.push({
+        recorded_at: item.recorded_at,
+        new_price: item.new_price,
+        used_price: item.used_price
+      })
+      historyMap.set(item.model, existing)
+    })
+
+    priceHistoryMap.value = historyMap
+
+  } catch (err: any) {
+    error.value = err.message || '加载数据失败'
+  } finally {
+    loading.value = false
+  }
+}
+
+// JSON-LD 动态注入
+const injectJsonLd = () => {
+  const oldScript = document.querySelector('script[data-jsonld="gpu-list"]')
+  if (oldScript) oldScript.remove()
+
+  const items = sortedGpus.value.slice(0, 10).map((gpu, idx) => ({
+    "@type": "Product",
+    "name": gpu.model,
+    "position": idx + 1,
+    "offers": {
+      "@type": "Offer",
+      "price": gpu.new_price || gpu.used_price || 0,
+      "priceCurrency": "CNY"
+    }
+  }))
+
+  const jsonLd = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    "name": "显卡性价比排行榜",
+    "description": "基于实测数据的显卡性价比排行，每月更新",
+    "numberOfItems": items.length,
+    "itemListElement": items
+  })
+
+  const script = document.createElement('script')
+  script.type = 'application/ld+json'
+  script.setAttribute('data-jsonld', 'gpu-list')
+  script.textContent = jsonLd
+  document.head.appendChild(script)
+}
+
+onMounted(() => {
+  loadData().then(() => nextTick(() => injectJsonLd()))
+  startAutoPlay()
+})
+
+onUnmounted(() => {
+  stopAutoPlay()
+})
+</script>
+
+<style scoped>
+.home {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* 顶部区域 */
+.top-bar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.top-bar-spacer {
+  flex: 1;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.tab-btn {
+  padding: 0.6rem 1.2rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 44px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
+.tab-btn:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.tab-btn.active,
+.tab-btn.router-link-active,
+.tab-btn.router-link-exact-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+  font-weight: 600;
+}
+
+/* 滚动条样式 */
+.table-wrapper::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+  border-radius: 4px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 4px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+.table-wrapper::-webkit-scrollbar-corner {
+  background: var(--bg-primary);
+}
+
+/* 轮播图 */
+.top-carousel {
+  flex: 1;
+  min-width: 240px;
+  max-width: 450px;
+  height: 44px;
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 0.2s;
+}
+
+.top-carousel:hover {
+  border-color: var(--accent);
+}
+
+.carousel-text {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  padding: 0 0.8rem;
+  text-align: center;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.carousel-dots {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+}
+
+.dot-btn {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s;
+}
+
+.dot-btn.active {
+  background: var(--accent);
+}
+
+.dot-btn:hover {
+  background: var(--accent-hover);
+}
+
+/* 表格 */
+.table-wrapper {
+  max-height: 82vh;
+  overflow-y: auto;
+  overflow-x: auto;
+  border-radius: 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+}
+
+.cpu-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;
+}
+
+.cpu-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--bg-tertiary);
+}
+
+.cpu-table thead::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--border);
+}
+
+.cpu-table th {
+  padding: 0.6rem 0.4rem;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  position: relative;
+  font-size: 12px;
+}
+
+.cpu-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+
+.cpu-table th.sortable:hover .th-label {
+  color: var(--accent);
+}
+
+.sort-icon {
+  color: var(--accent);
+  font-size: 0.7rem;
+  margin-left: 0.2rem;
+}
+
+.price-hint {
+  color: #f59e0b;
+  font-size: 0.75rem;
+  margin-left: 0.25rem;
+  cursor: help;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+  vertical-align: middle;
+}
+
+.price-hint:hover {
+  opacity: 1;
+}
+
+/* 表头内部布局 */
+.th-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.th-center {
+  align-items: center;
+}
+
+.th-right {
+  align-items: flex-end;
+}
+
+.th-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.th-label-text {
+  display: inline;
+}
+
+/* 内联切换按钮 */
+.inline-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.1rem;
+}
+
+.toggle-btn {
+  padding: 0.15rem 0.35rem;
+  font-size: 0.68rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+  min-height: 24px;
+  min-width: 32px;
+}
+
+.toggle-btn:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.toggle-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+  font-weight: 700;
+}
+
+.toggle-sep {
+  color: var(--text-secondary);
+  font-size: 0.65rem;
+  user-select: none;
+}
+
+.value-toggle {
+  margin-top: 0.15rem;
+}
+
+.value-select {
+  padding: 0.15rem 0.35rem;
+  font-size: 0.68rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text-primary);
+  cursor: pointer;
+  min-height: 24px;
+}
+
+.value-select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* 分辨率切换按钮 */
+.res-toggle {
+  display: inline-flex;
+  gap: 1px;
+  margin-top: 0.1rem;
+}
+
+.res-btn {
+  padding: 0.1rem 0.35rem;
+  font-size: 0.65rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+  min-height: 22px;
+  min-width: 34px;
+}
+
+.res-btn:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.res-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+  font-weight: 700;
+}
+
+/* 列宽 */
+.rank-col {
+  width: 60px;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.rank-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.rank-count {
+  font-size: 10px;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.rank-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.model-col {
+  min-width: 160px;
+  text-align: center;
+}
+
+.model-col:hover .th-label {
+  color: var(--accent);
+}
+
+.game-col {
+  min-width: 90px;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+.game-col:hover .th-label {
+  color: var(--accent);
+}
+
+.perf-col {
+  min-width: 80px;
+  text-align: center;
+}
+
+.price-col {
+  min-width: 140px;
+  text-align: center;
+}
+
+.price-col:hover .th-label {
+  color: var(--accent);
+}
+
+.value-col {
+  min-width: 110px;
+  text-align: center;
+}
+
+/* 表格内容 */
+.cpu-table tbody tr {
+  transition: background 0.2s;
+}
+
+.cpu-table tbody tr:hover {
+  background: var(--bg-tertiary);
+}
+
+.cpu-table td {
+  padding: 0.6rem 0.4rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.rank {
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.model {
+  cursor: pointer;
+}
+
+.model-name {
+  font-weight: 500;
+}
+
+.model:hover .model-name {
+  color: var(--accent) !important;
+  text-decoration: underline;
+}
+
+/* 品牌颜色 */
+.brand-nvidia {
+  color: #76B900 !important;
+}
+
+.brand-amd {
+  color: #E34F26 !important;
+}
+
+.brand-intel {
+  color: #0071C5 !important;
+}
+
+.model:hover .model-name.brand-nvidia,
+.model:hover .model-name.brand-amd,
+.model:hover .model-name.brand-intel {
+  color: var(--accent) !important;
+  text-decoration: underline;
+}
+
+.game-perf,
+.perf,
+.value-cell {
+  text-align: center;
+  font-family: 'Roboto Mono', 'Fira Code', Consolas, monospace;
+  color: var(--text-primary);
+}
+
+.price-cell {
+  text-align: center;
+  cursor: pointer;
+}
+
+.price-cell:hover {
+  color: var(--accent);
+}
+
+.price-value {
+  font-family: 'Roboto Mono', monospace;
+}
+
+.no-price {
+  color: var(--text-secondary);
+}
+
+.chart-icon {
+  margin-left: 0.3rem;
+  opacity: 0.5;
+  font-size: 0.75rem;
+}
+
+/* 皇冠图标 */
+.crown-icon {
+  margin-left: 0.25rem;
+  font-size: 0.9rem;
+}
+
+/* 加载和错误 */
+.loading,
+.error-box,
+.no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+}
+
+.error-box {
+  color: var(--danger);
+  background: rgba(239, 68, 68, 0.05);
+  border: 1px solid var(--danger);
+  border-radius: 12px;
+}
+
+/* 弹窗 */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  animation: fadeIn 0.2s;
+}
+
+.modal {
+  background: var(--bg-secondary);
+  border-radius: 16px;
+  overflow: hidden;
+  animation: slideUp 0.3s;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--border);
+}
+
+.specs-modal {
+  width: 100%;
+  max-width: 420px;
+}
+
+.chart-modal {
+  width: 95vw;
+  max-width: 680px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1rem;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: var(--accent);
+  font-size: 0.95rem;
+  word-break: break-all;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  flex-shrink: 0;
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.close-btn:hover {
+  color: var(--text-primary);
+}
+
+.modal-body {
+  padding: 1.2rem;
+}
+
+/* 参数网格 */
+.specs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.spec-item {
+  background: var(--bg-tertiary);
+  padding: 0.6rem;
+  border-radius: 8px;
+}
+
+.spec-label {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  margin-bottom: 0.15rem;
+}
+
+.spec-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  word-break: break-all;
+}
+
+/* 性能显示 */
+.perf-display {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.6rem;
+}
+
+.perf-item {
+  background: var(--bg-tertiary);
+  padding: 0.7rem;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.perf-label {
+  display: block;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  margin-bottom: 0.2rem;
+}
+
+.perf-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  font-family: 'Roboto Mono', monospace;
+}
+
+.perf-value.game { color: var(--accent); }
+.perf-value.multi { color: #4ecdc4; }
+
+/* 图表 */
+.chart-container {
+  width: 100%;
+  height: 220px;
+}
+
+.chart-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+}
+
+/* 无障碍隐藏 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 0.5rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* 响应式 */
+@media (max-width: 900px) {
+  .top-bar {
+    flex-wrap: wrap;
+  }
+
+  .top-carousel {
+    order: 3;
+    width: 100%;
+    max-width: 100%;
+    height: 80px;
+    margin-top: 0.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .home {
+    padding: 0.8rem;
+  }
+
+  .tab-btn {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .table-wrapper {
+    max-height: 55vh;
+  }
+
+  .cpu-table td {
+    font-size: 12px;
+    padding: 0.5rem 0.3rem;
+  }
+
+  .toggle-btn,
+  .res-btn {
+    min-height: 22px;
+    font-size: 0.6rem;
+  }
+
+  .specs-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .perf-display {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-modal {
+    width: 96vw;
+  }
+
+  .chart-container {
+    height: 180px;
+  }
+}
+</style>
