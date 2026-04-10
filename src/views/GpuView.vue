@@ -499,13 +499,12 @@ const getSortPrice = (gpu: Gpu): number => {
 }
 
 // ===================== 性价比 =====================
-// 数据库存的性能分是真实值的10倍，需要除以10还原
 const getPerfScore = (gpu: Gpu, mode: string): number | null => {
   switch (mode) {
-    case 'perf1080': return gpu.abs_game_performance_1080p ? gpu.abs_game_performance_1080p / 10 : null
-    case 'perf2k': return gpu.abs_game_performance_2k ? gpu.abs_game_performance_2k / 10 : null
-    case 'perf4k': return gpu.abs_game_performance_4k ? gpu.abs_game_performance_4k / 10 : null
-    case 'render': return gpu.render_performance ? gpu.render_performance / 10 : null
+    case 'perf1080': return gpu.abs_game_performance_1080p ?? null
+    case 'perf2k': return gpu.abs_game_performance_2k ?? null
+    case 'perf4k': return gpu.abs_game_performance_4k ?? null
+    case 'render': return gpu.render_performance ?? null
     default: return null
   }
 }
@@ -531,9 +530,9 @@ const getSortValueScore = (gpu: Gpu): number => {
   if (!price || price <= 0) return 0
   let perf: number | null = null
   if (sortValueMode.value === 'perf1080' || sortValueMode.value === 'perf2k' || sortValueMode.value === 'perf4k') {
-    perf = getSortGameRawScore(gpu) // 已除以10
+    perf = getSortGameRawScore(gpu)
   } else {
-    perf = gpu.render_performance ? gpu.render_performance / 10 : null // 创作分也除以10
+    perf = gpu.render_performance ?? null
   }
   if (!perf || perf <= 0) return 0
   const multiplier = sortValueMode.value === 'render' ? getRenderMultiplier() : getGameMultiplier()
