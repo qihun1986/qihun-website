@@ -676,15 +676,32 @@ const loadData = async () => {
 
     cpus.value = cpuData || []
 
-    const { data: historyData, error: historyError } = await supabase
-      .from('cpu_price_history')
-      .select('*')
-      .order('recorded_at', { ascending: true })
+    // 分页拉取所有历史数据（Supabase 默认每页 1000 条）
+    const PAGE_SIZE = 1000
+    let allHistoryData: any[] = []
+    let pageOffset = 0
+    let hasMore = true
 
-    if (historyError) throw historyError
+    while (hasMore) {
+      const { data, error: historyError } = await supabase
+        .from('cpu_price_history')
+        .select('*')
+        .order('recorded_at', { ascending: true })
+        .range(pageOffset, pageOffset + PAGE_SIZE - 1)
+
+      if (historyError) throw historyError
+
+      if (data && data.length > 0) {
+        allHistoryData.push(...data)
+        pageOffset += PAGE_SIZE
+        hasMore = data.length === PAGE_SIZE
+      } else {
+        hasMore = false
+      }
+    }
 
     const historyMap = new Map<string, PriceHistory[]>()
-    historyData?.forEach(item => {
+    allHistoryData.forEach((item: any) => {
       const existing = historyMap.get(item.model) || []
       existing.push({
         recorded_at: item.recorded_at,
