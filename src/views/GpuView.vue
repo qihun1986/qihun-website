@@ -173,11 +173,20 @@
               @click="showPriceChart(gpu)"
               :title="getPriceTitle(gpu)"
             >
-              <span v-if="getDisplayPrice(gpu)" class="price-value">
-                {{ getDisplayPrice(gpu) }}
-              </span>
-              <span v-else class="no-price">-</span>
-              <span class="chart-icon" aria-hidden="true">📈</span>
+              <span class="price-indicators">
+                    <span v-if="getDisplayPrice(gpu)" class="price-value">{{ getDisplayPrice(gpu) }}</span>
+                    <span
+                      class="price-change"
+                      :class="{
+                        'price-up': getPriceChange(gpu).direction === 'up',
+                        'price-down': getPriceChange(gpu).direction === 'down',
+                        'price-flat': getPriceChange(gpu).direction === 'flat'
+                      }"
+                    >{{ priceChangeText(gpu) }}</span>
+                    <span class="trend-icon" aria-hidden="true" v-if="getDisplayPrice(gpu)">{{ getPriceChange(gpu).direction === 'up' ? '\u{1F4C8}' : getPriceChange(gpu).direction === 'down' ? '\u{1F4C9}' : '\u{2014}' }}</span>
+                    <span v-if="isNearHistoricalLow(gpu)" class="fire-icon" title="接近历史低价">🔥</span>
+                    <span v-if="!getDisplayPrice(gpu)" class="trend-icon muted" aria-hidden="true">📊</span>
+                  </span>
             </td>
             <!-- 性价比 -->
             <td class="value-cell" aria-label="性价比" :title="getPreciseValue(gpu)">
@@ -322,6 +331,8 @@ const displayRes = ref<'1080P' | '2K' | '4K'>('2K')
 // 状态变量
 const gpus = ref<Gpu[]>([])
 const priceHistoryMap = ref<Map<string, PriceHistory[]>>(new Map())
+const lastPriceMap = ref<Map<string, { prev_new: number | null; prev_used: number | null }>>(new Map())
+const minPriceMap = ref<Map<string, { min_new: number | null; min_used: number | null }>>(new Map())
 const loading = ref(true)
 const error = ref('')
 const showMode = ref<'hot' | 'all'>('hot')
@@ -483,6 +494,35 @@ const filteredGpus = computed(() => {
 
 const getDisplayPrice = (gpu: Gpu): number | null => {
   return priceType.value === 'new' ? gpu.new_price : gpu.used_price
+}
+
+const getPriceChange = (gpu: Gpu): { value: number; direction: 'up' | 'down' | 'flat' } => {
+  const currentPrice = getDisplayPrice(gpu)
+  if (!currentPrice) return { value: 0, direction: 'flat' }
+  const prevRecord = lastPriceMap.value.get(gpu.model)
+  if (!prevRecord) return { value: 0, direction: 'flat' }
+  const prevPrice = priceType.value === 'new' ? prevRecord.prev_new : prevRecord.prev_used
+  if (!prevPrice) return { value: 0, direction: 'flat' }
+  const diff = currentPrice - prevPrice
+  if (diff > 0) return { value: Math.abs(diff), direction: 'up' }
+  if (diff < 0) return { value: Math.abs(diff), direction: 'down' }
+  return { value: 0, direction: 'flat' }
+}
+
+const priceChangeText = (gpu: Gpu): string => {
+  const change = getPriceChange(gpu)
+  if (change.direction === 'flat') return '-'
+  return (change.direction === 'up' ? '↑' : '↓') + change.value
+}
+
+const isNearHistoricalLow = (gpu: Gpu): boolean => {
+  const currentPrice = getDisplayPrice(gpu)
+  if (!currentPrice) return false
+  const minRecord = minPriceMap.value.get(gpu.model)
+  if (!minRecord) return false
+  const minPrice = priceType.value === 'new' ? minRecord.min_new : minRecord.min_used
+  if (!minPrice) return false
+  return currentPrice <= minPrice * 1.03
 }
 
 const getPriceTitle = (gpu: Gpu): string => {
@@ -829,6 +869,27 @@ const loadData = async () => {
 
     priceHistoryMap.value = historyMap
 
+    const tmpLast = new Map()
+    const tmpMin = new Map()
+    historyMap.forEach((history, model) => {
+      const newPriceRecords = history.filter(h => h.new_price !== null)
+      const usedPriceRecords = history.filter(h => h.used_price !== null)
+      tmpLast.set(model, {
+        prev_new: newPriceRecords.length >= 2 ? newPriceRecords[newPriceRecords.length - 2].new_price : null,
+        prev_used: usedPriceRecords.length >= 2 ? usedPriceRecords[usedPriceRecords.length - 2].used_price : null
+      })
+      const newPrices = history.map(h => h.new_price).filter(p => p !== null)
+      const usedPrices = history.map(h => h.used_price).filter(p => p !== null)
+      if (newPrices.length > 0 || usedPrices.length > 0) {
+        tmpMin.set(model, {
+          min_new: newPrices.length > 0 ? Math.min(...newPrices) : null,
+          min_used: usedPrices.length > 0 ? Math.min(...usedPrices) : null
+        })
+      }
+    })
+    lastPriceMap.value = tmpLast
+    minPriceMap.value = tmpMin
+
   } catch (err: any) {
     error.value = err.message || '加载数据失败'
   } finally {
@@ -841,7 +902,7 @@ const injectJsonLd = () => {
   const oldScript = document.querySelector('script[data-jsonld="gpu-list"]')
   if (oldScript) oldScript.remove()
 
-  const items = sortedGpus.value.slice(0, 10).map((gpu, idx) => ({
+  const items = sortedGpus.value.slice(0, 20).map((gpu, idx) => ({
     "@type": "Product",
     "name": gpu.model,
     "position": idx + 1,
@@ -1619,4 +1680,40 @@ onUnmounted(() => {
     height: 180px;
   }
 }
+
+  .price-indicators {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 0.15rem;
+    width: 6em;
+    justify-content: flex-start;
+    flex-shrink: 0;
+  }
+
+  .price-change {
+    font-size: 0.7rem;
+    font-family: 'Roboto Mono', monospace;
+    white-space: nowrap;
+    min-width: 2.4em;
+    text-align: left;
+  }
+
+  .price-up { color: #f87171; }
+  .price-down { color: #4ade80; }
+  .price-flat { color: #a0a0a0; }
+
+  .trend-icon {
+    font-size: 0.75rem;
+    opacity: 0.65;
+    flex-shrink: 0;
+  }
+
+  .trend-icon.muted {
+    opacity: 0.3;
+  }
+
+  .fire-icon {
+    font-size: 0.7rem;
+    flex-shrink: 0;
+  }
 </style>

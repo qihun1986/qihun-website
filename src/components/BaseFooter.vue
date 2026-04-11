@@ -6,7 +6,7 @@
         <span class="separator">|</span>
         <span class="update-time">数据更新：{{ updateTime }}</span>
         <span class="separator">|</span>
-        <span class="visits">访问量：{{ visits }}</span>
+        <span class="visits">访问量：<span id="busuanzi_value_site_pv">加载中</span></span>
       </div>
       <div class="footer-links">
         <router-link to="/about">关于</router-link>
@@ -18,13 +18,29 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { supabase } from '../lib/supabase'
 
 const updateTime = ref('加载中...')
-const visits = ref('建设中')
 
 onMounted(async () => {
-  const now = new Date()
-  updateTime.value = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}`
+  try {
+    const { data, error } = await supabase
+      .from('cpu_current')
+      .select('updated_at')
+      .order('updated_at', { ascending: false })
+      .limit(1)
+
+    if (!error && data && data.length > 0) {
+      const d = new Date(data[0].updated_at)
+      updateTime.value = `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`
+    } else {
+      const now = new Date()
+      updateTime.value = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`
+    }
+  } catch {
+    const now = new Date()
+    updateTime.value = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`
+  }
 })
 </script>
 

@@ -42,7 +42,7 @@
             <li>性能数据基于实测，模拟真实使用场景</li>
             <li>价格数据来自京东/淘宝/拼多多等主流平台日常售价（不含特价）</li>
             <li>二手价格数据来自闲鱼7日内成交均价</li>
-            <li>性能分=100代表畅玩大多数主流游戏</li>
+            <li>性能分=100为基准，代表满足日常游戏和创作需求。150代表性能相较基准为1.5倍</li>
             <li>数据每周更新，热门型号可能更频繁</li>
           </ul>
         </div>
@@ -54,16 +54,16 @@
         <div class="section-card">
           <div class="changelog">
             <div class="log-item">
+              <span class="log-date">2026.04.11</span>
+              <span class="log-text">更新热门CPU全新价格，优化历史价格记录逻辑</span>
+            </div>
+            <div class="log-item">
               <span class="log-date">2026.04.10</span>
               <span class="log-text">显卡榜上线，优化UI交互，添加性价比皇冠标识</span>
             </div>
             <div class="log-item">
               <span class="log-date">2026.04.09</span>
               <span class="log-text">网站框架搭建完成，CPU性价比榜上线</span>
-            </div>
-            <div class="log-item">
-              <span class="log-date">2026.04.08</span>
-              <span class="log-text">项目初始化，开始开发</span>
             </div>
           </div>
         </div>
