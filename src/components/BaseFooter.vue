@@ -2,11 +2,19 @@
   <footer class="footer">
     <div class="footer-content">
       <div class="footer-info">
-        <span class="copyright">© 2026 奇魂的小窝</span>
+        <span class="copyright">© 2026 奇魂的小屋</span>
         <span class="separator">|</span>
         <span class="update-time">数据更新：{{ updateTime }}</span>
         <span class="separator">|</span>
-        <span class="visits">访问量：<span id="busuanzi_value_site_pv">加载中</span></span>
+        <span class="visits" :class="{ loading }">
+          <template v-if="!loading">
+            访问：{{ stats.totalPv.toLocaleString() }}
+            <span class="sub">
+              今日{{ stats.todayPv }} / 昨日{{ stats.yesterdayPv }}
+            </span>
+          </template>
+          <template v-else>访问加载中...</template>
+        </span>
       </div>
       <div class="footer-links">
         <router-link to="/about">关于</router-link>
@@ -19,18 +27,22 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { supabase } from '../lib/supabase'
+import { usePageStats } from '../composables/usePageStats'
 
 const updateTime = ref('加载中...')
 
+const { stats, loading, fetchStats } = usePageStats()
+
 onMounted(async () => {
+  // 加载数据更新时间
   try {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from('cpu_current')
       .select('updated_at')
       .order('updated_at', { ascending: false })
       .limit(1)
 
-    if (!error && data && data.length > 0) {
+    if (data && data.length > 0) {
       const d = new Date(data[0].updated_at)
       updateTime.value = `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`
     } else {
@@ -41,6 +53,9 @@ onMounted(async () => {
     const now = new Date()
     updateTime.value = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`
   }
+
+  // 加载访问统计
+  fetchStats()
 })
 </script>
 
@@ -78,6 +93,12 @@ onMounted(async () => {
   color: var(--text-secondary);
 }
 
+.visits .sub {
+  opacity: 0.7;
+  font-size: 0.8em;
+  margin-left: 0.25rem;
+}
+
 .footer-links {
   display: flex;
   gap: 1.5rem;
@@ -99,10 +120,14 @@ onMounted(async () => {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .footer-info {
     flex-wrap: wrap;
     justify-content: center;
+  }
+
+  .visits {
+    font-size: 0.8rem;
   }
 }
 </style>
