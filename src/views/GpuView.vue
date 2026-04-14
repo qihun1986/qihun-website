@@ -727,10 +727,24 @@ const showPriceChart = async (gpu: Gpu) => {
   }
 }
 
+// 图表实例引用（用于内存清理）
+let chartInstance: ReturnType<typeof echarts.init> | null = null
+let currentResizeHandler: (() => void) | null = null
+
 const renderChart = (history: PriceHistory[]) => {
   if (!chartContainer.value) return
 
-  const chart = echarts.init(chartContainer.value)
+  // 清理旧实例和监听器
+  if (currentResizeHandler) {
+    window.removeEventListener('resize', currentResizeHandler)
+    currentResizeHandler = null
+  }
+  if (chartInstance) {
+    chartInstance.dispose()
+    chartInstance = null
+  }
+
+  chartInstance = echarts.init(chartContainer.value)
 
   const dates = history.map(h => h.recorded_at.slice(5))
   const newPrices = history.map(h => h.new_price)
@@ -760,10 +774,10 @@ const renderChart = (history: PriceHistory[]) => {
     },
     legend: {
       data: [
-        `全新价${minNew ? ` (最低${minNew})` : ''}`,
-        `二手价${minUsed ? ` (最低${minUsed})` : ''}`
+        `全新价 💰最低${minNew}元`,
+        `二手价 💰最低${minUsed}元`
       ],
-      textStyle: { color: '#a0a0b0' },
+      textStyle: { color: '#e8e8f0', fontSize: 13 },
       top: 10
     },
     grid: {
@@ -787,36 +801,45 @@ const renderChart = (history: PriceHistory[]) => {
     },
     series: [
       {
-        name: `全新价${minNew ? ` (最低${minNew})` : ''}`,
+        name: `全新价 💰最低${minNew}元`,
         type: 'line',
         data: newPrices,
         smooth: false,
-        lineStyle: { color: '#3b82f6', width: 2 },
-        itemStyle: { color: '#3b82f6' },
+        lineStyle: { color: '#ff8c00', width: 2 },
+        itemStyle: { color: '#ff8c00' },
         connectNulls: true
       },
       {
-        name: `二手价${minUsed ? ` (最低${minUsed})` : ''}`,
+        name: `二手价 💰最低${minUsed}元`,
         type: 'line',
         data: usedPrices,
         smooth: false,
-        lineStyle: { color: '#888888', width: 2, type: 'dashed' },
-        itemStyle: { color: '#888888' },
+        lineStyle: { color: '#4ecdc4', width: 2, type: 'dashed' },
+        itemStyle: { color: '#4ecdc4' },
         connectNulls: true
       }
     ]
   }
 
-  chart.setOption(option)
+  chartInstance.setOption(option)
   priceChartLoading.value = false
 
-  const resizeHandler = () => chart.resize()
-  window.addEventListener('resize', resizeHandler)
+  currentResizeHandler = () => chartInstance?.resize()
+  window.addEventListener('resize', currentResizeHandler)
 }
 
 const closeModals = () => {
   showSpecsModal.value = false
   showChartModal.value = false
+  // 清理图表实例
+  if (currentResizeHandler) {
+    window.removeEventListener('resize', currentResizeHandler)
+    currentResizeHandler = null
+  }
+  if (chartInstance) {
+    chartInstance.dispose()
+    chartInstance = null
+  }
 }
 
 // ===================== 数据加载 =====================
