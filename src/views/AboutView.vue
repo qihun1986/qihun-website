@@ -54,16 +54,16 @@
         <div class="section-card">
           <div class="changelog">
             <div class="log-item">
+              <span class="log-date">2026.04.14</span>
+              <span class="log-text">GPU价格更新：22张显卡价格同步，修正6张显卡价格数据</span>
+            </div>
+            <div class="log-item">
               <span class="log-date">2026.04.11</span>
               <span class="log-text">更新热门CPU全新价格，优化历史价格记录逻辑</span>
             </div>
             <div class="log-item">
               <span class="log-date">2026.04.10</span>
               <span class="log-text">显卡榜上线，优化UI交互，添加性价比皇冠标识</span>
-            </div>
-            <div class="log-item">
-              <span class="log-date">2026.04.09</span>
-              <span class="log-text">网站框架搭建完成，CPU性价比榜上线</span>
             </div>
           </div>
         </div>

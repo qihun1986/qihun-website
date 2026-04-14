@@ -3,8 +3,8 @@
     <div class="header-content">
       <!-- Logo -->
       <router-link to="/" class="logo">
-        <img src="/images/logo.png" alt="奇魂的小站" class="logo-img" />
-        <span class="logo-text">奇魂的小站</span>
+        <img src="/images/logo.png" alt="奇魂的小窝" class="logo-img" />
+        <span class="logo-text">奇魂的小窝</span>
       </router-link>
 
       <!-- 导航：首页、天梯图、视频、关于 -->

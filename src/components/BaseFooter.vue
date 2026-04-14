@@ -2,7 +2,7 @@
   <footer class="footer">
     <div class="footer-content">
       <div class="footer-info">
-        <span class="copyright">© 2026 奇魂的小屋</span>
+        <span class="copyright">© 2026 奇魂的小窝</span>
         <span class="separator">|</span>
         <span class="update-time">数据更新：{{ updateTime }}</span>
         <span class="separator">|</span>
