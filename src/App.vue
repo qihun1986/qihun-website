@@ -13,6 +13,7 @@ import { onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import BaseHeader from '@/components/BaseHeader.vue'
 import BaseFooter from '@/components/BaseFooter.vue'
+import { trackPageView } from '@/composables/usePageStats'
 
 const route = useRoute()
 
@@ -42,6 +43,8 @@ const updateMeta = () => {
 // JSON-LD 结构化数据 - 注入到 head
 onMounted(() => {
   updateMeta()
+  // 首次访问记录
+  trackPageView()
   
   const jsonLd = {
     "@context": "https://schema.org",
@@ -65,6 +68,8 @@ onMounted(() => {
 // 监听路由变化
 watch(() => route.path, () => {
   updateMeta()
+  // 记录页面访问
+  trackPageView()
 })
 </script>
 
