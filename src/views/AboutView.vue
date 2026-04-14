@@ -55,7 +55,7 @@
           <div class="changelog">
             <div class="log-item">
               <span class="log-date">2026.04.14</span>
-              <span class="log-text">GPU价格更新：22张显卡价格同步，修正6张显卡价格数据</span>
+              <span class="log-text">GPU二手价格更新108张，全新价格更新20张（6张降价）</span>
             </div>
             <div class="log-item">
               <span class="log-date">2026.04.11</span>

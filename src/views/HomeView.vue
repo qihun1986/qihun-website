@@ -289,6 +289,8 @@ const cpus = ref<Cpu[]>([])
 const priceHistoryMap = ref<Map<string, PriceHistory[]>>(new Map())
 const lastPriceMap = ref<Map<string, { prev_new: number | null; prev_used: number | null }>>(new Map())
 const minPriceMap = ref<Map<string, { min_new: number | null; min_used: number | null }>>(new Map())
+// 热门模式：只显示最近一次更新全新价的型号
+const hotModels = ref<Set<string>>(new Set())
 const loading = ref(true)
 const error = ref('')
 const showMode = ref<'hot' | 'all'>('hot')
@@ -363,7 +365,7 @@ const getRelativeMultiPerf = (cpu: Cpu | null): string => {
 // 筛选CPU
 const filteredCpus = computed(() => {
   if (showMode.value === 'hot') {
-    return cpus.value.filter(cpu => cpu.new_price && cpu.new_price > 0)
+    return cpus.value.filter(cpu => hotModels.value.has(cpu.model))
   }
   return cpus.value
 })
@@ -798,6 +800,18 @@ const loadData = async () => {
 
     lastPriceMap.value = tmpLast
     minPriceMap.value = tmpMin
+
+    // 计算热门型号：最新日期有全新价更新的
+    const historyDates = [...new Set(allHistoryData.map(h => h.recorded_at))]
+    const latestDate = historyDates.sort().pop()
+    if (latestDate) {
+      const hot = new Set(
+        allHistoryData
+          .filter(h => h.recorded_at === latestDate && h.new_price !== null)
+          .map(h => h.model)
+      )
+      hotModels.value = hot
+    }
 
   } catch (err: any) {
     error.value = err.message || '加载数据失败'

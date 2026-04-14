@@ -333,6 +333,8 @@ const gpus = ref<Gpu[]>([])
 const priceHistoryMap = ref<Map<string, PriceHistory[]>>(new Map())
 const lastPriceMap = ref<Map<string, { prev_new: number | null; prev_used: number | null }>>(new Map())
 const minPriceMap = ref<Map<string, { min_new: number | null; min_used: number | null }>>(new Map())
+// 热门模式：只显示最近一次更新全新价的型号
+const hotModels = ref<Set<string>>(new Set())
 const loading = ref(true)
 const error = ref('')
 const showMode = ref<'hot' | 'all'>('hot')
@@ -487,7 +489,7 @@ const getSortGameRawScore = (gpu: Gpu): number => {
 // ===================== 筛选与价格 =====================
 const filteredGpus = computed(() => {
   if (showMode.value === 'hot') {
-    return gpus.value.filter(gpu => gpu.new_price && gpu.new_price > 0)
+    return gpus.value.filter(gpu => hotModels.value.has(gpu.model))
   }
   return gpus.value
 })
@@ -912,6 +914,18 @@ const loadData = async () => {
     })
     lastPriceMap.value = tmpLast
     minPriceMap.value = tmpMin
+
+    // 计算热门型号：最新日期有全新价更新的
+    const allDates = [...new Set(historyData?.map(h => h.recorded_at) || [])]
+    const latestDate = allDates.sort().pop()
+    if (latestDate) {
+      const hot = new Set(
+        (historyData || [])
+          .filter(h => h.recorded_at === latestDate && h.new_price !== null)
+          .map(h => h.model)
+      )
+      hotModels.value = hot
+    }
 
   } catch (err: any) {
     error.value = err.message || '加载数据失败'
