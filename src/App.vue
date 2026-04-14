@@ -43,8 +43,6 @@ const updateMeta = () => {
 // JSON-LD 结构化数据 - 注入到 head
 onMounted(() => {
   updateMeta()
-  // 首次访问记录
-  trackPageView()
   
   const jsonLd = {
     "@context": "https://schema.org",
@@ -65,12 +63,12 @@ onMounted(() => {
   document.head.appendChild(script)
 })
 
-// 监听路由变化
-watch(() => route.path, () => {
+// 监听路由变化（首次加载也会触发）
+watch(() => route.path, (newPath, oldPath) => {
   updateMeta()
-  // 记录页面访问
+  // 路由变化时记录访问（首次加载 oldPath 为 undefined，也会记录）
   trackPageView()
-})
+}, { immediate: true })
 </script>
 
 <style>
