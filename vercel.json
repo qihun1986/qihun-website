@@ -1,0 +1,11 @@
+{
+  "buildCommand": "npm --prefix vue-project run build",
+  "outputDirectory": "vue-project/dist",
+  "installCommand": "npm --prefix vue-project install --legacy-peer-deps",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
