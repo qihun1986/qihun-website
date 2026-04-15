@@ -173,20 +173,25 @@
               @click="showPriceChart(gpu)"
               :title="getPriceTitle(gpu)"
             >
-              <span class="price-indicators">
-                    <span v-if="getDisplayPrice(gpu)" class="price-value">{{ getDisplayPrice(gpu) }}</span>
-                    <span
-                      class="price-change"
-                      :class="{
-                        'price-up': getPriceChange(gpu).direction === 'up',
-                        'price-down': getPriceChange(gpu).direction === 'down',
-                        'price-flat': getPriceChange(gpu).direction === 'flat'
-                      }"
-                    >{{ priceChangeText(gpu) }}</span>
-                    <span class="trend-icon" aria-hidden="true" v-if="getDisplayPrice(gpu)">{{ getPriceChange(gpu).direction === 'up' ? '\u{1F4C8}' : getPriceChange(gpu).direction === 'down' ? '\u{1F4C9}' : '\u{2014}' }}</span>
-                    <span v-if="isNearHistoricalLow(gpu)" class="fire-icon" title="接近历史低价">🔥</span>
-                    <span v-if="!getDisplayPrice(gpu)" class="trend-icon muted" aria-hidden="true">📊</span>
-                  </span>
+              <div class="price-content">
+                <span class="price-main">
+                  <span v-if="getDisplayPrice(gpu)" class="price-value">{{ getDisplayPrice(gpu) }}</span>
+                  <span v-else class="no-price">-</span>
+                </span>
+                <span v-if="getDisplayPrice(gpu)" class="price-indicators">
+                  <span
+                    class="price-change"
+                    :class="{
+                      'price-up': getPriceChange(gpu).direction === 'up',
+                      'price-down': getPriceChange(gpu).direction === 'down',
+                      'price-flat': getPriceChange(gpu).direction === 'flat'
+                    }"
+                  >{{ priceChangeText(gpu) }}</span>
+                  <span class="trend-icon" aria-hidden="true">{{ getPriceChange(gpu).direction === 'up' ? '📈' : getPriceChange(gpu).direction === 'down' ? '📉' : '📊' }}</span>
+                  <span v-if="isNearHistoricalLow(gpu)" class="fire-icon" title="接近历史低价">🔥</span>
+                </span>
+                <span v-else class="trend-icon muted" aria-hidden="true">📊</span>
+              </div>
             </td>
             <!-- 性价比 -->
             <td class="value-cell" aria-label="性价比" :title="getPreciseValue(gpu)">
@@ -1033,22 +1038,21 @@ onUnmounted(() => {
 
 /* 滚动条样式 */
 .table-wrapper::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 .table-wrapper::-webkit-scrollbar-track {
-  background: var(--bg-primary);
-  border-radius: 4px;
+  background: transparent;
 }
 
 .table-wrapper::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 4px;
+  background: #3A3A5A;
+  border-radius: 3px;
 }
 
 .table-wrapper::-webkit-scrollbar-thumb:hover {
-  background: var(--text-secondary);
+  background: #4A4A6A;
 }
 
 .table-wrapper::-webkit-scrollbar-corner {
@@ -1138,6 +1142,7 @@ onUnmounted(() => {
   top: 0;
   z-index: 20;
   background: var(--bg-tertiary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .cpu-table thead::after {
@@ -1154,7 +1159,7 @@ onUnmounted(() => {
   padding: 0.6rem 0.4rem;
   text-align: left;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: #C0C0D0;
   white-space: nowrap;
   position: relative;
   font-size: 12px;
@@ -1206,7 +1211,7 @@ onUnmounted(() => {
 
 .th-label {
   font-size: 0.8rem;
-  color: var(--text-secondary);
+  color: #B0B0C0;
   display: flex;
   align-items: center;
   gap: 0.2rem;
@@ -1322,7 +1327,7 @@ onUnmounted(() => {
 
 .rank-count {
   font-size: 10px;
-  color: var(--text-secondary);
+  color: #B0B0C0;
   font-weight: 400;
 }
 
@@ -1377,13 +1382,15 @@ onUnmounted(() => {
 }
 
 .cpu-table tbody tr:hover {
-  background: var(--bg-tertiary);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .cpu-table td {
-  padding: 0.6rem 0.4rem;
-  border-bottom: 1px solid var(--border);
-  font-size: 13px;
+  padding: 0.8rem 0.5rem;
+  border-bottom: 1px solid #2A2A4A;
+  font-size: 14px;
+  color: #E8E8F0;
+  line-height: 1.5;
 }
 
 .rank {
@@ -1397,6 +1404,7 @@ onUnmounted(() => {
 
 .model-name {
   font-weight: 500;
+  color: #E0E0F0;
 }
 
 .model:hover .model-name {
@@ -1429,20 +1437,42 @@ onUnmounted(() => {
 .value-cell {
   text-align: center;
   font-family: 'Roboto Mono', 'Fira Code', Consolas, monospace;
-  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  color: #E8E8F0;
+  font-weight: 500;
+  letter-spacing: 0.02em;
 }
 
 .price-cell {
   text-align: center;
   cursor: pointer;
+  padding-right: 0.5rem !important;
 }
 
 .price-cell:hover {
   color: var(--accent);
 }
 
+/* 价格布局：数字在左，图标在右 */
+.price-content {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  justify-content: center;
+}
+
+.price-main {
+  min-width: 3.2em;
+  text-align: right;
+  flex-shrink: 0;
+}
+
 .price-value {
   font-family: 'Roboto Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: #E8E8F0;
 }
 
 .no-price {
@@ -1461,6 +1491,48 @@ onUnmounted(() => {
   font-size: 0.9rem;
 }
 
+/* 价格布局：数字在左，指示器在右 */
+.price-indicators {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  min-width: 4.8em;
+  justify-content: flex-start;
+  flex-shrink: 0;
+}
+
+/* 价格变化指示 */
+.price-change {
+  font-size: 0.8rem;
+  font-family: 'Roboto Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  min-width: 2.4em;
+  text-align: left;
+  font-weight: 500;
+}
+
+.price-up { color: #ff7b7b; }
+.price-down { color: #6ee7b7; }
+.price-flat { color: #a0a0a0; }
+
+/* 趋势小图表 */
+.trend-icon {
+  font-size: 0.9rem;
+  opacity: 0.65;
+  flex-shrink: 0;
+}
+
+.trend-icon.muted {
+  opacity: 0.3;
+}
+
+/* 接近历史低价火星 */
+.fire-icon {
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
 /* 加载和错误 */
 .loading,
 .error-box,
@@ -1474,9 +1546,9 @@ onUnmounted(() => {
 }
 
 .error-box {
-  color: var(--danger);
-  background: rgba(239, 68, 68, 0.05);
-  border: 1px solid var(--danger);
+  color: #F87171;
+  background: rgba(248, 113, 113, 0.08);
+  border: 1px solid #F87171;
   border-radius: 12px;
 }
 
@@ -1565,7 +1637,7 @@ onUnmounted(() => {
 
 .spec-label {
   display: block;
-  color: var(--text-secondary);
+  color: #B0B0C0;
   font-size: 0.75rem;
   margin-bottom: 0.15rem;
 }
@@ -1573,7 +1645,7 @@ onUnmounted(() => {
 .spec-value {
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: #F0F0FA;
   word-break: break-all;
 }
 
@@ -1593,7 +1665,7 @@ onUnmounted(() => {
 
 .perf-label {
   display: block;
-  color: var(--text-secondary);
+  color: #B0B0C0;
   font-size: 0.75rem;
   margin-bottom: 0.2rem;
 }
@@ -1602,6 +1674,7 @@ onUnmounted(() => {
   font-size: 1.2rem;
   font-weight: 700;
   font-family: 'Roboto Mono', monospace;
+  color: #F0F0FA;
 }
 
 .perf-value.game { color: var(--accent); }
@@ -1641,7 +1714,7 @@ onUnmounted(() => {
   width: 32px;
   height: 32px;
   border: 3px solid var(--border);
-  border-top-color: var(--accent);
+  border-top-color: #FFB86C;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 0.5rem;
@@ -1677,80 +1750,265 @@ onUnmounted(() => {
 }
 
 @media (max-width: 600px) {
-  .home {
-    padding: 0.8rem;
+  /* 全局字体紧凑 */
+  .cpu-table td {
+    font-size: 12px;
+    padding: 0.45rem 0.25rem;
+    color: #f0f0fa;
+  }
+
+  .cpu-table th {
+    padding: 0.4rem 0.25rem;
+  }
+
+  .th-label {
+    font-size: 0.7rem;
   }
 
   .tab-btn {
-    padding: 0.5rem 0.8rem;
     font-size: 0.85rem;
+    padding: 0.4rem 0.6rem;
+    min-height: 36px;
+    flex: 1;
+    text-align: center;
   }
 
-  .table-wrapper {
-    max-height: 55vh;
+  .tabs {
+    justify-content: center;
   }
 
-  .cpu-table td {
-    font-size: 12px;
-    padding: 0.5rem 0.3rem;
+  /* 按钮热区优化 */
+  .toggle-btn,
+  .res-btn {
+    min-height: 38px;
+    min-width: 38px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.6rem;
+    flex: 1;
+    text-align: center;
+  }
+
+  .dot-btn {
+    width: 6px;
+    height: 6px;
+  }
+
+  .close-btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .model {
+    cursor: default;
+  }
+
+  .price-cell {
+    cursor: default;
+  }
+
+  /* 顶部区域垂直重排 */
+  .top-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .top-bar-spacer {
+    display: none;
+  }
+
+  .top-carousel {
+    max-width: 100%;
+    height: 38px;
+    min-height: 38px;
+  }
+
+  .carousel-text {
+    font-size: 0.75rem;
+    white-space: normal;
+    line-height: 1.2;
+  }
+
+  /* 表内切换按钮组等宽化 */
+  .inline-toggle,
+  .res-toggle {
+    display: flex;
+    width: 100%;
   }
 
   .toggle-btn,
   .res-btn {
-    min-height: 22px;
-    font-size: 0.6rem;
+    min-height: 38px;
+    min-width: 38px;
+    flex: 1;
+    text-align: center;
+  }
+
+  .res-btn {
+    min-height: 32px;
+    min-width: 36px;
+    font-size: 0.65rem;
+  }
+
+  .toggle-sep {
+    display: none;
+  }
+
+  .price-col .th-inner,
+  .value-col .th-inner {
+    align-items: stretch;
+  }
+
+  .value-select {
+    width: 100%;
+    text-align: center;
+    min-height: 32px;
+    font-size: 0.7rem;
+    padding: 0.25rem 0.4rem;
+  }
+
+  /* 弹窗底部抽屉式适配 */
+  .modal-overlay {
+    padding: 0.3rem;
+    align-items: flex-end;
+  }
+
+  .specs-modal,
+  .chart-modal {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 20px 20px 0 0;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideUpMobile 0.3s;
+  }
+
+  @keyframes slideUpMobile {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  .modal-body {
+    padding: 0.75rem;
   }
 
   .specs-grid {
     grid-template-columns: 1fr;
+    gap: 0.5rem;
   }
 
   .perf-display {
     grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+
+  .chart-container {
+    height: 180px;
+  }
+
+  /* 价格信息同行动态显示 */
+  .price-content {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .price-main {
+    text-align: left;
+    min-width: auto;
+  }
+
+  .price-indicators {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.2rem;
+    flex-wrap: wrap;
+  }
+
+  .trend-icon {
+    display: inline;
+    font-size: 0.9rem;
+  }
+
+  /* 加载与错误区域高度保障 */
+  .loading,
+  .error-box,
+  .no-data {
+    min-height: 180px;
+    text-align: center;
+  }
+
+  /* 背景与文字对比微调 */
+  .table-wrapper {
+    background: #1a1a2e;
+  }
+
+  /* 表格高度增加以显示更多行 */
+  .table-wrapper {
+    max-height: 70vh;
   }
 
   .chart-modal {
     width: 96vw;
   }
 
-  .chart-container {
-    height: 180px;
-  }
-}
-
-  .price-indicators {
-    display: inline-flex;
-    align-items: flex-end;
-    gap: 0.15rem;
-    width: 6em;
-    justify-content: flex-start;
-    flex-shrink: 0;
-  }
-
+  /* 价格变化指示放大 */
   .price-change {
-    font-size: 0.7rem;
-    font-family: 'Roboto Mono', monospace;
-    white-space: nowrap;
-    min-width: 2.4em;
-    text-align: left;
-  }
-
-  .price-up { color: #f87171; }
-  .price-down { color: #4ade80; }
-  .price-flat { color: #a0a0a0; }
-
-  .trend-icon {
-    font-size: 0.75rem;
-    opacity: 0.65;
-    flex-shrink: 0;
-  }
-
-  .trend-icon.muted {
-    opacity: 0.3;
+    font-size: 0.8rem;
   }
 
   .fire-icon {
-    font-size: 0.7rem;
-    flex-shrink: 0;
+    font-size: 0.85rem;
   }
+}
+
+/* 价格指示器（桌面端） */
+.price-indicators {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  min-width: 4.8em;
+  justify-content: flex-start;
+  flex-shrink: 0;
+}
+
+.price-change {
+  font-size: 0.8rem;
+  font-family: 'Roboto Mono', monospace;
+  white-space: nowrap;
+  min-width: 2.4em;
+  text-align: left;
+  font-weight: 500;
+}
+
+.price-up {
+  color: #ff7b7b;
+}
+
+.price-down {
+  color: #6ee7b7;
+}
+
+.price-flat {
+  color: #a0a0a0;
+}
+
+.trend-icon {
+  font-size: 0.9rem;
+  opacity: 0.65;
+  flex-shrink: 0;
+}
+
+.trend-icon.muted {
+  opacity: 0.3;
+}
+
+.fire-icon {
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
 </style>

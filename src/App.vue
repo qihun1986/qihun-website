@@ -97,7 +97,7 @@ watch(() => route.path, (newPath, oldPath) => {
 
 html {
   scroll-behavior: smooth;
-  font-size: 16px;
+  font-size: 18px; /* 桌面端基础字号：16→18px，全局文字统一放大 */
 }
 
 /* 移动端字体缩小 */
