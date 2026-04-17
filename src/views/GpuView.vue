@@ -211,7 +211,12 @@
     <div v-if="showSpecsModal" class="modal-overlay" @click.self="closeModals" role="dialog" aria-modal="true">
       <div class="modal specs-modal">
         <div class="modal-header">
-          <h3>{{ selectedGpu?.model }}</h3>
+          <h3>
+            {{ selectedGpu?.model }}
+            <span v-if="getReleaseDate(selectedGpu?.model || '')" class="release-badge">
+              ({{ getReleaseDate(selectedGpu?.model || '') }})
+            </span>
+          </h3>
           <button class="close-btn" @click="closeModals" aria-label="关闭">×</button>
         </div>
         <div class="modal-body">
@@ -281,6 +286,7 @@ import { LineChart } from 'echarts/charts'
 import { TitleComponent, TooltipComponent, GridComponent, LegendComponent } from 'echarts/components'
 import { CanvasRenderer } from 'echarts/renderers'
 import { supabase } from '@/lib/supabase'
+import gpuReleaseDates from '@/assets/gpu_release_dates.json'
 
 echarts.use([LineChart, TitleComponent, TooltipComponent, GridComponent, LegendComponent, CanvasRenderer])
 
@@ -328,6 +334,23 @@ const benchmarkGpu = ref<{
   perf4k: null,
   render: null
 })
+
+// 发售日期查询函数（精确匹配型号）
+function getReleaseDate(model: string): string {
+  // 先精确匹配
+  if (gpuReleaseDates[model]) {
+    const d = gpuReleaseDates[model]
+    // 返回格式：2025-01
+    return d.slice(0, 7)
+  }
+  // 模糊匹配（如 "RTX 4060 Ti 8G" 可能写成 "RTX 4060 Ti"）
+  for (const [key, val] of Object.entries(gpuReleaseDates)) {
+    if (model.includes(key) || key.includes(model)) {
+      return (val as string).slice(0, 7)
+    }
+  }
+  return ''
+}
 
 // ===================== 状态变量 =====================
 // 游戏性能显示分辨率（用户切换，只影响显示）
@@ -1598,6 +1621,12 @@ onUnmounted(() => {
   color: var(--accent);
   font-size: 0.95rem;
   word-break: break-all;
+}
+
+.release-badge {
+  color: var(--text-muted, #888);
+  font-size: 0.82em;
+  font-weight: 400;
 }
 
 .close-btn {
