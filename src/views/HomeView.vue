@@ -315,8 +315,8 @@ const currentIndex = ref(0)
 let autoPlayTimer: ReturnType<typeof setInterval> | null = null
 
 const carouselItems = [
-  { image: '/images/banner1.jpg', link: 'https://www.bilibili.com/video/BV1BD6YBZE9n/', title: '【CPU游戏性能-天梯图】2026年1月29日更新' },
-  { image: '/images/banner2.jpg', link: 'https://space.bilibili.com/3546785037420940', title: 'B站主页' },
+  { image: '/images/banner1.jpg', link: 'https://www.bilibili.com/video/BV1NcdaBMEWu/', title: '5600升级5500x3d,7500f值不值？省流推荐！' },
+  { image: '/images/banner2.jpg', link: 'https://www.bilibili.com/video/BV1BD6YBZE9n/', title: '【CPU游戏性能-天梯图】2026年1月29日更新' },
   { image: '/images/banner3.jpg', link: 'https://www.bilibili.com/video/BV121HkzMESh/', title: '2000元CPU 全面对比，生产力 | 游戏 | 功耗' }
 ]
 
@@ -801,17 +801,13 @@ const loadData = async () => {
     lastPriceMap.value = tmpLast
     minPriceMap.value = tmpMin
 
-    // 计算热门型号：最新日期有全新价更新的
-    const historyDates = [...new Set(allHistoryData.map(h => h.recorded_at))]
-    const latestDate = historyDates.sort().pop()
-    if (latestDate) {
-      const hot = new Set(
-        allHistoryData
-          .filter(h => h.recorded_at === latestDate && h.new_price !== null)
-          .map(h => h.model)
-      )
-      hotModels.value = hot
-    }
+    // 计算热门型号：所有有全新价的CPU都显示
+    const hot = new Set(
+      cpus.value
+        .filter(cpu => cpu.new_price !== null)
+        .map(cpu => cpu.model)
+    )
+    hotModels.value = hot
 
   } catch (err: any) {
     error.value = err.message || '加载数据失败'

@@ -19,33 +19,42 @@
     </div>
 
     <!-- 建设中占位 -->
-    <div v-if="activeTab !== 'cpu-game' && activeTab !== 'cpu-multi'" class="building-card">
+    <div v-if="activeTab !== 'cpu-game'" class="building-card">
       <div class="building-icon">🚧</div>
       <h2>{{ getTabLabel(activeTab) }}</h2>
       <p>数据采集中，即将上线</p>
     </div>
 
-    <!-- CPU 天梯图内容 -->
+    <!-- CPU 游戏性能天梯图内容 -->
     <div v-else class="tier-content">
       <!-- 搜索栏 + 对比栏（同行） -->
       <div class="top-bar">
-        <div class="search-bar">
+        <div class="search-bar" @focusout="onSearchBlur">
           <input
             v-model="searchQuery"
             type="text"
-            placeholder="🔍 搜索型号 (如: 7800X3D, 14700K)"
+            :placeholder="'🔍 搜索型号 (如: 7800X3D, 14700K)'"
             @input="onSearchInput"
-            @keyup.enter="jumpToFirst"
+            @focus="onSearchFocus"
+            @keyup.enter="jumpToFirstMatch"
           />
-          <span v-if="searchMatchCount > 0" class="search-count">
-            {{ searchMatchCount }} 个结果
-            <button
-              v-if="searchMatchCount > 0"
-              class="search-add-btn"
-              @click="addAllSearchResults"
-              title="将搜索结果全部添加到对比栏"
-            >+添加</button>
-          </span>
+          <!-- 选中状态：显示清除+添加对比按钮 -->
+          <template v-if="selectedSearchCpu">
+            <button class="search-action-btn add-compare-btn" @click="addSearchSelectedToCompare" title="添加到对比">+对比</button>
+            <button class="search-action-btn clear-btn" @click="clearSearchSelection" title="清除选中">✕</button>
+          </template>
+          <!-- 下拉待选列表 -->
+          <div v-if="showSearchDropdown && searchDropdownItems.length > 0 && !selectedSearchCpu" class="search-dropdown">
+            <div
+              v-for="item in searchDropdownItems"
+              :key="item.cpu.id"
+              class="search-dropdown-item"
+              @mousedown.prevent="onSearchItemClick(item.cpu)"
+            >
+              <span class="dropdown-brand" :class="item.isIntel ? 'intel' : 'amd'">●</span>
+              <span class="dropdown-name">{{ item.label }}</span>
+            </div>
+          </div>
         </div>
 
         <!-- 对比栏（占50%，始终显示） -->
@@ -62,13 +71,12 @@
             >
               <span class="chip-brand" :class="isIntelCpu(cpu) ? 'intel' : 'amd'">●</span>
               <span class="chip-name">{{ formatCpuName(cpu.model) }}</span>
-              <span class="chip-percent" :class="isIntelCpu(cpu) ? 'intel' : 'amd'">{{ getPerformancePercent(cpu) }}%</span>
             </span>
             <button class="compare-inline-clear" @click="clearCompare" title="清空">清空</button>
             <button class="compare-inline-bench" @click="resetBenchmark" title="重置基准">重置</button>
           </div>
           <!-- 无数据时显示提示 -->
-          <span v-else class="compare-empty-hint">点击圆点添加到对比</span>
+          <span v-else class="compare-empty-hint">点击CPU查看详情</span>
           <!-- 对标按钮 -->
           <button
             class="compare-bench-btn"
@@ -76,14 +84,14 @@
             :disabled="compareList.length === 0"
             @click="openBenchModal(null)"
             title="对标对比"
-          >对标</button>
+          >比较</button>
         </div>
       </div>
 
       <!-- 基准提示 -->
       <div class="benchmark-hint">
         <template v-if="benchmarkCpu">
-          📌 基准：{{ benchmarkCpu.model }} (100%)
+          📌 基准：{{ formatCpuName(benchmarkCpu.model) }} (100%)
         </template>
         <template v-else>
           ⚠️ 未找到基准CPU
@@ -98,25 +106,14 @@
 
       <!-- 桌面端散点图 -->
       <div class="scatter-container" ref="scatterContainer" v-if="!isMobile">
-        <!-- Y轴标签 -->
-        <div class="y-axis">
-          <span class="y-label top">13000</span>
-          <span class="y-label" style="position:absolute;top:16.7%">10000</span>
-          <span class="y-label" style="position:absolute;top:33.3%">7000</span>
-          <span class="y-label" style="position:absolute;top:50%">5500</span>
-          <span class="y-label" style="position:absolute;top:66.7%">4000</span>
-          <span class="y-label" style="position:absolute;top:83.3%">3000</span>
-          <span class="y-label bottom">2000</span>
+        <!-- 品牌表头 -->
+        <div class="brand-headers">
+          <div class="brand-header intel-header">INTEL</div>
+          <div class="brand-header amd-header">AMD</div>
         </div>
 
         <!-- 散点图画布 -->
         <div class="scatter-plot" ref="scatterPlot">
-          <!-- Y轴网格线 -->
-          <div class="grid-lines">
-            <div v-for="val in [3000, 4000, 5500, 7000, 10000]" :key="'grid-'+val" class="grid-line" :class="{ 'grid-line-mid': val === 4000 || val === 7000 }" :style="{ top: scoreToY(val) + '%' }">
-            </div>
-          </div>
-
           <!-- 8列分隔线 -->
           <div class="column-dividers">
             <div v-for="i in 7" :key="i" class="col-divider" :style="getColDividerStyle(i)"></div>
@@ -133,7 +130,7 @@
             :class="{
               'is-merged': item.merged && item.cpus.length > 1,
               'is-searched': item.isSearched,
-              'is-dimmed': searchQuery && !item.isSearched,
+              'is-dimmed': selectedSearchCpu && !item.isSearched,
               'intel': item.brand === 'INTEL',
               'amd': item.brand === 'AMD',
               'hollow': item.isEstimated,
@@ -147,7 +144,7 @@
             @mouseleave="hideTooltip"
           >
             <span class="dot-label">
-              {{ shortModelName(item.cpus[0].model) }}
+              {{ item.displayLabel }}
             </span>
           </div>
 
@@ -214,35 +211,82 @@
     <!-- 悬浮 Tooltip -->
     <div v-if="tooltip.visible" class="cpu-tooltip" :style="tooltip.style">
       <div class="tooltip-title">{{ tooltip.title }}</div>
-      <div class="tooltip-game-pct">{{ tooltip.percent }}%</div>
-      <div class="tooltip-bench">基准：{{ benchmarkCpu?.model || 'i5-12490F' }}</div>
+      <div class="tooltip-game-pct">{{ tooltip.percent }}</div>
+      <div class="tooltip-bench">基准：{{ benchmarkCpu ? formatCpuName(benchmarkCpu.model) : 'i5-12490F' }}</div>
       <div v-if="tooltip.estimated" class="tooltip-estimated">(推算)</div>
     </div>
 
     <!-- CPU 详情弹窗 -->
     <div v-if="detailModal.show" class="modal-overlay" @click="closeDetailModal">
       <div class="modal-content detail-modal" @click.stop>
-        <div class="modal-header">
-          <span class="modal-title" :class="isIntelCpu(detailModal.cpu) ? 'intel' : 'amd'">
-            {{ detailModal.cpu?.model }}
+        <div class="modal-header" :class="isIntelCpu(detailModal.cpu) ? 'header-intel' : 'header-amd'">
+          <span class="modal-title">
+            {{ detailModal.mergedCpus.length > 1 ? getDisplayLabel(detailModal.mergedCpus) : formatCpuName(detailModal.cpu?.model || '') }}
+            <span class="modal-bench-inline">（基准：{{ benchmarkCpu ? formatCpuName(benchmarkCpu.model) : '12490F' }}）</span>
           </span>
           <button class="modal-close" @click="closeDetailModal">✕</button>
         </div>
         <div class="modal-body">
-          <div class="modal-game-row">
-            <span class="modal-game-label">游戏性能</span>
-            <span class="modal-game-value" :class="isIntelCpu(detailModal.cpu) ? 'intel' : 'amd'">
-              {{ detailModal.cpu ? getPerformancePercent(detailModal.cpu) : 0 }}%
-              <span class="modal-bench-hint">(基准：{{ benchmarkCpu?.model || 'i5-12490F' }})</span>
-            </span>
-          </div>
-          <div class="modal-row" v-for="(row, idx) in detailRows" :key="idx" :class="{ striped: idx % 2 === 1 }">
-            <span class="modal-label">{{ row.label }}</span>
-            <span class="modal-value">{{ row.value }}</span>
-          </div>
+          <template v-if="detailModal.mergedCpus.length > 1">
+            <table class="compare-table single-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th v-for="cpu in detailModal.mergedCpus" :key="cpu.id"
+                    class="cpu-col" :class="[isIntelCpu(cpu) ? 'intel' : 'amd', { 'is-benchmark': cpu.id === benchmarkCpu?.id }]"
+                    @click="toggleBenchmark(cpu)">
+                    {{ formatCpuName(cpu.model) }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="label-cell highlight-row">游戏性能</td>
+                  <td v-for="cpu in detailModal.mergedCpus" :key="cpu.id" class="value-cell highlight-row" :class="[isIntelCpu(cpu) ? 'intel' : 'amd', { 'is-benchmark': cpu.id === benchmarkCpu?.id }]">{{ getPerformancePercent(cpu) }}%</td>
+                </tr>
+                <tr class="striped">
+                  <td class="label-cell">多核性能</td>
+                  <td v-for="cpu in detailModal.mergedCpus" :key="cpu.id" class="value-cell" :class="[isIntelCpu(cpu) ? 'intel' : 'amd', { 'is-benchmark': cpu.id === benchmarkCpu?.id }]">{{ getMultiPercent(cpu) }}%</td>
+                </tr>
+                <tr v-for="(row, idx) in detailRows" :key="idx" :class="{ striped: idx % 2 === 1 }">
+                  <td class="label-cell">{{ row.label }}</td>
+                  <td v-for="cpu in detailModal.mergedCpus" :key="cpu.id" class="value-cell" :class="{ 'is-benchmark': cpu.id === benchmarkCpu?.id }">{{ getSpecValue(cpu, row.key) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </template>
+          <template v-else>
+            <table class="compare-table single-table">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th class="cpu-col" :class="[isIntelCpu(detailModal.cpu) ? 'intel' : 'amd', { 'is-benchmark': detailModal.cpu?.id === benchmarkCpu?.id }]"
+                    @click="toggleBenchmark(detailModal.cpu)">
+                    {{ detailModal.cpu ? formatCpuName(detailModal.cpu.model) : '' }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="label-cell highlight-row">游戏性能</td>
+                  <td class="value-cell highlight-row" :class="[isIntelCpu(detailModal.cpu) ? 'intel' : 'amd', { 'is-benchmark': detailModal.cpu?.id === benchmarkCpu?.id }]">{{ detailModal.cpu ? getPerformancePercent(detailModal.cpu) : 0 }}%</td>
+                </tr>
+                <tr class="striped">
+                  <td class="label-cell">多核性能</td>
+                  <td class="value-cell" :class="[isIntelCpu(detailModal.cpu) ? 'intel' : 'amd', { 'is-benchmark': detailModal.cpu?.id === benchmarkCpu?.id }]">{{ detailModal.cpu ? getMultiPercent(detailModal.cpu) : 0 }}%</td>
+                </tr>
+                <tr v-for="(row, idx) in detailRows" :key="idx" :class="{ striped: idx % 2 === 0 }">
+                  <td class="label-cell">{{ row.label }}</td>
+                  <td class="value-cell" :class="{ 'is-benchmark': detailModal.cpu?.id === benchmarkCpu?.id }">{{ detailModal.cpu ? getSpecValue(detailModal.cpu, row.key) : '-' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </template>
         </div>
         <div class="modal-footer">
-          <button class="modal-btn" @click="setDetailAsBenchmark">设为基准CPU</button>
+          <button class="modal-btn bench-toggle" :class="{ active: detailModal.cpu?.id === benchmarkCpu?.id }" @click="toggleBenchmark(detailModal.cpu)">
+            {{ detailModal.cpu?.id === benchmarkCpu?.id ? '取消基准' : '设为基准CPU' }}
+          </button>
           <button class="modal-btn secondary" :class="{ disabled: isInCompare(detailModal.cpu) }" @click="addDetailToCompare">
             {{ isInCompare(detailModal.cpu) ? '已在对比' : '添加到对比栏' }}
           </button>
@@ -250,53 +294,44 @@
       </div>
     </div>
 
-    <!-- 对标弹窗 -->
+    <!-- 比较弹窗 -->
     <div v-if="benchModal.show" class="modal-overlay" @click="closeBenchModal">
       <div class="modal-content bench-modal" @click.stop>
-        <div class="modal-header">
-          <span class="modal-title">📊 对标对比</span>
+        <div class="modal-header header-gold">
+          <span class="modal-title">📊 比较（基准：{{ benchmarkCpu ? formatCpuName(benchmarkCpu.model) : '12490F' }}）</span>
           <button class="modal-close" @click="closeBenchModal">✕</button>
         </div>
         <div class="modal-body">
-          <!-- 当前选中CPU详情 -->
-          <div v-if="benchModal.selectedCpu" class="bench-selected">
-            <div class="bench-selected-name" :class="isIntelCpu(benchModal.selectedCpu) ? 'intel' : 'amd'">
-              {{ benchModal.selectedCpu.model }}
-            </div>
-            <div class="bench-selected-game">
-              <span class="modal-game-label">游戏性能</span>
-              <span class="modal-game-value" :class="isIntelCpu(benchModal.selectedCpu) ? 'intel' : 'amd'">
-                {{ getPerformancePercent(benchModal.selectedCpu) }}%
-                <span class="modal-bench-hint">(基准：{{ benchmarkCpu?.model || 'i5-12490F' }})</span>
-              </span>
-            </div>
-            <div class="bench-selected-params">
-              <div class="modal-row" v-for="(row, idx) in benchDetailRows" :key="idx" :class="{ striped: idx % 2 === 1 }">
-                <span class="modal-label">{{ row.label }}</span>
-                <span class="modal-value">{{ row.value }}</span>
-              </div>
-            </div>
-          </div>
-          <!-- 对比列表 -->
-          <div v-if="compareList.length > 0" class="bench-compare-list">
-            <div class="bench-compare-title">添加到对比的CPU</div>
-            <div
-              v-for="cpu in compareList"
-              :key="cpu.id"
-              class="bench-compare-item"
-              :class="{
-                'is-benchmark': cpu.id === benchmarkCpu?.id,
-                'is-selected': cpu.id === benchModal.selectedCpu?.id,
-              }"
-              @click="onBenchItemClick(cpu)"
-            >
-              <span class="compare-item-brand" :class="isIntelCpu(cpu) ? 'intel' : 'amd'">●</span>
-              <span class="bench-item-name">{{ formatCpuName(cpu.model) }}</span>
-              <span class="bench-item-pct" :class="isIntelCpu(cpu) ? 'intel' : 'amd'">{{ getPerformancePercent(cpu) }}%</span>
-              <button class="bench-set-btn" @click.stop="setBenchmarkAndStay(cpu)">设为基准</button>
-            </div>
-          </div>
+          <table v-if="compareList.length > 0" class="compare-table bench-table">
+            <thead>
+              <tr>
+                <th></th>
+                <th v-for="cpu in compareList" :key="cpu.id"
+                  class="cpu-col clickable" :class="[isIntelCpu(cpu) ? 'intel' : 'amd', { 'is-benchmark': cpu.id === benchmarkCpu?.id }]"
+                  @click="toggleBenchmark(cpu)">
+                  {{ formatCpuName(cpu.model) }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="label-cell highlight-row">游戏性能</td>
+                <td v-for="cpu in compareList" :key="cpu.id" class="value-cell highlight-row" :class="[isIntelCpu(cpu) ? 'intel' : 'amd', { 'is-benchmark': cpu.id === benchmarkCpu?.id }]">{{ getPerformancePercent(cpu) }}%</td>
+              </tr>
+              <tr class="striped">
+                <td class="label-cell">多核性能</td>
+                <td v-for="cpu in compareList" :key="cpu.id" class="value-cell" :class="[isIntelCpu(cpu) ? 'intel' : 'amd', { 'is-benchmark': cpu.id === benchmarkCpu?.id }]">{{ getMultiPercent(cpu) }}%</td>
+              </tr>
+              <tr v-for="(row, idx) in detailRows" :key="idx" :class="{ striped: idx % 2 === 0 }">
+                <td class="label-cell">{{ row.label }}</td>
+                <td v-for="cpu in compareList" :key="cpu.id" class="value-cell" :class="{ 'is-benchmark': cpu.id === benchmarkCpu?.id }">{{ getSpecValue(cpu, row.key) }}</td>
+              </tr>
+            </tbody>
+          </table>
           <div v-else class="bench-empty">对比栏为空，点击圆点添加到对比</div>
+        </div>
+        <div class="modal-footer" v-if="compareList.length > 0">
+          <button class="modal-btn" @click="resetBenchmark">重置基准</button>
         </div>
       </div>
     </div>
@@ -378,6 +413,8 @@ const activeTab = ref('cpu-game')
 const cpus = ref<Cpu[]>([])
 const searchQuery = ref('')
 const searchMatchCount = ref(0)
+const selectedSearchCpu = ref<Cpu | null>(null)
+const showSearchDropdown = ref(false)
 const compareList = ref<Cpu[]>([])
 const compareExpanded = ref(false)
 const benchmarkCpu = ref<Cpu | null>(null)
@@ -388,11 +425,11 @@ const scatterPlot = ref<HTMLElement | null>(null)
 const detailModal = ref({
   show: false,
   cpu: null as Cpu | null,
+  mergedCpus: [] as Cpu[],
 })
 
 const benchModal = ref({
   show: false,
-  selectedCpu: null as Cpu | null, // 当前在弹窗中选中的CPU
 })
 
 const tooltip = ref({
@@ -415,9 +452,24 @@ const sortedCpus = computed(() => {
   })
 })
 
-// 分数范围（固定 2000-13000）
+// 搜索下拉列表
+const searchDropdownItems = computed(() => {
+  if (!searchQuery.value || searchQuery.value.length < 1) return []
+  const q = searchQuery.value.toLowerCase()
+  return cpus.value
+    .filter(c => c.model.toLowerCase().includes(q))
+    .slice(0, 8)
+    .map(c => ({
+      cpu: c,
+      label: formatCpuName(c.model),
+      pct: getPerformancePercent(c),
+      isIntel: isIntelCpu(c)
+    }))
+})
+
+// 分数范围（固定 2000-15000）
 const scoreRange = computed(() => {
-  return { min: 2000, max: 13000 }
+  return { min: 2000, max: 15000 }
 })
 
 // 基准分数
@@ -432,13 +484,14 @@ const benchmarkY = computed(() => {
   return scoreToY(benchmarkScore.value)
 })
 
-// Y轴公式：三档近似分段，2000→100%, 4000→66.67%, 7000→33.33%, 13000→0%
+// Y轴公式：四档等分，3000→100%, 4500→75%, 6000→50%, 8500→25%, 15000→0%
 function scoreToY(score: number): number {
-  if (score <= 2000) return 100
-  if (score >= 13000) return 0
-  if (score <= 4000) return 100 - (score - 2000) / 60      // 斜率 -1/60
-  if (score <= 7000) return 66.67 - (score - 4000) / 90   // 斜率 -1/90
-  return 33.33 - (score - 7000) / 180                   // 斜率 -1/180
+  if (score <= 3000) return 100
+  if (score >= 15000) return 0
+  if (score <= 4500) return 100 - (score - 3000) / 1500 * 25       // 3000-4500, 占25%
+  if (score <= 6000) return 75 - (score - 4500) / 1500 * 25       // 4500-6000, 占25%
+  if (score <= 8500) return 50 - (score - 6000) / 2500 * 25       // 6000-8500, 占25%
+  return 25 - (score - 8500) / 6500 * 25                           // 8500-15000, 占25%
 }
 
 // 确定CPU属于哪个列（大小写不敏感）
@@ -523,23 +576,73 @@ function mergeCpus(cpuList: Cpu[]): { groups: Cpu[][], singles: Cpu[] } {
 
 // 去掉尾缀获取核心型号
 function stripSuffix(model: string): string {
-  return model
-    .replace(/\/(K|KF|KS|F|X|X3D|G|GE|3D)\b/gi, '')
+  // 先分离末尾的Plus/Non-X等修饰词
+  let cleanModel = model
+  let trailingWord = ''
+  const plusMatch = cleanModel.match(/\s+(Plus)$/i)
+  if (plusMatch) {
+    trailingWord = plusMatch[1]
+    cleanModel = cleanModel.replace(/\s+Plus$/i, '')
+  }
+  // 去掉后缀 K/KF/F/X3D 等
+  cleanModel = cleanModel
+    .replace(/(X3D|KF|KS|K|F|GE?|X|3D)$/i, '')
     .replace(/\s*\(.*?\)\s*/g, '')
     .trim()
+  // 恢复修饰词
+  return trailingWord ? cleanModel + ' ' + trailingWord : cleanModel
 }
 
-// 生成分组标签
+// 生成分组标签：11600K/KF, 12400/F, 5800X/X3D, Ultra 5 250K/KF Plus
 function getDisplayLabel(cpus: Cpu[]): string {
   if (cpus.length === 1) return formatCpuName(cpus[0].model)
   
-  const base = stripSuffix(cpus[0].model)
-  const suffixes = cpus.map(c => {
-    const match = c.model.match(/\/(K|KF|KS|F|X|X3D|G|GE|3D)\b/i)
-    return match ? match[1] : ''
-  }).filter(Boolean)
+  // 分离末尾修饰词(Plus等)和技术后缀(K/KF/F/X3D等)
+  const parts = cpus.map(c => {
+    // 先分离Plus等修饰词
+    let name = c.model
+    let trailingWord = ''
+    const plusMatch = name.match(/\s+(Plus)$/i)
+    if (plusMatch) {
+      trailingWord = plusMatch[1]
+      name = name.replace(/\s+Plus$/i, '')
+    }
+    // 匹配技术后缀
+    const match = name.match(/(X3D|KF|KS|K|F|GE?|X|3D)$/i)
+    const suffix = match ? match[1] : ''
+    const base = name.replace(/(X3D|KF|KS|K|F|GE?|X|3D)$/i, '').replace(/\s*\(.*?\)\s*/g, '').trim()
+    return { base, suffix, trailingWord }
+  })
   
-  return formatCpuName(base) + '/' + suffixes.join('/')
+  const numBase = parts[0].base
+  const allSuffixes = parts.map(p => p.suffix)
+  // 如果所有都有相同的trailingWord（如Plus），保留
+  const trailingWords = parts.map(p => p.trailingWord)
+  const allSameTrailing = trailingWords.every(t => t === trailingWords[0])
+  const commonTrailing = allSameTrailing ? trailingWords[0] : ''
+  
+  // 找技术后缀的公共前缀（如 K 是 K 和 KF 的公共前缀）
+  const commonPrefix = allSuffixes.reduce((acc, suf) => {
+    let i = 0
+    while (i < acc.length && i < suf.length && acc[i] === suf[i]) i++
+    return acc.substring(0, i)
+  })
+  
+  // 显示base = 数字base + 公共前缀（如 Ultra 5 250K）
+  const displayBase = formatCpuName(numBase + commonPrefix)
+  
+  // 拼接后缀差异部分
+  const parts2 = [displayBase]
+  for (let i = 0; i < allSuffixes.length; i++) {
+    const fullSuffix = allSuffixes[i]
+    if (fullSuffix !== commonPrefix) {
+      parts2.push(fullSuffix)
+    }
+  }
+  
+  // 加上公共修饰词（如 Plus）
+  const result = parts2.join('/') + (commonTrailing ? ' ' + commonTrailing : '')
+  return result
 }
 
 // 计算每个通道内已使用的Y位置（用于避免重叠）
@@ -596,7 +699,7 @@ function buildPositionedCpus(): PositionedCpu[] {
     
     // 分配Y位置，避免重叠
     const usedYs: number[] = []
-    const minSpacing = 0.8 // 最小间距百分比（1800px高度下约14px）
+    const minSpacing = 0.9 // 最小间距百分比（2000px高度下约18px）
     
     for (const item of items) {
       const score = getScore(item.cpus[0])
@@ -676,7 +779,7 @@ const seriesLabels = computed((): SeriesLabel[] => {
           brand: 'INTEL',
           text: 'Core i3',
           x: (col.idx + 0.5) * (100 / 8),
-          y: coreY - 8,
+          y: coreY - 3,
           cpu: coreCpu,
         })
       }
@@ -691,7 +794,7 @@ const seriesLabels = computed((): SeriesLabel[] => {
           brand: 'INTEL',
           text: 'Ultra 200',
           x: (col.idx + 0.5) * (100 / 8),
-          y: ultraY - 8,
+          y: ultraY - 3,
           cpu: ultraCpu,
         })
       }
@@ -701,7 +804,7 @@ const seriesLabels = computed((): SeriesLabel[] => {
         brand: col.brand,
         text: col.series,
         x: (col.idx + 0.5) * (100 / 8),
-        y: y - 8,
+        y: y - 3,
         cpu: maxScoreCpu,
       })
     }
@@ -734,29 +837,23 @@ const brandDividerStyle = computed(() => {
   }
 })
 
-// 详情弹窗数据（去掉游戏性能/价格，只留规格参数）
-const detailRows = computed(() => {
-  if (!detailModal.value.cpu) return []
-  const cpu = detailModal.value.cpu
-  return [
-    { label: '核心/线程', value: `${cpu.cores} / ${cpu.threads}` },
-    { label: '基础频率', value: `${cpu.base_freq} GHz` },
-    { label: '加速频率', value: `${cpu.boost_freq} GHz` },
-    { label: '功耗 (TDP)', value: `${cpu.tdp}W` },
-  ]
-})
+// 详情弹窗数据（带key用于表格渲染）
+const detailRows = [
+  { label: '核心/线程', key: 'cores_threads' },
+  { label: '基础频率', key: 'base_freq' },
+  { label: '加速频率', key: 'boost_freq' },
+  { label: '功耗 (TDP)', key: 'tdp' },
+]
 
-// 对标弹窗当前选中CPU的详情
-const benchDetailRows = computed(() => {
-  if (!benchModal.value.selectedCpu) return []
-  const cpu = benchModal.value.selectedCpu
-  return [
-    { label: '核心/线程', value: `${cpu.cores} / ${cpu.threads}` },
-    { label: '基础频率', value: `${cpu.base_freq} GHz` },
-    { label: '加速频率', value: `${cpu.boost_freq} GHz` },
-    { label: '功耗 (TDP)', value: `${cpu.tdp}W` },
-  ]
-})
+function getSpecValue(cpu: Cpu, key: string): string {
+  switch (key) {
+    case 'cores_threads': return `${cpu.cores} / ${cpu.threads}`
+    case 'base_freq': return `${cpu.base_freq} GHz`
+    case 'boost_freq': return `${cpu.boost_freq} GHz`
+    case 'tdp': return `${cpu.tdp}W`
+    default: return '-'
+  }
+}
 
 // ============== 方法 ==============
 function getPerformancePercent(cpu: Cpu): number {
@@ -773,9 +870,12 @@ function getMultiPercent(cpu: Cpu): number {
 
 function formatCpuName(model: string): string {
   return model
-    .replace(/INTEL\s*CORE\s*/i, '')
-    .replace(/AMD\s*RYZEN\s*/i, '')
-    .replace(/AMD\s*/i, '')
+    .replace(/INTEL\s+CORE\s+/i, '')        // "INTEL Core i7-13700K" → "i7-13700K"
+    .replace(/ULTRA\s+\d+\s+/i, '')          // "Ultra 7 265K" → "265K"
+    .replace(/I\d+-/i, '')                   // "i7-13700K" → "13700K"
+    .replace(/AMD\s+RYZEN\s+\d+\s+/i, '')    // "AMD Ryzen 7 5800X" → "5800X"
+    .replace(/AMD\s+/i, '')
+    .trim()
 }
 
 // 短型号名：只保留数字部分，如 "INTEL Core i5-13500" → "13500", "AMD Ryzen 7 7800X3D" → "7800X3D"
@@ -808,8 +908,8 @@ function isIntelCpu(cpu: Cpu | null): boolean {
 }
 
 function isCpuSearched(cpu: Cpu): boolean {
-  if (!searchQuery.value) return false
-  return cpu.model.toLowerCase().includes(searchQuery.value.toLowerCase())
+  if (!selectedSearchCpu.value) return false
+  return cpu.id === selectedSearchCpu.value.id
 }
 
 function getTabLabel(tabId: string): string {
@@ -871,68 +971,94 @@ async function loadCpus() {
 
 // 搜索
 function onSearchInput() {
+  selectedSearchCpu.value = null  // 输入新内容时取消选中
   if (!searchQuery.value) {
     searchMatchCount.value = 0
+    showSearchDropdown.value = false
     return
   }
-  
   const q = searchQuery.value.toLowerCase()
   const matches = cpus.value.filter(c =>
     c.model.toLowerCase().includes(q)
   )
-  
   searchMatchCount.value = matches.length
-  
-  // 滚动到第一个匹配
-  if (matches.length > 0) {
-    jumpToFirst()
+  showSearchDropdown.value = true
+}
+
+function onSearchFocus() {
+  if (searchQuery.value && !selectedSearchCpu.value) {
+    showSearchDropdown.value = true
   }
 }
 
-// 搜索结果一键添加到对比栏
-function addAllSearchResults() {
-  if (!searchQuery.value) return
-  const q = searchQuery.value.toLowerCase()
-  const matches = cpus.value.filter(c =>
-    c.model.toLowerCase().includes(q)
+function onSearchBlur() {
+  // 延迟关闭，让mousedown事件先触发
+  setTimeout(() => { showSearchDropdown.value = false }, 200)
+}
+
+// 点击下拉项 → 选中 + 跳转高亮
+function onSearchItemClick(cpu: Cpu) {
+  selectedSearchCpu.value = cpu
+  searchQuery.value = formatCpuName(cpu.model)
+  showSearchDropdown.value = false
+  jumpToCpu(cpu)
+}
+
+// 跳转到指定CPU
+function jumpToCpu(cpu: Cpu) {
+  const target = positionedCpus.value.find(item =>
+    item.cpus.some(c => c.id === cpu.id)
   )
-  let added = 0
-  for (const cpu of matches) {
-    if (compareList.value.length >= 4) break
-    if (!compareList.value.find(c => c.id === cpu.id)) {
-      compareList.value.push(cpu)
-      added++
-    }
-  }
-  saveCompareToStorage()
-  if (added > 0) {
-    console.log(`[TierView] 添加了 ${added} 个CPU到对比栏`)
+  if (target && scatterContainer.value) {
+    const container = scatterContainer.value
+    const plotEl = scatterPlot.value
+    if (!plotEl) return
+    // 计算圆点在页面中的绝对位置
+    const plotRect = plotEl.getBoundingClientRect()
+    const dotY = (target.y / 100) * plotEl.offsetHeight
+    const pageY = plotRect.top + window.scrollY + dotY - window.innerHeight / 2
+    window.scrollTo({ top: Math.max(0, pageY), behavior: 'smooth' })
   }
 }
 
-function jumpToFirst() {
-  if (!searchQuery.value || !scatterPlot.value) return
-  
-  const q = searchQuery.value.toLowerCase()
-  const first = positionedCpus.value.find(item =>
-    item.cpus.some(c => c.model.toLowerCase().includes(q))
-  )
-  
-  if (first) {
-    const plot = scatterPlot.value
-    const targetY = first.y // 百分比
-    const scrollTarget = (targetY / 100) * plot.scrollHeight - plot.clientHeight / 2
-    plot.scrollTo({ top: Math.max(0, scrollTarget), behavior: 'smooth' })
+// 清除选中
+function clearSearchSelection() {
+  selectedSearchCpu.value = null
+  searchQuery.value = ''
+  showSearchDropdown.value = false
+}
+
+// 选中CPU添加到对比栏
+function addSearchSelectedToCompare() {
+  if (!selectedSearchCpu.value) return
+  addToCompareCore(selectedSearchCpu.value)
+}
+
+// 回车跳转到第一个匹配
+function jumpToFirstMatch() {
+  if (searchDropdownItems.value.length > 0) {
+    onSearchItemClick(searchDropdownItems.value[0].cpu)
   }
 }
 
 // Tooltip（CPU圆点）
 function showTooltip(item: PositionedCpu, event: MouseEvent) {
   const cpu = item.cpus[0]
+  let percentText: string
+  if (item.cpus.length > 1) {
+    // 合并组：显示每个CPU的百分比，用短标签
+    percentText = item.cpus.map(c => {
+      const shortName = stripSuffix(c.model).replace(/INTEL\s*CORE\s*/i, '').replace(/AMD\s*RYZEN\s*/i, '').replace(/AMD\s*/i, '').trim()
+      const suffix = c.model.match(/(X3D|KF|KS|K|F|GE?|X|3D)$/i)?.[1] || ''
+      return (shortName.split(/[-\s]/).pop() || '') + suffix + ':' + getPerformancePercent(c) + '%'
+    }).join(' / ')
+  } else {
+    percentText = getPerformancePercent(cpu) + '%'
+  }
   tooltip.value = {
     visible: true,
     title: item.displayLabel,
-    percent: getPerformancePercent(cpu),
+    percent: percentText,
     estimated: item.isEstimated,
     style: {
       position: 'fixed',
@@ -947,7 +1073,7 @@ function showLabelTooltip(label: SeriesLabel, event: MouseEvent) {
   if (!label.cpu) return
   tooltip.value = {
     visible: true,
-    title: label.cpu.model,
+    title: formatCpuName(label.cpu.model),
     percent: getPerformancePercent(label.cpu),
     estimated: label.cpu.isEstimated || false,
     style: {
@@ -965,46 +1091,40 @@ function hideTooltip() {
 // 详情弹窗
 function showDetail(item: PositionedCpu) {
   closeCompare()
-  detailModal.value = { show: true, cpu: item.cpus[0] }
+  detailModal.value = { show: true, cpu: item.cpus[0], mergedCpus: item.cpus }
 }
 
 function showDetailMobile(cpu: Cpu) {
   closeCompare()
-  detailModal.value = { show: true, cpu }
+  detailModal.value = { show: true, cpu, mergedCpus: [cpu] }
 }
 
 function closeDetailModal() {
-  detailModal.value = { show: false, cpu: null }
+  detailModal.value = { show: false, cpu: null, mergedCpus: [] }
 }
 
-function setDetailAsBenchmark() {
-  if (detailModal.value.cpu) {
-    setAsBenchmark(detailModal.value.cpu)
+function toggleBenchmark(cpu: Cpu | null | undefined) {
+  if (!cpu) return
+  if (cpu.id === benchmarkCpu.value?.id) {
+    resetBenchmark()
+  } else {
+    setAsBenchmark(cpu)
   }
 }
 
 function showDetailFromCpu(cpu: Cpu) {
   closeCompare()
-  detailModal.value = { show: true, cpu }
+  detailModal.value = { show: true, cpu, mergedCpus: [cpu] }
 }
 
 // 对标弹窗
-function openBenchModal(cpu: Cpu | null) {
+function openBenchModal(_cpu: Cpu | null) {
   if (compareList.value.length === 0) return
-  benchModal.value = { show: true, selectedCpu: cpu || compareList.value[0] }
+  benchModal.value.show = true
 }
 
 function closeBenchModal() {
-  benchModal.value = { show: false, selectedCpu: null }
-}
-
-function onBenchItemClick(cpu: Cpu) {
-  benchModal.value.selectedCpu = cpu
-}
-
-function setBenchmarkAndStay(cpu: Cpu) {
-  setAsBenchmark(cpu)
-  // 弹窗保持打开，百分比自动更新（因为 benchmarkCpu 变了，getPerformancePercent 会重新计算）
+  benchModal.value.show = false
 }
 
 // 单击弹窗的CPU→添加到对比栏
@@ -1239,6 +1359,7 @@ onUnmounted(() => {
   gap: 0.6rem;
   flex: 1;
   min-width: 0;
+  position: relative;
 }
 
 .search-bar input {
@@ -1260,11 +1381,55 @@ onUnmounted(() => {
   border-color: var(--accent);
 }
 
-.search-count {
-  font-size: 0.8rem;
-  color: var(--accent);
+/* 搜索选中时的操作按钮 */
+.search-action-btn {
+  padding: 0.3rem 0.6rem;
+  border: none;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  cursor: pointer;
   white-space: nowrap;
 }
+.add-compare-btn {
+  background: var(--accent);
+  color: #000;
+}
+.add-compare-btn:hover { opacity: 0.85; }
+.clear-btn {
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+.clear-btn:hover { color: var(--text-primary); border-color: var(--text-secondary); }
+
+/* 搜索下拉列表 */
+.search-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #1a1a2e;
+  border: 1px solid var(--border);
+  border-radius: 0 0 4px 4px;
+  z-index: 100;
+  max-height: 280px;
+  overflow-y: auto;
+}
+.search-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.8rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+.search-dropdown-item:hover {
+  background: rgba(255,215,0,0.08);
+}
+.dropdown-brand.intel { color: #4A90D9; }
+.dropdown-brand.amd { color: #E04040; }
+.dropdown-name { flex: 1; }
 
 /* 同行对比栏（占50%宽度） */
 .compare-inline {
@@ -1277,7 +1442,7 @@ onUnmounted(() => {
   background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-radius: 4px;
-  overflow-x: auto;
+  position: relative;
 }
 
 .compare-inline-label {
@@ -1292,6 +1457,9 @@ onUnmounted(() => {
   gap: 0.3rem;
   flex-wrap: nowrap;
   overflow-x: auto;
+  flex: 1;
+  min-width: 0;
+  padding-right: 0.5rem;
 }
 
 .compare-inline-chip {
@@ -1399,85 +1567,40 @@ onUnmounted(() => {
 .scatter-container {
   position: relative;
   margin-bottom: 1rem;
-  max-height: 75vh;
-  overflow-y: auto;
-  overflow-x: hidden;
 }
 
-.y-axis {
-  position: absolute;
-  left: -48px;
-  top: 0;
-  bottom: 0;
-  width: 48px;
+/* 品牌表头 — 与scatter-plot宽度对齐，无圆角 */
+.brand-headers {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  pointer-events: none;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
 }
-
-.y-label {
-  font-size: 0.65rem;
-  color: var(--text-secondary);
-  text-align: right;
-  padding-right: 4px;
+.brand-header {
+  flex: 1;
+  text-align: center;
+  padding: 0.5rem 0;
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: #fff;
 }
-
-.y-label.top {
-  color: var(--accent);
-  font-weight: 600;
+.intel-header {
+  background: #4A90D9;
 }
-
-.y-label.mid {
-  color: #f59e0b;
-  font-weight: 600;
-}
-
-.y-label.mid-low {
-  color: #eab308;
-  font-weight: 500;
-}
-
-.y-label.bottom {
-  color: #ef4444;
+.amd-header {
+  background: #E04040;
 }
 
 .scatter-plot {
   position: relative;
-  height: 1800px;
+  height: 2000px;
   background: var(--bg-secondary);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-top: none;
+  border-radius: 0 0 8px 8px;
   overflow: visible;
-}
-
-/* Y轴网格线 */
-.grid-lines {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.grid-line {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.grid-line-mid {
-  height: 2px;
-  background: rgba(255, 255, 255, 0.15);
-}
-
-.grid-label {
-  position: absolute;
-  left: 4px;
-  top: -12px;
-  font-size: 0.6rem;
-  color: rgba(255, 255, 255, 0.2);
 }
 
 /* 列分隔线 */
@@ -1520,6 +1643,17 @@ onUnmounted(() => {
   box-shadow: 0 0 3px rgba(255, 215, 0, 0.8);
   transition: transform 0.15s, box-shadow 0.15s;
   z-index: 10;
+}
+
+/* 扩大点击/悬浮区域 — 长方形覆盖圆点+标签范围 */
+.cpu-dot::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: -6px;
+  width: calc(100% + 80px);
+  height: calc(100% + 16px);
+  border-radius: 3px;
 }
 
 .cpu-dot:hover {
@@ -1582,14 +1716,16 @@ onUnmounted(() => {
 .series-label {
   position: absolute;
   transform: translate(-50%, -100%);
-  font-size: 12px;
-  padding: 2px 6px;
+  font-size: 15px;
+  font-weight: 800;
+  padding: 2px 8px;
   border-radius: 4px;
   background: rgba(0, 0, 0, 0.5);
   color: #fff;
   white-space: nowrap;
   pointer-events: none;
   z-index: 5;
+  margin-bottom: 2px;
 }
 
 .series-label.intel {
@@ -1787,7 +1923,8 @@ onUnmounted(() => {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1796,345 +1933,111 @@ onUnmounted(() => {
 }
 
 .modal-content {
-  background: var(--bg-secondary);
+  background: linear-gradient(145deg, #1a1a2e, #16213e);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   overflow: hidden;
-  max-width: 360px;
+  max-width: 420px;
   width: 100%;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(74, 144, 217, 0.08);
 }
 
 .modal-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 1rem;
-  border-bottom: 1px solid var(--border);
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  gap: 0.5rem;
+}
+.modal-header.header-intel {
+  background: linear-gradient(135deg, rgba(74, 144, 217, 0.25), rgba(74, 144, 217, 0.08));
+}
+.modal-header.header-amd {
+  background: linear-gradient(135deg, rgba(224, 64, 64, 0.25), rgba(224, 64, 64, 0.08));
+}
+.modal-header.header-gold {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.05));
 }
 
 .modal-title {
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 700;
+  color: #fff;
+  flex: 1;
 }
-
-.modal-title.intel {
-  color: #3b82f6;
-}
-
-.modal-title.amd {
-  color: #ef4444;
-}
+.modal-title.intel { color: #6EB0FF; }
+.modal-title.amd { color: #FF6B6B; }
 
 .modal-close {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
   border: none;
-  border-radius: 50%;
+  border-radius: 8px;
   width: 32px;
   height: 32px;
   cursor: pointer;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s;
-  min-width: 44px;
-  min-height: 44px;
+  transition: all 0.2s;
+  flex-shrink: 0;
 }
 
 .modal-close:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
 }
 
 .modal-body {
   padding: 0;
 }
 
-.modal-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.75rem 1rem;
-  min-height: 48px;
-  transition: background 0.1s;
-}
-
-.modal-row.striped {
-  background: rgba(255, 255, 255, 0.02);
-}
-
-.modal-label {
-  color: var(--text-secondary);
-  font-size: 0.8rem;
-}
-
-.modal-value {
-  color: var(--text-primary);
-  font-size: 0.875rem;
-  font-weight: 600;
-}
-
 .modal-footer {
   display: flex;
   gap: 0.5rem;
-  padding: 0.75rem 1rem;
-  border-top: 1px solid var(--border);
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .modal-btn {
   flex: 1;
-  padding: 0.6rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  border-radius: 8px;
-  color: var(--text-primary);
+  padding: 0.65rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
   font-size: 0.85rem;
-  transition: background 0.15s;
-  min-height: 44px;
+  font-weight: 500;
+  transition: all 0.2s;
 }
 
 .modal-btn:hover {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
 }
 
 .modal-btn.disabled {
-  opacity: 0.5;
+  opacity: 0.35;
   cursor: not-allowed;
 }
 
 .modal-btn.secondary {
-  background: var(--border);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.06);
 }
 
-/* ========== 对比栏抽屉 ========== */
-.compare-drawer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  background: var(--bg-secondary);
-  border-top: 1px solid var(--border);
-  border-radius: 16px 16px 0 0;
-  z-index: 500;
-  transition: all 0.3s;
-}
-
-.drawer-inner {
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.drawer-handle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.75rem;
-  cursor: pointer;
-  min-height: 44px;
-  transition: background 0.15s;
-}
-
-.drawer-handle:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.handle-text {
-  font-size: 0.875rem;
-  color: var(--text-primary);
-  font-weight: 500;
-}
-
-.handle-arrow {
-  font-size: 0.75rem;
-  color: var(--text-secondary);
-}
-
-.drawer-content {
-  max-height: 50vh;
-  overflow-y: auto;
-  padding: 0 1rem 1rem;
-}
-
-.drawer-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.5rem;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.drawer-title {
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.drawer-actions {
-  display: flex;
-  gap: 0.4rem;
-  align-items: center;
-}
-
-.drawer-btn {
-  padding: 0.3rem 0.6rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  border-radius: 4px;
-  color: var(--text-primary);
-  cursor: pointer;
-  font-size: 0.75rem;
-  min-height: 36px;
-  transition: background 0.15s;
-}
-
-.drawer-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-.drawer-btn.danger {
-  color: #ef4444;
-}
-
-.drawer-btn.danger:hover {
-  background: rgba(239, 68, 68, 0.2);
-}
-
-.drawer-btn-close {
-  width: 36px;
-  height: 36px;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  border-radius: 4px;
-  color: var(--text-secondary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.85rem;
-}
-
-.drawer-btn-close:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: var(--text-primary);
-}
-
-.benchmark-row {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.4rem 0.6rem;
-  background: rgba(255, 215, 0, 0.08);
-  border: 1px solid rgba(255, 215, 0, 0.2);
-  border-radius: 6px;
-  margin-bottom: 0.5rem;
-  font-size: 0.8rem;
-}
-
-.benchmark-label {
-  color: var(--text-secondary);
-}
-
-.benchmark-value {
+.modal-btn.bench-toggle {
+  background: rgba(255, 215, 0, 0.1);
+  border-color: rgba(255, 215, 0, 0.25);
   color: #FFD700;
-  font-weight: 600;
 }
 
-.benchmark-percent {
-  color: var(--text-secondary);
-}
-
-.compare-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.compare-empty {
-  text-align: center;
-  padding: 1.5rem;
-  color: var(--text-secondary);
-  font-size: 0.85rem;
-}
-
-.compare-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.6rem;
-  border-radius: 6px;
-  min-height: 44px;
-  transition: background 0.15s;
-}
-
-.compare-item:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.compare-item.is-benchmark {
-  background: rgba(255, 215, 0, 0.08);
-  border: 1px solid rgba(255, 215, 0, 0.2);
-}
-
-.compare-item-brand {
-  font-size: 0.7rem;
-  flex-shrink: 0;
-}
-
-.compare-item-brand.intel {
-  color: #3b82f6;
-}
-
-.compare-item-brand.amd {
-  color: #ef4444;
-}
-
-.compare-item-name {
-  flex: 1;
-  font-size: 0.8rem;
-  color: var(--text-primary);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.compare-item-percent {
-  font-size: 0.9rem;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-
-.compare-item-percent.intel {
-  color: #3b82f6;
-}
-
-.compare-item-percent.amd {
-  color: #ef4444;
-}
-
-.compare-item-btn {
-  width: 36px;
-  height: 36px;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  border-radius: 4px;
-  color: var(--text-secondary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-  flex-shrink: 0;
-  transition: all 0.15s;
-}
-
-.compare-item-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: var(--text-primary);
+.modal-btn.bench-toggle.active {
+  background: rgba(255, 215, 0, 0.2);
+  border-color: rgba(255, 215, 0, 0.5);
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.15);
 }
 
 /* ========== 底部备注 ========== */
@@ -2186,122 +2089,91 @@ onUnmounted(() => {
   background: #FFC000;
 }
 
-/* ========== 详情弹窗游戏性能行 ========== */
-.modal-game-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.75rem 1rem;
-  min-height: 48px;
-  background: rgba(255, 215, 0, 0.06);
-  border-bottom: 1px solid var(--border);
+/* ========== 弹窗 ========== */
+.bench-modal {
+  max-width: 680px;
 }
-.modal-game-label {
+.detail-modal {
+  max-width: 480px;
+}
+
+/* 比较表格（弹窗通用） */
+.compare-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+.compare-table thead th {
+  padding: 0.65rem 0.6rem;
+  font-weight: 700;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.6);
+}
+.compare-table thead th:first-child {
+  width: 100px;
+  text-align: left;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.4);
+}
+.cpu-col {
+  cursor: pointer;
+  transition: all 0.2s;
+  min-width: 90px;
+  border-radius: 6px;
+}
+.cpu-col:hover { background: rgba(255, 255, 255, 0.04); }
+.cpu-col.intel { color: #6EB0FF; }
+.cpu-col.amd { color: #FF6B6B; }
+/* 基准CPU整列高亮 */
+.cpu-col.is-benchmark,
+td.is-benchmark {
+  background: rgba(255, 215, 0, 0.08);
+}
+.compare-table tbody td {
+  padding: 0.55rem 0.6rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  color: rgba(255, 255, 255, 0.75);
+}
+.compare-table tbody tr.striped {
+  background: rgba(255, 255, 255, 0.015);
+}
+.label-cell {
+  text-align: left !important;
+  color: rgba(255, 255, 255, 0.45);
+  font-weight: 500;
   font-size: 0.8rem;
-  color: var(--text-secondary);
 }
-.modal-game-value {
+.highlight-row .label-cell {
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+}
+.value-cell.intel { color: #6EB0FF; font-weight: 600; }
+.value-cell.amd { color: #FF6B6B; font-weight: 600; }
+.highlight-row .value-cell {
   font-size: 1rem;
   font-weight: 700;
 }
-.modal-game-value.intel { color: #3b82f6; }
-.modal-game-value.amd { color: #ef4444; }
-.modal-bench-hint {
+
+.modal-bench-inline {
   font-size: 0.75rem;
   font-weight: 400;
-  color: var(--text-secondary);
+  color: rgba(255, 255, 255, 0.45);
   margin-left: 0.3rem;
 }
 
-/* ========== 对标弹窗 ========== */
-.bench-modal {
-  max-width: 420px;
-}
-.bench-selected {
-  padding: 0.75rem 1rem;
-  border-bottom: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.02);
-}
-.bench-selected-name {
-  font-size: 1rem;
-  font-weight: 700;
-  margin-bottom: 0.4rem;
-}
-.bench-selected-name.intel { color: #3b82f6; }
-.bench-selected-name.amd { color: #ef4444; }
-.bench-selected-game {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 0.5rem;
-}
-.bench-selected-params .modal-row {
-  min-height: 40px;
-  padding: 0.5rem 0.75rem;
-}
-.bench-compare-list {
-  padding: 0.5rem 0.75rem;
-}
-.bench-compare-title {
+.modal-bench-tag {
   font-size: 0.75rem;
-  color: var(--text-secondary);
-  margin-bottom: 0.4rem;
-  padding-left: 0.25rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin-left: 0.5rem;
 }
-.bench-compare-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 0.6rem;
-  border-radius: 6px;
-  min-height: 44px;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-.bench-compare-item:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
-.bench-compare-item.is-selected {
-  background: rgba(255, 215, 0, 0.08);
-  border: 1px solid rgba(255, 215, 0, 0.2);
-}
-.bench-compare-item.is-benchmark .bench-item-name {
-  color: #FFD700;
-}
-.bench-item-name {
-  flex: 1;
-  font-size: 0.8rem;
-  color: var(--text-primary);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.bench-item-pct {
-  font-size: 0.9rem;
-  font-weight: 700;
-  flex-shrink: 0;
-}
-.bench-item-pct.intel { color: #3b82f6; }
-.bench-item-pct.amd { color: #ef4444; }
-.bench-set-btn {
-  padding: 0.2rem 0.5rem;
-  background: rgba(255, 215, 0, 0.15);
-  border: 1px solid rgba(255, 215, 0, 0.3);
-  border-radius: 4px;
-  color: #FFD700;
-  font-size: 0.75rem;
-  cursor: pointer;
-  flex-shrink: 0;
-  min-height: 32px;
-  transition: background 0.15s;
-}
-.bench-set-btn:hover {
-  background: rgba(255, 215, 0, 0.3);
-}
+
 .bench-empty {
   text-align: center;
-  padding: 1.5rem;
-  color: var(--text-secondary);
+  padding: 2rem 1.5rem;
+  color: rgba(255, 255, 255, 0.35);
   font-size: 0.85rem;
 }
 
@@ -2318,6 +2190,7 @@ onUnmounted(() => {
   min-height: 28px;
   flex-shrink: 0;
   transition: all 0.15s;
+  margin-left: auto;
 }
 .compare-bench-btn:hover:not(.disabled) {
   background: rgba(255, 215, 0, 0.3);

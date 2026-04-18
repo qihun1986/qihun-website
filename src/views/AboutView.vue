@@ -53,19 +53,23 @@
         <h2>更新日志</h2>
         <div class="section-card">
           <div class="changelog">
-            <div class="log-item">
-              <span class="log-date">2026.04.14</span>
-              <span class="log-text">GPU二手价格更新108张，全新价格更新20张（6张降价）</span>
-            </div>
-            <div class="log-item">
-              <span class="log-date">2026.04.11</span>
-              <span class="log-text">更新热门CPU全新价格，优化历史价格记录逻辑</span>
-            </div>
-            <div class="log-item">
-              <span class="log-date">2026.04.10</span>
-              <span class="log-text">显卡榜上线，优化UI交互，添加性价比皇冠标识</span>
-            </div>
+            <div v-if="updateLog.length === 0" class="log-empty">加载中...</div>
+            <template v-if="!showAllLogs">
+              <div v-for="(entry, i) in updateLog" :key="i" class="log-item">
+                <span class="log-date">{{ entry.date }}</span>
+                <span class="log-text">{{ entry.text }}</span>
+              </div>
+            </template>
+            <template v-else>
+              <div v-for="(entry, i) in allLogs" :key="i" class="log-item">
+                <span class="log-date">{{ entry.date }}</span>
+                <span class="log-text">{{ entry.text }}</span>
+              </div>
+            </template>
           </div>
+          <button v-if="allLogs.length > 3" class="toggle-logs-btn" @click="showAllLogs = !showAllLogs">
+            {{ showAllLogs ? '收起日志' : `查看所有日志 (${allLogs.length}条)` }}
+          </button>
         </div>
       </section>
 
@@ -100,8 +104,37 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
+import { supabase } from '../lib/supabase'
 
 const showCharge = ref(false)
+const showAllLogs = ref(false)
+const allLogs = ref<{ date: string; text: string }[]>([])
+const updateLog = ref<{ date: string; text: string }[]>([])
+
+// 加载更新日志（最近3条）
+onMounted(async () => {
+  try {
+    const { data } = await supabase
+      .from('site_config')
+      .select('value')
+      .eq('key', 'update_log')
+      .single()
+
+    if (data && data.value) {
+      const all = typeof data.value === 'string' ? JSON.parse(data.value) : data.value
+      allLogs.value = all
+      updateLog.value = all.slice(0, 3)
+    }
+  } catch {
+    // 日志加载失败不影响页面
+  }
+
+  document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 
 // 点击空白处关闭充电弹窗
 const handleClickOutside = (e: MouseEvent) => {
@@ -110,14 +143,6 @@ const handleClickOutside = (e: MouseEvent) => {
     showCharge.value = false
   }
 }
-
-onMounted(() => {
-  document.addEventListener('click', handleClickOutside)
-})
-
-onUnmounted(() => {
-  document.removeEventListener('click', handleClickOutside)
-})
 </script>
 
 <style scoped>
@@ -269,6 +294,22 @@ onUnmounted(() => {
   gap: 0.75rem;
 }
 
+.toggle-logs-btn {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+.toggle-logs-btn:hover {
+  background: var(--accent);
+  color: var(--bg-primary);
+}
+
 .log-item {
   display: flex;
   gap: 1rem;
@@ -286,6 +327,12 @@ onUnmounted(() => {
 .log-text {
   color: var(--text-secondary);
   font-size: 0.9rem;
+}
+
+.log-empty {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  opacity: 0.6;
 }
 
 /* 联系作者区块 */

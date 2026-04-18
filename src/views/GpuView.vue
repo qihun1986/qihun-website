@@ -402,8 +402,8 @@ const currentIndex = ref(0)
 let autoPlayTimer: ReturnType<typeof setInterval> | null = null
 
 const carouselItems = [
-  { image: '/images/banner1.jpg', link: 'https://www.bilibili.com/video/BV1sxgAzbEg5', title: '最新显卡评测' },
-  { image: '/images/banner2.jpg', link: 'https://space.bilibili.com/3546785037420940', title: 'B站主页' },
+  { image: '/images/banner1.jpg', link: 'https://www.bilibili.com/video/BV1WhXjBDE5p', title: '5060TI、9070GRE~11款游戏对比横评！' },
+  { image: '/images/banner2.jpg', link: 'https://www.bilibili.com/video/BV1sxgAzbEg5', title: '最新显卡评测' },
   { image: '/images/banner3.jpg', link: 'https://www.bilibili.com/', title: '显卡天梯图预告' }
 ]
 
@@ -943,17 +943,13 @@ const loadData = async () => {
     lastPriceMap.value = tmpLast
     minPriceMap.value = tmpMin
 
-    // 计算热门型号：最新日期有全新价更新的
-    const allDates = [...new Set(historyData?.map(h => h.recorded_at) || [])]
-    const latestDate = allDates.sort().pop()
-    if (latestDate) {
-      const hot = new Set(
-        (historyData || [])
-          .filter(h => h.recorded_at === latestDate && h.new_price !== null)
-          .map(h => h.model)
-      )
-      hotModels.value = hot
-    }
+    // 计算热门型号：所有有全新价的GPU都显示
+    const hot = new Set(
+      gpus.value
+        .filter(gpu => gpu.new_price !== null)
+        .map(gpu => gpu.model)
+    )
+    hotModels.value = hot
 
   } catch (err: any) {
     error.value = err.message || '加载数据失败'

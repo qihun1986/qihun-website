@@ -34,20 +34,31 @@ const updateTime = ref('加载中...')
 const { stats, loading, fetchStats } = usePageStats()
 
 onMounted(async () => {
-  // 加载数据更新时间
+  // 加载数据更新时间 —— 从价格历史表取最新日期
   try {
     const { data } = await supabase
-      .from('cpu_current')
-      .select('updated_at')
-      .order('updated_at', { ascending: false })
+      .from('cpu_price_history')
+      .select('recorded_at')
+      .order('recorded_at', { ascending: false })
       .limit(1)
 
     if (data && data.length > 0) {
-      const d = new Date(data[0].updated_at)
+      const d = new Date(data[0].recorded_at)
       updateTime.value = `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`
     } else {
-      const now = new Date()
-      updateTime.value = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`
+      // fallback: gpu_price_history
+      const { data: gpuData } = await supabase
+        .from('gpu_price_history')
+        .select('recorded_at')
+        .order('recorded_at', { ascending: false })
+        .limit(1)
+      if (gpuData && gpuData.length > 0) {
+        const d = new Date(gpuData[0].recorded_at)
+        updateTime.value = `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`
+      } else {
+        const now = new Date()
+        updateTime.value = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`
+      }
     }
   } catch {
     const now = new Date()
