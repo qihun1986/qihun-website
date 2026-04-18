@@ -402,10 +402,10 @@ const COLUMNS = [
   { idx: 1, series: 'Core i5', brand: 'INTEL', prefix: ['i5'] },
   { idx: 2, series: 'Core i7', brand: 'INTEL', prefix: ['i7'] },
   { idx: 3, series: 'Core i9', brand: 'INTEL', prefix: ['i9'] },
-  { idx: 4, series: 'Ryzen 9', brand: 'AMD', prefix: ['R9', 'Ryzen 9', '7950', '9900', '9950', 'PRO 9'] },
-  { idx: 5, series: 'Ryzen 7', brand: 'AMD', prefix: ['R7', 'Ryzen 7', '7700', '7800', '8700'] },
-  { idx: 6, series: 'Ryzen 5', brand: 'AMD', prefix: ['R5', 'Ryzen 5', '7500', '7600', '8500', '8600'] },
-  { idx: 7, series: 'Ryzen 3', brand: 'AMD', prefix: ['R3', 'Ryzen 3', '5500', '5600', '5700'] },
+  { idx: 4, series: 'Ryzen 9', brand: 'AMD', prefix: ['R9', 'Ryzen 9'] },
+  { idx: 5, series: 'Ryzen 7', brand: 'AMD', prefix: ['R7', 'Ryzen 7'] },
+  { idx: 6, series: 'Ryzen 5', brand: 'AMD', prefix: ['R5', 'Ryzen 5'] },
+  { idx: 7, series: 'Ryzen 3', brand: 'AMD', prefix: ['R3', 'Ryzen 3'] },
 ]
 
 // ============== 响应式状态 ==============
@@ -510,12 +510,12 @@ function getColumn(cpu: Cpu): number {
     return 1 // 默认i5列
   }
   
-  // AMD Ryzen 系列
+  // AMD Ryzen 系列 — 只用系列名匹配，数字型号会误判（如9600X是R5不是R9）
   if (m.includes('AMD')) {
-    if (m.includes('RYZEN 9') || m.includes('R9') || /\b9\d{3}/.test(m)) return 4
-    if (m.includes('RYZEN 7') || m.includes('R7') || /\b7\d{3}/.test(m)) return 5
-    if (m.includes('RYZEN 5') || m.includes('R5') || /\b5\d{3}/.test(m)) return 6
-    if (m.includes('RYZEN 3') || m.includes('R3') || /\b3\d{3}/.test(m)) return 7
+    if (m.includes('RYZEN 9') || m.includes('R9')) return 4
+    if (m.includes('RYZEN 7') || m.includes('R7')) return 5
+    if (m.includes('RYZEN 5') || m.includes('R5')) return 6
+    if (m.includes('RYZEN 3') || m.includes('R3')) return 7
     return 6 // 默认R5列
   }
   
