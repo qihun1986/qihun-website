@@ -1,5 +1,6 @@
 <template>
   <div class="app">
+    <AnnouncementBar />
     <BaseHeader />
     <main class="main-content">
       <router-view />
@@ -13,6 +14,7 @@ import { onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import BaseHeader from '@/components/BaseHeader.vue'
 import BaseFooter from '@/components/BaseFooter.vue'
+import AnnouncementBar from '@/components/AnnouncementBar.vue'
 import { trackPageView } from '@/composables/usePageStats'
 
 const route = useRoute()
