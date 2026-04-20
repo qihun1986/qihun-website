@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+# 静态SEO数据页（专为爬虫和AI优化）
+Sitemap: https://www.5vip.top/sitemap.xml
+
+# 爬虫友好提示
+# 主要数据页：
+# - https://www.5vip.top/seo.html （CPU+显卡性能排行榜，完整结构化数据）
+# - https://www.5vip.top/          （交互版，含搜索、筛选、对比功能）
