@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CPU 性价比排行榜 | 5vip.top</title>
+<meta name="description" content="CPU 性价比排行实时更新，涵盖 Intel/AMD 全系列，含全新散片价格、游戏性能、功耗对比。">
+<meta name="robots" content="index, follow">
+<meta property="og:title" content="CPU 性价比排行榜 | 5vip.top">
+<meta property="og:description" content="CPU 性价比排行实时更新，涵盖 Intel/AMD 全系列，含全新散片价格、游戏性能、功耗对比。">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://www.5vip.top/">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: #0a0a0f; color: #e0e0e0; min-height: 100vh; }
+  a { color: #4a9eff; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .container { max-width: 900px; margin: 0 auto; padding: 2rem 1rem; }
+  .site-nav { display: flex; align-items: center; gap: 1.5rem; padding: 1rem 0; border-bottom: 1px solid #2a2a3a; margin-bottom: 2rem; }
+  .site-logo { font-size: 1.2rem; font-weight: 700; color: #f0c040; }
+  .nav-links { display: flex; gap: 1.5rem; }
+  .nav-links a { color: #9ab; font-size: 0.95rem; }
+  .nav-links a:hover { color: #4a9eff; text-decoration: none; }
+  .nav-links a.active { color: #4a9eff; border-bottom: 2px solid #4a9eff; padding-bottom: 2px; }
+  h1 { font-size: 1.6rem; color: #f0c040; margin-bottom: 0.5rem; }
+  .subtitle { color: #8ab; font-size: 0.9rem; margin-bottom: 1.5rem; }
+  h2 { font-size: 1.1rem; color: #ddd; margin: 1.8rem 0 0.8rem; padding-bottom: 0.4rem; border-bottom: 1px solid #2a2a3a; }
+  .tag { display: inline-block; background: #1a3a5c; color: #4a9eff; font-size: 0.7rem; padding: 1px 6px; border-radius: 3px; margin-left: 6px; font-weight: 400; }
+  .tag-up { background: #3a1a1a; color: #ff6b6b; }
+  .tag-down { background: #1a3a1a; color: #6bff6b; }
+  table { width: 100%; border-collapse: collapse; margin: 0.8rem 0; font-size: 0.9rem; }
+  th { background: #12121a; color: #8ab; padding: 0.5rem 0.7rem; text-align: left; font-size: 0.78rem; font-weight: 500; border-bottom: 1px solid #2a2a3a; }
+  td { padding: 0.55rem 0.7rem; border-bottom: 1px solid #1a1a24; }
+  tr:hover td { background: #111118; }
+  .num { font-variant-numeric: tabular-nums; font-weight: 500; }
+  .price { color: #f0c040; }
+  .price-drop { color: #6bff6b; }
+  .price-rise { color: #ff6b6b; }
+  .perf { color: #aaa; font-size: 0.82rem; }
+  .brand-intel { color: #4a90d9; }
+  .brand-amd { color: #e04040; }
+  .tier { display: inline-block; width: 22px; height: 22px; border-radius: 4px; text-align: center; line-height: 22px; font-size: 0.75rem; font-weight: 700; }
+  .tier-S { background: #e04040; color: #fff; }
+  .tier-A { background: #e08040; color: #fff; }
+  .tier-B { background: #e0c040; color: #111; }
+  .tier-C { background: #40b040; color: #fff; }
+  .tier-D { background: #4080b0; color: #fff; }
+  .hot-section { background: #111118; border: 1px solid #2a2a3a; border-radius: 8px; padding: 1rem 1.2rem; margin: 1rem 0; }
+  .hot-item { display: flex; align-items: flex-start; gap: 1rem; padding: 0.6rem 0; border-bottom: 1px solid #1e1e2a; }
+  .hot-item:last-child { border-bottom: none; }
+  .hot-name { font-weight: 600; color: #fff; min-width: 160px; }
+  .hot-price-block { text-align: right; min-width: 100px; }
+  .hot-price { font-size: 1.1rem; font-weight: 700; color: #f0c040; }
+  .hot-drop { font-size: 0.78rem; color: #6bff6b; }
+  .hot-drop::before { content: '↓ '; }
+  .hot-note { color: #8ab; font-size: 0.82rem; flex: 1; margin-top: 2px; }
+  .summary-bar { background: linear-gradient(135deg, #1a2a1a, #112211); border: 1px solid #2a4a2a; border-radius: 8px; padding: 1rem 1.2rem; margin: 1.5rem 0; font-size: 0.95rem; color: #8fcf8f; }
+  .warning-bar { background: #1e1a0a; border: 1px solid #3a3020; border-radius: 8px; padding: 1rem 1.2rem; margin: 1rem 0; font-size: 0.85rem; color: #c9a84c; }
+  .warning-bar::before { content: '⚠ '; }
+  footer { text-align: center; padding: 2rem 0; color: #4a5a6a; font-size: 0.78rem; border-top: 1px solid #1a1a24; margin-top: 2rem; }
+  footer a { color: #4a6a8a; }
+  @media (max-width: 600px) {
+    table { font-size: 0.8rem; }
+    .hot-name { min-width: 120px; font-size: 0.88rem; }
+    h1 { font-size: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+<nav class="site-nav">
+  <span class="site-logo">5vip.top</span>
+  <div class="nav-links">
+    <a href="/">首页</a>
+    <a href="/#/gpu">显卡排行</a>
+    <a href="/#/tier">天梯图</a>
+    <a href="/#/videos">视频</a>
+    <a href="/#/about">关于</a>
+  </div>
+</nav>
+
+<main>
+<h1>CPU 性价比排行榜 <span class="tag">NEW</span></h1>
+<p class="subtitle">全新散片参考价 | 游戏性能对比 | 数据来源：淘宝 · 更新于 2026-04-20</p>
+
+<div class="hot-section">
+<h2>🔥 近期降价推荐</h2>
+
+  <div class="hot-item">
+    <div class="hot-name">AMD Ryzen 5 9600X</div>
+    <div class="hot-price-block">
+      <div class="hot-price">¥1096</div>
+      <div class="hot-drop">降183元</div>
+    </div>
+    <div class="hot-note">Zen5 入门款，实测性能超 12490F 近 46%，史低好价</div>
+  </div>
+
+  <div class="hot-item">
+    <div class="hot-name">AMD Ryzen 5 7500F</div>
+    <div class="hot-price-block">
+      <div class="hot-price">¥686</div>
+      <div class="hot-drop">降133元</div>
+    </div>
+    <div class="hot-note">AM5 主流平台性价比首选，3A 百帧稳定</div>
+  </div>
+
+  <div class="hot-item">
+    <div class="hot-name">AMD Ryzen 7 7800X3D</div>
+    <div class="hot-price-block">
+      <div class="hot-price">¥1889</div>
+      <div class="hot-drop">降110元</div>
+    </div>
+    <div class="hot-note">3D 缓存加持，大型游戏帧数领先，闭眼入</div>
+  </div>
+</div>
+
+<div class="summary-bar">💡 价格处在低位，建议有好价随时入手，不用等 618</div>
+<div class="warning-bar">注意：D4 平台老 U（R5 5500/5600 等）近期不降反涨，合计涨 40~90 元，D4 板子也在涨，如有 D4 装机需求建议尽早入手。</div>
+
+<h2>完整排行 <span class="tag">按游戏性能排序</span></h2>
+<table>
+<thead>
+<tr>
+<th>档位</th>
+<th>型号</th>
+<th>游戏性能</th>
+<th>核心/线程</th>
+<th>TDP</th>
+<th>全新散片价</th>
+<th>相对12490F</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="tier tier-S">S</span> <span class="brand-amd">AMD</span></td>
+<td>AMD Ryzen 7 9850X3D</td>
+<td class="num">12,751.5</td>
+<td>8</td>
+<td>120W</td>
+<td><span class="num price">¥3,156</span><br><span class="price-drop num">↓543元</span></td>
+<td class="perf">+125%</td>
+</tr>
+<tr>
+<td><span class="tier tier-S">S</span> <span class="brand-amd">AMD</span></td>
+<td>AMD Ryzen 7 9800X3D</td>
+<td class="num">12,178.8</td>
+<td>8</td>
+<td>120W</td>
+<td><span class="num price">¥2,776</span><br><span class="price-drop num">↓213元</span></td>
+<td class="perf">+115%</td>
+</tr>
+<tr>
+<td><span class="tier tier-S">S</span> <span class="brand-amd">AMD</span></td>
+<td>AMD Ryzen 9 9950X3D</td>
+<td class="num">11,684.4</td>
+<td>16</td>
+<td>170W</td>
+<td><span class="num price">¥4,166</span><br><span class="price-drop num">↓333元</span></td>
+<td class="perf">+106%</td>
+</tr>
+<tr>
+<td><span class="tier tier-S">S</span> <span class="brand-amd">AMD</span></td>
+<td>AMD Ryzen 9 9900X3D</td>
+<td class="num">10,929.9</td>
+<td>12</td>
+<td>120W</td>
+<td><span class="num price">¥3,456</span><br><span class="price-rise num">↑57元</span></td>
+<td class="perf">+93%</td>
+</tr>
+<tr>
+<td><span class="tier tier-S">S</span> <span class="brand-amd">AMD</span></td>
+<td>AMD Ryzen 7 7800X3D</td>
+<td class="num">10,139.5</td>
+<td>8</td>
+<td>120W</td>
+<td><span class="num price">¥1,916</span><br><span class="price-drop num">↓83元</span></td>
+<td class="perf">+79%</td>
+</tr>
+<tr>
+<td><span class="tier tier-S">S</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core i9-14900K</td>
+<td class="num">8,911.4</td>
+<td>8+16</td>
+<td>253W</td>
+<td><span class="num price">¥3,357</span><br><span class="price-rise num">↑207元</span></td>
+<td class="perf">+57%</td>
+</tr>
+<tr>
+<td><span class="tier tier-S">S</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core i9-14900KF</td>
+<td class="num">8,904.1</td>
+<td>8+16</td>
+<td>253W</td>
+<td><span class="num price">¥2,887</span><br><span class="price-rise num">↑88元</span></td>
+<td class="perf">+57%</td>
+</tr>
+<tr>
+<td><span class="tier tier-S">S</span> <span class="brand-amd">AMD</span></td>
+<td>AMD Ryzen 7 9700X</td>
+<td class="num">8,863.5</td>
+<td>8</td>
+<td>65W</td>
+<td><span class="num price">¥1,466</span><br><span class="price-drop num">↓223元</span></td>
+<td class="perf">+56%</td>
+</tr>
+<tr>
+<td><span class="tier tier-S">S</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core i7-14700KF</td>
+<td class="num">8,563.6</td>
+<td>8+12</td>
+<td>253W</td>
+<td><span class="num price">¥2,197</span><br><span class="price-rise num">↑118元</span></td>
+<td class="perf">+51%</td>
+</tr>
+<tr>
+<td><span class="tier tier-S">S</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core i7-14700K</td>
+<td class="num">8,556.3</td>
+<td>8+12</td>
+<td>253W</td>
+<td><span class="num price">¥2,747</span><br><span class="price-rise num">↑168元</span></td>
+<td class="perf">+51%</td>
+</tr>
+<tr>
+<td><span class="tier tier-S">S</span> <span class="brand-amd">AMD</span></td>
+<td>AMD Ryzen 5 9600X</td>
+<td class="num">8,263.2</td>
+<td>6</td>
+<td>65W</td>
+<td><span class="num price">¥1,096</span><br><span class="price-drop num">↓183元</span></td>
+<td class="perf">+46%</td>
+</tr>
+<tr>
+<td><span class="tier tier-S">S</span> <span class="brand-amd">AMD</span></td>
+<td>AMD Ryzen 9 9950X</td>
+<td class="num">8,064.4</td>
+<td>16</td>
+<td>170W</td>
+<td><span class="num price">¥2,826</span><br><span class="price-drop num">↓373元</span></td>
+<td class="perf">+42%</td>
+</tr>
+<tr>
+<td><span class="tier tier-A">A</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core Ultra 7 270K Plus</td>
+<td class="num">7,965.7</td>
+<td>8+16</td>
+<td>250W</td>
+<td><span class="num price">¥2,236</span><br><span class="price-drop num">↓70元</span></td>
+<td class="perf">+40%</td>
+</tr>
+<tr>
+<td><span class="tier tier-A">A</span> <span class="brand-amd">AMD</span></td>
+<td>AMD Ryzen 5 9500F</td>
+<td class="num">7,850</td>
+<td>6</td>
+<td>65W</td>
+<td><span class="num price">¥961</span><br><span class="price-drop num">↓149元</span></td>
+<td class="perf">+38%</td>
+</tr>
+<tr>
+<td><span class="tier tier-A">A</span> <span class="brand-amd">AMD</span></td>
+<td>AMD Ryzen 7 7700</td>
+<td class="num">7,724.8</td>
+<td>8</td>
+<td>65W</td>
+<td><span class="num price">¥1,186</span><br><span class="price-drop num">↓153元</span></td>
+<td class="perf">+36%</td>
+</tr>
+<tr>
+<td><span class="tier tier-A">A</span> <span class="brand-amd">AMD</span></td>
+<td>AMD Ryzen 9 9900X</td>
+<td class="num">7,656.7</td>
+<td>12</td>
+<td>120W</td>
+<td><span class="num price">¥2,386</span><br><span class="price-drop num">↓163元</span></td>
+<td class="perf">+35%</td>
+</tr>
+<tr>
+<td><span class="tier tier-A">A</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core i5-14600K</td>
+<td class="num">7,502.5</td>
+<td>6+8</td>
+<td>181W</td>
+<td><span class="num price">¥1,527</span><br><span class="price-rise num">↑139元</span></td>
+<td class="perf">+32%</td>
+</tr>
+<tr>
+<td><span class="tier tier-A">A</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core i5-14600KF</td>
+<td class="num">7,502.5</td>
+<td>6+8</td>
+<td>181W</td>
+<td><span class="num price">¥1,517</span><br><span class="price-rise num">↑147元</span></td>
+<td class="perf">+32%</td>
+</tr>
+<tr>
+<td><span class="tier tier-A">A</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core Ultra 9 285K</td>
+<td class="num">7,496.1</td>
+<td>8+16</td>
+<td>250W</td>
+<td><span class="num price">¥3,687</span><br><span class="price-rise num">↑288元</span></td>
+<td class="perf">+32%</td>
+</tr>
+<tr>
+<td><span class="tier tier-A">A</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core Ultra 5 250K Plus</td>
+<td class="num">7,476.2</td>
+<td>6+12</td>
+<td>159W</td>
+<td><span class="num price">¥1,531</span><br><span class="price-drop num">↓45元</span></td>
+<td class="perf">+32%</td>
+</tr>
+<tr>
+<td><span class="tier tier-A">A</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core Ultra 5 250KF Plus</td>
+<td class="num">7,476.2</td>
+<td>6+12</td>
+<td>159W</td>
+<td><span class="num price">¥1,595</span><br><span class="price-rise num">↑48元</span></td>
+<td class="perf">+32%</td>
+</tr>
+<tr>
+<td><span class="tier tier-A">A</span> <span class="brand-amd">AMD</span></td>
+<td>AMD Ryzen 5 7600X</td>
+<td class="num">7,441</td>
+<td>6</td>
+<td>105W</td>
+<td><span class="num price">¥1,076</span><br><span class="price-drop num">↓13元</span></td>
+<td class="perf">+31%</td>
+</tr>
+<tr>
+<td><span class="tier tier-A">A</span> <span class="brand-amd">AMD</span></td>
+<td>AMD Ryzen 7 5700X3D</td>
+<td class="num">7,410.39</td>
+<td>8</td>
+<td>105W</td>
+<td><span class="num price">¥2,056</span><br><span class="price-rise num">↑176元</span></td>
+<td class="perf">+31%</td>
+</tr>
+<tr>
+<td><span class="tier tier-A">A</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core Ultra 7 265K</td>
+<td class="num">7,290.2</td>
+<td>8+12</td>
+<td>250W</td>
+<td><span class="num price">¥1,777</span><br><span class="price-drop num">↓22元</span></td>
+<td class="perf">+29%</td>
+</tr>
+<tr>
+<td><span class="tier tier-A">A</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core Ultra 7 265KF</td>
+<td class="num">7,290.2</td>
+<td>8+12</td>
+<td>250W</td>
+<td><span class="num price">¥1,677</span><br><span class="price-drop num">↓3元</span></td>
+<td class="perf">+29%</td>
+</tr>
+<tr>
+<td><span class="tier tier-A">A</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core i7-14790F</td>
+<td class="num">7,257.6</td>
+<td>8+8</td>
+<td>219W</td>
+<td><span class="num price">¥1,917</span><br><span class="price-rise num">↑60元</span></td>
+<td class="perf">+28%</td>
+</tr>
+<tr>
+<td><span class="tier tier-A">A</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core i5-13600KF</td>
+<td class="num">7,229.4</td>
+<td>6+8</td>
+<td>181W</td>
+<td><span class="num price">¥1,357</span><br><span class="price-rise num">↑247元</span></td>
+<td class="perf">+27%</td>
+</tr>
+<tr>
+<td><span class="tier tier-A">A</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core i5-13600K</td>
+<td class="num">7,229.4</td>
+<td>6+8</td>
+<td>181W</td>
+<td><span class="num price">¥1,387</span><br><span class="price-rise num">↑57元</span></td>
+<td class="perf">+27%</td>
+</tr>
+<tr>
+<td><span class="tier tier-A">A</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core i7-14700F</td>
+<td class="num">7,160</td>
+<td>8+12</td>
+<td>219W</td>
+<td><span class="num price">¥2,017</span><br><span class="price-rise num">↑38元</span></td>
+<td class="perf">+26%</td>
+</tr>
+<tr>
+<td><span class="tier tier-A">A</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core i7-14700</td>
+<td class="num">7,160</td>
+<td>8+12</td>
+<td>219W</td>
+<td><span class="num price">¥2,447</span><br><span class="price-drop num">↓103元</span></td>
+<td class="perf">+26%</td>
+</tr>
+<tr>
+<td><span class="tier tier-A">A</span> <span class="brand-amd">AMD</span></td>
+<td>AMD Ryzen 5 5500X3D</td>
+<td class="num">7,023.91</td>
+<td>6</td>
+<td>65W</td>
+<td><span class="num price">¥1,120</span><br><span class="price-drop num">↓36元</span></td>
+<td class="perf">+24%</td>
+</tr>
+<tr>
+<td><span class="tier tier-A">A</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core i7-12700K</td>
+<td class="num">6,896.1</td>
+<td>8+4</td>
+<td>190W</td>
+<td><span class="num price">¥2,292</span><br><span class="price-rise num">↑422元</span></td>
+<td class="perf">+22%</td>
+</tr>
+<tr>
+<td><span class="tier tier-A">A</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core i7-12700KF</td>
+<td class="num">6,896.1</td>
+<td>8+4</td>
+<td>190W</td>
+<td><span class="num price">¥1,857</span><br><span class="price-rise num">↑397元</span></td>
+<td class="perf">+22%</td>
+</tr>
+<tr>
+<td><span class="tier tier-A">A</span> <span class="brand-amd">AMD</span></td>
+<td>AMD Ryzen 5 7500F</td>
+<td class="num">6,832</td>
+<td>6</td>
+<td>65W</td>
+<td><span class="num price">¥686</span><br><span class="price-drop num">↓133元</span></td>
+<td class="perf">+20%</td>
+</tr>
+<tr>
+<td><span class="tier tier-A">A</span> <span class="brand-amd">AMD</span></td>
+<td>AMD Ryzen 7 8700F</td>
+<td class="num">6,681.2</td>
+<td>8</td>
+<td>65W</td>
+<td><span class="num price">¥889</span><br><span class="price-drop num">↓110元</span></td>
+<td class="perf">+18%</td>
+</tr>
+<tr>
+<td><span class="tier tier-A">A</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core Ultra 5 245KF</td>
+<td class="num">6,678</td>
+<td>6+8</td>
+<td>159W</td>
+<td><span class="num price">¥1,126</span><br><span class="price-drop num">↓103元</span></td>
+<td class="perf">+18%</td>
+</tr>
+<tr>
+<td><span class="tier tier-A">A</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core Ultra 5 245K</td>
+<td class="num">6,678</td>
+<td>6+8</td>
+<td>159W</td>
+<td><span class="num price">¥1,176</span><br><span class="price-drop num">↓164元</span></td>
+<td class="perf">+18%</td>
+</tr>
+<tr>
+<td><span class="tier tier-A">A</span> <span class="brand-amd">AMD</span></td>
+<td>AMD Ryzen 7 8700G</td>
+<td class="num">6,674.5</td>
+<td>8</td>
+<td>65W</td>
+<td><span class="num price">¥1,596</span><br><span class="price-drop num">↓123元</span></td>
+<td class="perf">+18%</td>
+</tr>
+<tr>
+<td><span class="tier tier-B">B</span> <span class="brand-amd">AMD</span></td>
+<td>AMD Ryzen 5 7400F</td>
+<td class="num">6,489</td>
+<td>6</td>
+<td>65W</td>
+<td><span class="num price">¥776</span><br><span class="price-rise num">↑7元</span></td>
+<td class="perf">+14%</td>
+</tr>
+<tr>
+<td><span class="tier tier-B">B</span> <span class="brand-amd">AMD</span></td>
+<td>AMD Ryzen 7 5700X</td>
+<td class="num">6,389.5</td>
+<td>8</td>
+<td>65W</td>
+<td><span class="num price">¥1,016</span><br><span class="price-rise num">↑97元</span></td>
+<td class="perf">+13%</td>
+</tr>
+<tr>
+<td><span class="tier tier-B">B</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core Ultra 5 235</td>
+<td class="num">6,344.1</td>
+<td>6+8</td>
+<td>121W</td>
+<td><span class="num price">¥1,197</span><br><span class="price-drop num">↓43元</span></td>
+<td class="perf">+12%</td>
+</tr>
+<tr>
+<td><span class="tier tier-B">B</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core i5-14500</td>
+<td class="num">6,264</td>
+<td>6+8</td>
+<td>154W</td>
+<td><span class="num price">¥1,467</span><br><span class="price-rise num">↑57元</span></td>
+<td class="perf">+10%</td>
+</tr>
+<tr>
+<td><span class="tier tier-B">B</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core i5-14490F</td>
+<td class="num">6,264</td>
+<td>6+4</td>
+<td>148W</td>
+<td><span class="num price">¥1,117</span><br><span class="price-rise num">↑117元</span></td>
+<td class="perf">+10%</td>
+</tr>
+<tr>
+<td><span class="tier tier-B">B</span> <span class="brand-amd">AMD</span></td>
+<td>AMD Ryzen 5 8600G</td>
+<td class="num">6,224.4</td>
+<td>6</td>
+<td>65W</td>
+<td><span class="num price">¥1,136</span><br><span class="price-drop num">↓83元</span></td>
+<td class="perf">+10%</td>
+</tr>
+<tr>
+<td><span class="tier tier-B">B</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core i5-12600KF</td>
+<td class="num">6,221</td>
+<td>6+4</td>
+<td>150W</td>
+<td><span class="num price">¥1,127</span><br><span class="price-rise num">↑137元</span></td>
+<td class="perf">+10%</td>
+</tr>
+<tr>
+<td><span class="tier tier-B">B</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core i5-12600K</td>
+<td class="num">6,221</td>
+<td>6+4</td>
+<td>150W</td>
+<td><span class="num price">¥1,367</span><br><span class="price-rise num">↑127元</span></td>
+<td class="perf">+10%</td>
+</tr>
+<tr>
+<td><span class="tier tier-B">B</span> <span class="brand-amd">AMD</span></td>
+<td>AMD Ryzen 5 5600X</td>
+<td class="num">6,058.8</td>
+<td>6</td>
+<td>65W</td>
+<td><span class="num price">¥836</span><br><span class="price-rise num">↑91元</span></td>
+<td class="perf">+7%</td>
+</tr>
+<tr>
+<td><span class="tier tier-B">B</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core Ultra 5 230F</td>
+<td class="num">6,026.1</td>
+<td>6+4</td>
+<td>121W</td>
+<td><span class="num price">¥806</span><br><span class="price-drop num">↓73元</span></td>
+<td class="perf">+6%</td>
+</tr>
+<tr>
+<td><span class="tier tier-B">B</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core i5-13490F</td>
+<td class="num">6,024</td>
+<td>6+4</td>
+<td>148W</td>
+<td><span class="num price">¥952</span><br><span class="price-rise num">↑72元</span></td>
+<td class="perf">+6%</td>
+</tr>
+<tr>
+<td><span class="tier tier-B">B</span> <span class="brand-intel">Intel</span></td>
+<td>INTEL Core i5-13500</td>
+<td class="num">6,024</td>
+<td>6+8</td>
+<td>154W</td>
+<td><span class="num price">¥1,417</span><br><span class="price-rise num">↑147元</span></td>
+<td class="perf">+6%</td>
+</tr>
+</tbody>
+</table>
+</main>
+<footer>
+<p>数据来源：淘宝全新散片参考价，每日更新 | <a href="https://www.5vip.top">5vip.top</a> by 奇魂</p>
+<p>本站内容仅供参考，投资有风险，入手需谨慎</p>
+</footer>
+</div>
+</body>
+</html>
