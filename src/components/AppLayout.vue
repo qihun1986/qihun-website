@@ -139,6 +139,9 @@ nav a.router-link-active {
 .qr-modal {
   max-width: 400px;
   width: 100%;
+  text-align: left;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
 }
 .payment-img {
   width: 200px;
@@ -180,7 +183,7 @@ nav a.router-link-active {
     z-index: 1000;
   }
   .modal-card {
-    padding: 1rem;
+    padding: 1.25rem 1rem 1.5rem;
     border-radius: 12px 12px 0 0;
     width: 100%;
     max-height: 100dvh; /* 用 100dvh，解决地址栏挤压 */
@@ -190,14 +193,19 @@ nav a.router-link-active {
   }
   .qr-modal {
     max-width: 100%;
+    text-align: center; /* 居中：QR图+文字+按钮 */
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
   .payment-modal {
     max-width: 100%;
+    text-align: center;
   }
   .qr-img {
-    width: 100%;
-    max-width: 220px;
-    height: auto;
+    width: 180px;
+    height: 180px;
+    display: block;
+    margin: 0 auto 0.75rem;
   }
   .payment-img {
     width: 100%;

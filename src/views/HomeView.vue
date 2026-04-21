@@ -421,9 +421,9 @@ const priceMax = ref<number | ''>('')
 const pricePresets = [
   { label: '500内', min: 0, max: 500 },
   { label: '500-1000', min: 500, max: 1000 },
-  { label: '1000-2000', min: 1000, max: 2000 },
-  { label: '2000-3000', min: 2000, max: 3000 },
-  { label: '3000以上', min: 3000, max: Infinity },
+  { label: '1000-1500', min: 1000, max: 1500 },
+  { label: '1500-2000', min: 1500, max: 2000 },
+  { label: '2000以上', min: 2000, max: Infinity },
 ]
 
 const applyPreset = (preset: typeof pricePresets[0]) => {
