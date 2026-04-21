@@ -137,11 +137,8 @@ nav a.router-link-active {
   width: 100%;
 }
 .qr-modal {
-  max-width: 400px;
+  max-width: 350px;
   width: 100%;
-  text-align: left;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
 }
 .payment-img {
   width: 200px;
@@ -150,8 +147,8 @@ nav a.router-link-active {
   margin: 10px 0;
 }
 .qr-img {
-  width: 250px;
-  height: 250px;
+  width: 200px;
+  height: 200px;
   border-radius: 8px;
   margin: 10px 0;
 }
@@ -193,13 +190,14 @@ nav a.router-link-active {
   }
   .qr-modal {
     max-width: 100%;
-    text-align: center; /* 居中：QR图+文字+按钮 */
-    padding-left: 1rem;
-    padding-right: 1rem;
   }
   .payment-modal {
     max-width: 100%;
-    text-align: center;
+  }
+  .qr-img {
+    width: 180px;
+    height: 180px;
+  }
   }
   .qr-img {
     width: 180px;
