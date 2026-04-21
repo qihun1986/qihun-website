@@ -438,11 +438,12 @@ const applyCpuPreset = (preset: typeof pricePresets[0]) => {
   priceMax.value = preset.max === Infinity ? '' : preset.max
 }
 
-// 价格区间匹配（同时考虑全新价和二手价）
+// 价格区间匹配（按当前 priceType）
 const priceInRangeCpu = (cpu: Cpu): boolean => {
   const min = priceMin.value === '' ? 0 : priceMin.value
   const max = priceMax.value === '' ? Infinity : priceMax.value
-  return priceInRange(cpu.new_price, cpu.used_price, min, max)
+  const price = priceType.value === 'new' ? cpu.new_price : cpu.used_price
+  return price !== null && price >= min && price <= max
 }
 
 // 筛选CPU

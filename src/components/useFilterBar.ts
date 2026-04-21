@@ -33,38 +33,18 @@ export const gpuActivePreset = computed(() =>
   ) ?? null
 )
 
-// ── GPU 年份区间 ──
-export const yearOptions = [19, 20, 21, 22, 23, 24, 25]
-export const gpuYearStart = ref<number | null>(null)
-export const gpuYearEnd = ref<number | null>(null)
+// ── GPU 年限区间（1年内/3年内） ──
+export const gpuYearPreset = ref<number | null>(null)  // 1 或 3 或 null
 
 export const gpuYearLabel = computed(() => {
-  if (gpuYearStart.value === null && gpuYearEnd.value === null) return '全部'
-  if (gpuYearStart.value !== null && gpuYearEnd.value !== null) {
-    if (gpuYearStart.value === gpuYearEnd.value) return `${gpuYearStart.value}`
-    return `${gpuYearStart.value}–${gpuYearEnd.value}`
-  }
-  if (gpuYearStart.value !== null) return `${gpuYearStart.value}以上`
-  if (gpuYearEnd.value !== null) return `${gpuYearEnd.value}以下`
-  return '全部'
+  if (gpuYearPreset.value === null) return '全部'
+  return `${gpuYearPreset.value}年内`
 })
 
-// 点击年份按钮：第一次点设 start+end，第二次设更大设 end，更小设 start，区间内点清空
-export const toggleYear = (yr: number) => {
-  if (gpuYearStart.value === null && gpuYearEnd.value === null) {
-    gpuYearStart.value = yr
-    gpuYearEnd.value = yr
-  } else if (gpuYearStart.value === yr && gpuYearEnd.value === yr) {
-    gpuYearStart.value = null
-    gpuYearEnd.value = null
-  } else if (yr < gpuYearStart.value!) {
-    gpuYearStart.value = yr
-  } else if (yr > gpuYearEnd.value!) {
-    gpuYearEnd.value = yr
-  } else {
-    gpuYearStart.value = null
-    gpuYearEnd.value = null
-  }
+// GPU 快捷档位 apply（抽出来复用）
+export const applyGpuPreset = (preset: typeof pricePresets[0]) => {
+  gpuPriceMin.value = preset.min
+  gpuPriceMax.value = preset.max === Infinity ? '' : preset.max
 }
 
 // ── 价格区间匹配 ──
@@ -109,6 +89,5 @@ export const clearGpuPrice = () => {
   gpuPriceMax.value = ''
 }
 export const clearGpuYear = () => {
-  gpuYearStart.value = null
-  gpuYearEnd.value = null
+  gpuYearPreset.value = null
 }
