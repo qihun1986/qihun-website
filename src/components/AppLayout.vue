@@ -175,14 +175,18 @@ nav a.router-link-active {
   .modal-overlay {
     padding: 0;
     align-items: flex-end; /* 弹窗从底部弹出，体验更好 */
+    position: fixed;
+    inset: 0; /* 固定定位，覆盖整个屏幕包括navbar */
+    z-index: 1000;
   }
   .modal-card {
     padding: 1rem;
     border-radius: 12px 12px 0 0;
     width: 100%;
-    max-height: 92dvh; /* 用 dvh（动态视口高度），解决移动浏览器地址栏问题 */
+    max-height: 100dvh; /* 用 100dvh，解决地址栏挤压 */
     overflow-y: auto;
     overflow-x: hidden;
+    background: #1a1a2e; /* 确保有背景色 */
   }
   .qr-modal {
     max-width: 100%;

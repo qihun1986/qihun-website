@@ -2162,11 +2162,13 @@ onUnmounted(() => {
   }
   
   .scatter-container {
-    display: none; /* 移动端隐藏散点图 */
+    /* 移动端不隐藏，显示散点图（含空心圆） */
+    overflow-x: auto;
+    overflow-y: visible;
   }
-  
+
   .x-axis {
-    display: none;
+    display: none; /* X轴（品牌分组）移动端隐藏 */
   }
 }
 

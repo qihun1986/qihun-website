@@ -33,6 +33,39 @@
       
     </div>
 
+    <!-- 价格区间筛选栏 -->
+    <div class="price-filter-bar">
+      <span class="price-filter-label">💰 价格筛选</span>
+      <div class="price-inputs">
+        <input
+          v-model="priceMin"
+          type="number"
+          placeholder="最低"
+          min="0"
+          class="price-input"
+          @keydown.enter="priceMax && priceMax.focus()"
+        />
+        <span class="price-sep">—</span>
+        <input
+          v-model="priceMax"
+          type="number"
+          placeholder="最高"
+          min="0"
+          class="price-input"
+        />
+      </div>
+      <div class="price-presets">
+        <button
+          v-for="preset in pricePresets"
+          :key="preset.label"
+          :class="{ active: getActivePreset() === preset }"
+          class="preset-btn"
+          @click="applyPreset(preset)"
+        >{{ preset.label }}</button>
+      </div>
+      <button v-if="priceMin !== '' || priceMax !== ''" class="clear-btn" @click="clearPriceFilter">✕ 清空</button>
+    </div>
+
     <!-- CPU内容区 -->
     <div class="content-area">
       <!-- 骨架屏 -->
@@ -382,12 +415,58 @@ const getRelativeMultiPerf = (cpu: Cpu | null): string => {
   return Math.round(relative).toString()
 }
 
+// ─── 价格筛选 ───
+const priceMin = ref<number | ''>('')
+const priceMax = ref<number | ''>('')
+const pricePresets = [
+  { label: '500内', min: 0, max: 500 },
+  { label: '500-1000', min: 500, max: 1000 },
+  { label: '1000-2000', min: 1000, max: 2000 },
+  { label: '2000-3000', min: 2000, max: 3000 },
+  { label: '3000以上', min: 3000, max: Infinity },
+]
+
+const applyPreset = (preset: typeof pricePresets[0]) => {
+  priceMin.value = preset.min
+  priceMax.value = preset.max === Infinity ? '' : preset.max
+}
+
+const clearPriceFilter = () => {
+  priceMin.value = ''
+  priceMax.value = ''
+}
+
+const getActivePreset = () => {
+  return pricePresets.find(p =>
+    priceMin.value === p.min &&
+    (priceMax.value === '' ? p.max === Infinity : priceMax.value === p.max)
+  )
+}
+
+// 价格区间匹配（同时考虑全新价和二手价）
+const priceInRange = (cpu: Cpu): boolean => {
+  const min = priceMin.value === '' ? 0 : priceMin.value
+  const max = priceMax.value === '' ? Infinity : priceMax.value
+  const newP = cpu.new_price ?? null
+  const usedP = cpu.used_price ?? null
+  // 只要全新价或二手价有一个在区间内就显示
+  if (newP !== null && newP >= min && newP <= max) return true
+  if (usedP !== null && usedP >= min && usedP <= max) return true
+  return false
+}
+
 // 筛选CPU
 const filteredCpus = computed(() => {
-  if (showMode.value === 'hot') {
-    return cpus.value.filter(cpu => hotModels.value.has(cpu.model))
+  let list = showMode.value === 'hot'
+    ? cpus.value.filter(cpu => hotModels.value.has(cpu.model))
+    : cpus.value
+
+  // 价格筛选
+  if (priceMin.value !== '' || priceMax.value !== '') {
+    list = list.filter(priceInRange)
   }
-  return cpus.value
+
+  return list
 })
 
 // 获取显示价格
@@ -901,6 +980,88 @@ onUnmounted(() => {
 
 .top-bar-spacer {
   flex: 1;
+}
+
+/* 价格筛选栏 */
+.price-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.price-filter-label {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.5);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.price-inputs {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.price-input {
+  width: 68px;
+  padding: 0.25rem 0.4rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 5px;
+  color: #e0e0e0;
+  font-size: 0.8rem;
+  text-align: center;
+}
+.price-input:focus {
+  outline: none;
+  border-color: #FFD700;
+  background: rgba(255, 215, 0, 0.06);
+}
+.price-input::placeholder { color: rgba(255, 255, 255, 0.25); }
+.price-sep { color: rgba(255, 255, 255, 0.3); font-size: 0.75rem; }
+.price-presets {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+.preset-btn {
+  padding: 0.2rem 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.preset-btn:hover {
+  border-color: rgba(255, 215, 0, 0.4);
+  color: rgba(255, 215, 0, 0.8);
+}
+.preset-btn.active {
+  background: rgba(255, 215, 0, 0.15);
+  border-color: rgba(255, 215, 0, 0.6);
+  color: #FFD700;
+  font-weight: 600;
+}
+.clear-btn {
+  padding: 0.2rem 0.5rem;
+  background: transparent;
+  border: 1px solid rgba(255, 100, 100, 0.3);
+  border-radius: 20px;
+  color: rgba(255, 120, 120, 0.7);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+.clear-btn:hover {
+  background: rgba(255, 80, 80, 0.12);
+  border-color: rgba(255, 80, 80, 0.6);
+  color: #ff8888;
 }
 
 .tabs {
@@ -1848,6 +2009,26 @@ onUnmounted(() => {
   .price-indicators {
     gap: 0.25rem;
     width: auto;
+  }
+
+  /* 价格筛选栏移动端 */
+  .price-filter-bar {
+    gap: 0.4rem;
+    padding: 0.4rem;
+  }
+  .price-filter-label {
+    font-size: 0.75rem;
+  }
+  .price-input {
+    width: 58px;
+    font-size: 0.75rem;
+  }
+  .preset-btn {
+    padding: 0.18rem 0.4rem;
+    font-size: 0.7rem;
+  }
+  .price-presets {
+    gap: 0.25rem;
   }
 }
 </style>
