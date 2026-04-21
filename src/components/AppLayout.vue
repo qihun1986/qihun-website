@@ -134,6 +134,26 @@ nav a.router-link-active {
 .qr-modal {
   max-width: 400px;
 }
+
+/* 手机端 */
+@media (max-width: 480px) {
+  .qr-modal {
+    max-width: 90vw;
+    padding: 1rem;
+  }
+  .qr-img {
+    width: 180px;
+    height: 180px;
+  }
+  .payment-modal {
+    max-width: 90vw;
+    padding: 1rem;
+  }
+  .payment-img {
+    width: 160px;
+    height: 160px;
+  }
+}
 .payment-img {
   width: 200px;
   height: 200px;
