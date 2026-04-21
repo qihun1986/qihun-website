@@ -33,37 +33,48 @@
       
     </div>
 
-    <!-- 价格区间筛选栏 -->
-    <div class="price-filter-bar">
-      <span class="price-filter-label">💰 价格筛选</span>
-      <div class="price-inputs">
-        <input
-          v-model="priceMin"
-          type="number"
-          placeholder="最低"
-          min="0"
-          class="price-input"
-          @keydown.enter="priceMax && priceMax.focus()"
-        />
-        <span class="price-sep">—</span>
-        <input
-          v-model="priceMax"
-          type="number"
-          placeholder="最高"
-          min="0"
-          class="price-input"
-        />
+    <!-- 价格筛选抽屉 -->
+    <div class="filter-drawer">
+      <!-- 收起时的摘要条 -->
+      <div class="filter-summary" @click="filterExpanded = !filterExpanded">
+        <span class="filter-summary-text">💰 价格: {{ cpuPriceLabel }}</span>
+        <button class="filter-toggle-btn" :class="{ open: filterExpanded }">筛选 <span class="toggle-arrow">▼</span></button>
       </div>
-      <div class="price-presets">
-        <button
-          v-for="preset in pricePresets"
-          :key="preset.label"
-          :class="{ active: getActivePreset() === preset }"
-          class="preset-btn"
-          @click="applyPreset(preset)"
-        >{{ preset.label }}</button>
-      </div>
-      <button v-if="priceMin !== '' || priceMax !== ''" class="clear-btn" @click="clearPriceFilter">✕ 清空</button>
+      <!-- 展开面板 -->
+      <Transition name="drawer">
+        <div v-if="filterExpanded" class="filter-panel">
+          <div class="filter-panel-inner">
+            <div class="price-inputs">
+              <input
+                v-model="priceMin"
+                type="number"
+                placeholder="最低"
+                min="0"
+                class="price-input"
+              />
+              <span class="price-sep">—</span>
+              <input
+                v-model="priceMax"
+                type="number"
+                placeholder="最高"
+                min="0"
+                class="price-input"
+              />
+              <button v-if="priceMin !== '' || priceMax !== ''" class="clear-btn" @click.stop="clearCpuPrice">✕ 清空</button>
+            </div>
+            <div class="price-presets">
+              <button
+                v-for="preset in pricePresets"
+                :key="preset.label"
+                :class="{ active: activePreset === preset }"
+                class="preset-btn"
+                @click="applyCpuPreset(preset)"
+              >{{ preset.label }}</button>
+            </div>
+          </div>
+          <button class="filter-close-btn" @click="filterExpanded = false">✕</button>
+        </div>
+      </Transition>
     </div>
 
     <!-- CPU内容区 -->
@@ -240,7 +251,7 @@
 
       <!-- 无数据提示 -->
       <div v-if="!loading && !error && filteredCpus.length === 0" class="no-data">
-        <p>暂无数据</p>
+        <p>这个价位暂时没有符合条件的结果，筛不出来的是纠结——适合自己的最好 😊</p>
       </div>
     </div>
 
@@ -310,6 +321,10 @@ import { LineChart } from 'echarts/charts'
 import { TitleComponent, TooltipComponent, GridComponent, LegendComponent } from 'echarts/components'
 import { CanvasRenderer } from 'echarts/renderers'
 import { supabase } from '@/lib/supabase'
+import {
+  priceMin, priceMax, pricePresets, activePreset,
+  priceInRange, clearCpuPrice, cpuPriceLabel,
+} from '@/components/useFilterBar'
 
 echarts.use([LineChart, TitleComponent, TooltipComponent, GridComponent, LegendComponent, CanvasRenderer])
 
@@ -416,43 +431,18 @@ const getRelativeMultiPerf = (cpu: Cpu | null): string => {
 }
 
 // ─── 价格筛选 ───
-const priceMin = ref<number | ''>('')
-const priceMax = ref<number | ''>('')
-const pricePresets = [
-  { label: '500内', min: 0, max: 500 },
-  { label: '500-1000', min: 500, max: 1000 },
-  { label: '1000-1500', min: 1000, max: 1500 },
-  { label: '1500-2000', min: 1500, max: 2000 },
-  { label: '2000以上', min: 2000, max: Infinity },
-]
+const filterExpanded = ref(false)
 
-const applyPreset = (preset: typeof pricePresets[0]) => {
+const applyCpuPreset = (preset: typeof pricePresets[0]) => {
   priceMin.value = preset.min
   priceMax.value = preset.max === Infinity ? '' : preset.max
 }
 
-const clearPriceFilter = () => {
-  priceMin.value = ''
-  priceMax.value = ''
-}
-
-const getActivePreset = () => {
-  return pricePresets.find(p =>
-    priceMin.value === p.min &&
-    (priceMax.value === '' ? p.max === Infinity : priceMax.value === p.max)
-  )
-}
-
 // 价格区间匹配（同时考虑全新价和二手价）
-const priceInRange = (cpu: Cpu): boolean => {
+const priceInRangeCpu = (cpu: Cpu): boolean => {
   const min = priceMin.value === '' ? 0 : priceMin.value
   const max = priceMax.value === '' ? Infinity : priceMax.value
-  const newP = cpu.new_price ?? null
-  const usedP = cpu.used_price ?? null
-  // 只要全新价或二手价有一个在区间内就显示
-  if (newP !== null && newP >= min && newP <= max) return true
-  if (usedP !== null && usedP >= min && usedP <= max) return true
-  return false
+  return priceInRange(cpu.new_price, cpu.used_price, min, max)
 }
 
 // 筛选CPU
@@ -463,11 +453,19 @@ const filteredCpus = computed(() => {
 
   // 价格筛选
   if (priceMin.value !== '' || priceMax.value !== '') {
-    list = list.filter(priceInRange)
+    list = list.filter(priceInRangeCpu)
   }
 
   return list
 })
+
+// 点击抽屉外部关闭
+const onFilterDrawerClick = (e: MouseEvent) => {
+  const el = e.target as HTMLElement
+  if (!el.closest('.filter-summary') && !el.closest('.filter-panel')) {
+    filterExpanded.value = false
+  }
+}
 
 // 获取显示价格
 const getDisplayPrice = (cpu: Cpu): number | null => {
@@ -950,6 +948,7 @@ const injectJsonLd = () => {
 onMounted(() => {
   loadData().then(() => nextTick(() => injectJsonLd()))
   startAutoPlay()
+  document.addEventListener('click', onFilterDrawerClick, true)
 })
 
 // 监听 sortedCpus 变化，实时更新 JSON-LD
@@ -959,6 +958,7 @@ watch(sortedCpus, () => {
 
 onUnmounted(() => {
   stopAutoPlay()
+  document.removeEventListener('click', onFilterDrawerClick, true)
 })
 </script>
 
@@ -982,87 +982,95 @@ onUnmounted(() => {
   flex: 1;
 }
 
-/* 价格筛选栏 */
-.price-filter-bar {
+/* 价格筛选抽屉 */
+.filter-drawer { margin-bottom: 0.75rem; }
+.filter-summary {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-  margin-bottom: 0.75rem;
-  padding: 0.5rem 0.75rem;
+  justify-content: space-between;
+  padding: 0.4rem 0.75rem;
   background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
 }
-.price-filter-label {
-  font-size: 0.8rem;
+.filter-summary:hover { background: rgba(255, 255, 255, 0.05); }
+.filter-summary-text { font-size: 0.8rem; color: rgba(255, 255, 255, 0.55); }
+.filter-toggle-btn {
+  display: flex; align-items: center; gap: 0.25rem;
+  padding: 0.2rem 0.6rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
   color: rgba(255, 255, 255, 0.5);
-  white-space: nowrap;
-  flex-shrink: 0;
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.15s;
 }
-.price-inputs {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
+.filter-toggle-btn:hover {
+  background: rgba(255, 215, 0, 0.08);
+  border-color: rgba(255, 215, 0, 0.35);
+  color: rgba(255, 215, 0, 0.85);
 }
+.toggle-arrow { font-size: 0.65rem; transition: transform 0.2s; display: inline-block; }
+.filter-toggle-btn.open .toggle-arrow { transform: rotate(180deg); }
+.filter-panel {
+  position: relative;
+  margin-top: 0.4rem;
+  padding: 0.75rem 2.5rem 0.75rem 0.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+}
+.filter-panel-inner { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.price-inputs { display: flex; align-items: center; gap: 0.3rem; }
 .price-input {
-  width: 68px;
-  padding: 0.25rem 0.4rem;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 5px;
-  color: #e0e0e0;
-  font-size: 0.8rem;
-  text-align: center;
+  width: 68px; padding: 0.25rem 0.4rem;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 5px; color: #e0e0e0; font-size: 0.8rem; text-align: center;
 }
-.price-input:focus {
-  outline: none;
-  border-color: #FFD700;
-  background: rgba(255, 215, 0, 0.06);
-}
+.price-input:focus { outline: none; border-color: #FFD700; background: rgba(255, 215, 0, 0.06); }
 .price-input::placeholder { color: rgba(255, 255, 255, 0.25); }
 .price-sep { color: rgba(255, 255, 255, 0.3); font-size: 0.75rem; }
-.price-presets {
-  display: flex;
-  gap: 0.3rem;
-  flex-wrap: wrap;
-}
+.price-presets { display: flex; gap: 0.3rem; flex-wrap: wrap; }
 .preset-btn {
-  padding: 0.2rem 0.5rem;
+  padding: 0.28rem 0.6rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   color: rgba(255, 255, 255, 0.55);
-  font-size: 0.75rem;
-  cursor: pointer;
-  transition: all 0.15s;
+  font-size: 0.78rem; cursor: pointer; transition: all 0.15s;
 }
-.preset-btn:hover {
-  border-color: rgba(255, 215, 0, 0.4);
-  color: rgba(255, 215, 0, 0.8);
-}
+.preset-btn:hover { border-color: rgba(255, 215, 0, 0.4); color: rgba(255, 215, 0, 0.8); }
 .preset-btn.active {
   background: rgba(255, 215, 0, 0.15);
-  border-color: rgba(255, 215, 0, 0.6);
-  color: #FFD700;
-  font-weight: 600;
+  border-color: rgba(255, 215, 0, 0.6); color: #FFD700; font-weight: 600;
 }
 .clear-btn {
-  padding: 0.2rem 0.5rem;
-  background: transparent;
+  padding: 0.2rem 0.5rem; background: transparent;
   border: 1px solid rgba(255, 100, 100, 0.3);
-  border-radius: 20px;
-  color: rgba(255, 120, 120, 0.7);
-  font-size: 0.75rem;
-  cursor: pointer;
+  border-radius: 20px; color: rgba(255, 120, 120, 0.7);
+  font-size: 0.75rem; cursor: pointer; transition: all 0.15s;
+}
+.clear-btn:hover { background: rgba(255, 80, 80, 0.12); border-color: rgba(255, 80, 80, 0.6); color: #ff8888; }
+.filter-close-btn {
+  position: absolute; top: 0.5rem; right: 0.5rem;
+  width: 24px; height: 24px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.4); font-size: 0.75rem;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
   transition: all 0.15s;
-  flex-shrink: 0;
 }
-.clear-btn:hover {
-  background: rgba(255, 80, 80, 0.12);
-  border-color: rgba(255, 80, 80, 0.6);
-  color: #ff8888;
-}
+.filter-close-btn:hover { background: rgba(255, 80, 80, 0.15); border-color: rgba(255, 80, 80, 0.5); color: #ff8888; }
+
+/* 抽屉动画 */
+.drawer-enter-active, .drawer-leave-active { transition: all 0.22s ease; }
+.drawer-enter-from, .drawer-leave-to { opacity: 0; transform: translateY(-8px); }
 
 .tabs {
   display: flex;
@@ -2011,24 +2019,13 @@ onUnmounted(() => {
     width: auto;
   }
 
-  /* 价格筛选栏移动端 */
-  .price-filter-bar {
-    gap: 0.4rem;
-    padding: 0.4rem;
-  }
-  .price-filter-label {
-    font-size: 0.75rem;
-  }
-  .price-input {
-    width: 58px;
-    font-size: 0.75rem;
-  }
-  .preset-btn {
-    padding: 0.18rem 0.4rem;
-    font-size: 0.7rem;
-  }
-  .price-presets {
-    gap: 0.25rem;
-  }
+  /* 价格筛选抽屉移动端：只显示收起条+展开面板 */
+  .filter-summary { padding: 0.5rem 0.6rem; }
+  .filter-summary-text { font-size: 0.75rem; }
+  .filter-panel { padding: 0.6rem 0.6rem 0.75rem; }
+  .price-input { width: 60px; font-size: 0.75rem; }
+  .preset-btn { padding: 0.28rem 0.5rem; font-size: 0.72rem; }
+  .price-presets { gap: 0.25rem; }
+  .clear-btn { font-size: 0.72rem; }
 }
 </style>

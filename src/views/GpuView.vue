@@ -32,6 +32,53 @@
       </a>
     </div>
 
+    <!-- GPU 筛选抽屉 -->
+    <div class="filter-drawer gpu-filter-drawer">
+      <div class="filter-summary" @click.stop="gpuFilterExpanded = !gpuFilterExpanded">
+        <span class="filter-summary-text">💰 价格: {{ gpuPriceLabel }} · 年份: {{ gpuYearLabel }}</span>
+        <button class="filter-toggle-btn" :class="{ open: gpuFilterExpanded }">筛选 <span class="toggle-arrow">▼</span></button>
+      </div>
+      <Transition name="drawer">
+        <div v-if="gpuFilterExpanded" class="filter-panel">
+          <div class="filter-panel-inner">
+            <div class="price-inputs">
+              <input v-model="gpuPriceMin" type="number" placeholder="最低" min="0" class="price-input"/>
+              <span class="price-sep">—</span>
+              <input v-model="gpuPriceMax" type="number" placeholder="最高" min="0" class="price-input"/>
+              <button v-if="gpuPriceMin !== '' || gpuPriceMax !== ''" class="clear-btn" @click.stop="clearGpuPrice">✕ 清空</button>
+            </div>
+            <div class="price-presets">
+              <button
+                v-for="preset in gpuPricePresets"
+                :key="preset.label"
+                :class="{ active: gpuActivePreset === preset }"
+                class="preset-btn"
+                @click="applyGpuPreset(preset)"
+              >{{ preset.label }}</button>
+            </div>
+          </div>
+          <!-- 年份筛选 -->
+          <div class="year-filter">
+            <span class="year-label">📅 年份</span>
+            <div class="year-buttons">
+              <button
+                v-for="yr in yearOptions"
+                :key="yr"
+                :class="{
+                  active: gpuYearStart !== null && gpuYearEnd !== null && yr >= gpuYearStart! && yr <= gpuYearEnd!,
+                  range: gpuYearStart !== null && gpuYearEnd !== null && yr >= gpuYearStart! && yr <= gpuYearEnd!
+                }"
+                class="year-btn"
+                @click="toggleYear(yr)"
+              >{{ yr }}</button>
+              <button v-if="gpuYearStart !== null" class="clear-btn year-clear" @click.stop="clearGpuYear">✕ 清空</button>
+            </div>
+          </div>
+          <button class="filter-close-btn" @click="gpuFilterExpanded = false">✕</button>
+        </div>
+      </Transition>
+    </div>
+
     <!-- 骨架屏 -->
     <div v-if="loading" class="skeleton-wrapper" aria-label="正在加载数据">
       <table class="cpu-table skeleton-table">
@@ -306,6 +353,11 @@ import { LineChart } from 'echarts/charts'
 import { TitleComponent, TooltipComponent, GridComponent, LegendComponent } from 'echarts/components'
 import { CanvasRenderer } from 'echarts/renderers'
 import { supabase } from '@/lib/supabase'
+import {
+  gpuPriceLabel, gpuPriceMin, gpuPriceMax, gpuPricePresets, gpuActivePreset,
+  gpuYearStart, gpuYearEnd, gpuYearLabel, yearOptions, toggleYear,
+  priceInRange, clearGpuPrice, clearGpuYear,
+} from '@/components/useFilterBar'
 import gpuReleaseDates from '@/assets/gpu_release_dates.json'
 
 echarts.use([LineChart, TitleComponent, TooltipComponent, GridComponent, LegendComponent, CanvasRenderer])
@@ -1010,13 +1062,47 @@ const injectJsonLd = () => {
   document.head.appendChild(script)
 }
 
+// ─── GPU 筛选 ───
+const gpuFilterExpanded = ref(false)
+const mobileFilterOpen = ref(false)
+
+const applyGpuPreset = (preset: typeof gpuPricePresets[0]) => {
+  gpuPriceMin.value = preset.min
+  gpuPriceMax.value = preset.max === Infinity ? '' : preset.max
+}
+
+const onGpuFilterDrawerClick = (e: MouseEvent) => {
+  const el = e.target as HTMLElement
+  if (!el.closest('.filter-summary') && !el.closest('.filter-panel')) {
+    gpuFilterExpanded.value = false
+  }
+}
+
+// GPU 价格区间
+const priceInRangeGpu = (gpu: Gpu): boolean => {
+  const min = gpuPriceMin.value === '' ? 0 : gpuPriceMin.value
+  const max = gpuPriceMax.value === '' ? Infinity : gpuPriceMax.value
+  return priceInRange(gpu.new_price, gpu.used_price, min, max)
+}
+
+// GPU 年份区间
+const gpuYearFilter = (gpu: Gpu): boolean => {
+  if (gpuYearStart.value === null || gpuYearEnd.value === null) return true
+  const releaseYear = gpuReleaseDates[gpu.model]?.slice(0, 4)
+  if (!releaseYear) return false
+  const yr = parseInt(releaseYear)
+  return yr >= gpuYearStart.value! && yr <= gpuYearEnd.value!
+}
+
 onMounted(() => {
   loadData().then(() => nextTick(() => injectJsonLd()))
   startAutoPlay()
+  document.addEventListener('click', onGpuFilterDrawerClick, true)
 })
 
 onUnmounted(() => {
   stopAutoPlay()
+  document.removeEventListener('click', onGpuFilterDrawerClick, true)
 })
 </script>
 
