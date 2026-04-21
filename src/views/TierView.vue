@@ -33,7 +33,7 @@
           <input
             v-model="searchQuery"
             type="text"
-            :placeholder="'🔍 搜索型号 (如: 7800X3D, 14700K)'"
+            :placeholder="'🔍 搜索型号'"
             @input="onSearchInput"
             @focus="onSearchFocus"
             @keyup.enter="jumpToFirstMatch"
@@ -42,6 +42,10 @@
           <template v-if="selectedSearchCpu">
             <button class="search-action-btn add-compare-btn" @click="addSearchSelectedToCompare" title="添加到对比">+对比</button>
             <button class="search-action-btn clear-btn" @click="clearSearchSelection" title="清除选中">✕</button>
+          </template>
+          <!-- 无选中时显示提示 -->
+          <template v-else-if="!showSearchDropdown">
+            <span class="search-hint">点击CPU可添加对比</span>
           </template>
           <!-- 下拉待选列表 -->
           <div v-if="showSearchDropdown && searchDropdownItems.length > 0 && !selectedSearchCpu" class="search-dropdown">
@@ -67,10 +71,11 @@
               :key="cpu.id"
               class="compare-inline-chip"
               :class="{ 'is-benchmark': cpu.id === benchmarkCpu?.id }"
-              @click="openBenchModal(cpu)"
             >
               <span class="chip-brand" :class="isIntelCpu(cpu) ? 'intel' : 'amd'">●</span>
-              <span class="chip-name">{{ formatCpuName(cpu.model) }}</span>
+              <span class="chip-name" @click="openBenchModal(cpu)">{{ formatCpuName(cpu.model) }}</span>
+              <span class="chip-bench-hint" title="点击设为基准">◎</span>
+              <button class="chip-remove" @click.stop="removeFromCompare(cpu)" title="移除">✕</button>
             </span>
             <button class="compare-inline-clear" @click="clearCompare" title="清空">清空</button>
             <button class="compare-inline-bench" @click="resetBenchmark" title="重置基准">重置</button>
@@ -907,6 +912,58 @@ function isIntelCpu(cpu: Cpu | null): boolean {
   return isIntel(cpu)
 }
 
+// 未实测CPU名单 → 显示为空心圆点
+const HOLLOW_MODELS = new Set([
+  'AMD Ryzen 3 3300X',
+  'AMD Ryzen 5 7400F',
+  'AMD Ryzen 5 8400F',
+  'AMD Ryzen 5 8600G',
+  'AMD Ryzen 7 3700X',
+  'AMD Ryzen 7 3800X',
+  'AMD Ryzen 7 5700X3D',
+  'AMD Ryzen 7 5800X3D',
+  'AMD Ryzen 7 7700X',
+  'AMD Ryzen 7 8700F',
+  'AMD Ryzen 7 8700G',
+  'AMD Ryzen 7 9850X3D',
+  'AMD Ryzen 9 3900X',
+  'AMD Ryzen 9 3950X',
+  'AMD Ryzen 9 5900X',
+  'AMD Ryzen 9 5950X',
+  'AMD Ryzen 9 7950X',
+  'AMD Ryzen 9 7950X3D',
+  'AMD Ryzen 9 9900X3D',
+  'AMD Ryzen 9 9950X',
+  'AMD Ryzen 9 9950X3D',
+  'INTEL Core Ultra 5 225',
+  'INTEL Core Ultra 5 225F',
+  'INTEL Core Ultra 5 230F',
+  'INTEL Core Ultra 5 245K',
+  'INTEL Core Ultra 7 265K',
+  'INTEL Core Ultra 9 285K',
+  'INTEL Core i3-10100',
+  'INTEL Core i3-10100F',
+  'INTEL Core i5-10600K',
+  'INTEL Core i5-10600KF',
+  'INTEL Core i5-13500',
+  'INTEL Core i7-10700K',
+  'INTEL Core i7-10700KF',
+  'INTEL Core i7-11700',
+  'INTEL Core i7-11700F',
+  'INTEL Core i7-11700K',
+  'INTEL Core i7-11700KF',
+  'INTEL Core i9-10900K',
+  'INTEL Core i9-10900KF',
+  'INTEL Core i9-11900',
+  'INTEL Core i9-11900F',
+  'INTEL Core i9-11900K',
+  'INTEL Core i9-11900KF',
+])
+
+function isHollowModel(model: string): boolean {
+  return HOLLOW_MODELS.has(model)
+}
+
 function isCpuSearched(cpu: Cpu): boolean {
   if (!selectedSearchCpu.value) return false
   return cpu.id === selectedSearchCpu.value.id
@@ -951,7 +1008,7 @@ async function loadCpus() {
   
   cpus.value = data.map(cpu => ({
     ...cpu,
-    isEstimated: false,
+    isEstimated: isHollowModel(cpu.model),
   }))
   
   // 设置默认基准
@@ -1396,11 +1453,20 @@ onUnmounted(() => {
 }
 .add-compare-btn:hover { opacity: 0.85; }
 .clear-btn {
-  background: var(--bg-secondary);
-  color: var(--text-secondary);
-  border: 1px solid var(--border);
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
 }
-.clear-btn:hover { color: var(--text-primary); border-color: var(--text-secondary); }
+.clear-btn:hover { background: rgba(239, 68, 68, 0.25); }
+
+/* 无选中时的提示文字 */
+.search-hint {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  padding: 0 0.5rem;
+  pointer-events: none;
+}
 
 /* 搜索下拉列表 */
 .search-dropdown {
@@ -1516,6 +1582,39 @@ onUnmounted(() => {
 
 .chip-btn:hover {
   color: var(--text-primary);
+}
+
+/* chip 内的单独移除按钮 */
+.chip-remove {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.65rem;
+  padding: 0 1px;
+  line-height: 1;
+  margin-left: 2px;
+  min-width: 16px;
+  min-height: 16px;
+  border-radius: 50%;
+  transition: color 0.15s, background 0.15s;
+}
+.chip-remove:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.15);
+}
+
+/* 基准提示符号：◎ 表示可点击设基准 */
+.chip-bench-hint {
+  font-size: 0.65rem;
+  color: rgba(255, 215, 0, 0.35);
+  cursor: pointer;
+  margin-left: 2px;
+  transition: color 0.15s;
+  user-select: none;
+}
+.chip-bench-hint:hover {
+  color: rgba(255, 215, 0, 0.8);
 }
 
 .compare-inline-clear,
@@ -1634,13 +1733,13 @@ onUnmounted(() => {
 /* CPU 圆点 */
 .cpu-dot {
   position: absolute;
-  width: 5px;
-  height: 5px;
+  width: 8px;
+  height: 8px;
   background: #FFD700;
   border-radius: 50%;
   transform: translate(-50%, -50%);
   cursor: pointer;
-  box-shadow: 0 0 3px rgba(255, 215, 0, 0.8);
+  box-shadow: 0 0 4px rgba(255, 215, 0, 0.8);
   transition: transform 0.15s, box-shadow 0.15s;
   z-index: 10;
 }
@@ -1673,9 +1772,9 @@ onUnmounted(() => {
 .cpu-dot.hollow {
   background: transparent;
   border: 1.5px solid #FFD700;
-  width: 4px;
-  height: 4px;
-  box-shadow: 0 0 3px rgba(255, 215, 0, 0.6);
+  width: 8px;
+  height: 8px;
+  box-shadow: 0 0 4px rgba(255, 215, 0, 0.6);
 }
 
 .cpu-dot.is-dimmed {
@@ -2212,6 +2311,54 @@ td.is-benchmark {
 .tooltip-bench {
   font-size: 0.7rem;
   color: var(--text-secondary);
+}
+
+/* ========== 移动端适配 ========== */
+@media (max-width: 768px) {
+  /* 顶栏：搜索栏和对比栏各自单独成行，弹性布局 */
+  .top-bar {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .search-bar {
+    width: 100%;
+  }
+  .compare-inline {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  .compare-inline-items {
+    flex-wrap: wrap;
+  }
+  .compare-inline-label {
+    font-size: 0.7rem;
+  }
+  .chip-name {
+    font-size: 0.7rem;
+    max-width: 60px;
+  }
+  .compare-inline-clear,
+  .compare-inline-bench {
+    min-height: 24px;
+    font-size: 0.65rem;
+    padding: 0.2rem 0.4rem;
+  }
+  .compare-bench-btn {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.5rem;
+    min-height: 24px;
+  }
+  .search-action-btn {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+  }
+  .search-hint {
+    font-size: 0.7rem;
+    padding: 0 0.4rem;
+  }
+  .compare-empty-hint {
+    font-size: 0.7rem;
+  }
 }
 
 /* ========== 移动端列表 对比按钮 ========== */

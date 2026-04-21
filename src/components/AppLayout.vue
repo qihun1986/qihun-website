@@ -121,38 +121,24 @@ nav a.router-link-active {
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  padding: 1rem; /* 防止小屏贴边 */
 }
 .modal-card {
   background: #1a1a2e;
   padding: 1.5rem;
   border-radius: 12px;
   text-align: center;
+  box-sizing: border-box; /* 关键：padding算在宽度内 */
+  max-height: 90vh;
+  overflow-y: auto;
 }
 .payment-modal {
   max-width: 350px;
+  width: 100%;
 }
 .qr-modal {
   max-width: 400px;
-}
-
-/* 手机端 */
-@media (max-width: 480px) {
-  .qr-modal {
-    max-width: 90vw;
-    padding: 1rem;
-  }
-  .qr-img {
-    width: 180px;
-    height: 180px;
-  }
-  .payment-modal {
-    max-width: 90vw;
-    padding: 1rem;
-  }
-  .payment-img {
-    width: 160px;
-    height: 160px;
-  }
+  width: 100%;
 }
 .payment-img {
   width: 200px;
@@ -183,6 +169,39 @@ nav a.router-link-active {
   cursor: pointer;
   margin-top: 10px;
 }
+
+/* 手机端 */
+@media (max-width: 480px) {
+  .modal-overlay {
+    padding: 0;
+    align-items: flex-end; /* 弹窗从底部弹出，体验更好 */
+  }
+  .modal-card {
+    padding: 1rem;
+    border-radius: 12px 12px 0 0;
+    width: 100%;
+    max-height: 92dvh; /* 用 dvh（动态视口高度），解决移动浏览器地址栏问题 */
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .qr-modal {
+    max-width: 100%;
+  }
+  .payment-modal {
+    max-width: 100%;
+  }
+  .qr-img {
+    width: 100%;
+    max-width: 220px;
+    height: auto;
+  }
+  .payment-img {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+  }
+}
+
 footer {
   text-align: center;
   padding: 1rem;

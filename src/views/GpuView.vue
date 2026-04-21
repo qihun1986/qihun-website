@@ -32,10 +32,30 @@
       </a>
     </div>
 
-    <!-- 加载状态 -->
-    <div v-if="loading" class="loading">
-      <div class="spinner"></div>
-      <span>加载中...</span>
+    <!-- 骨架屏 -->
+    <div v-if="loading" class="skeleton-wrapper" aria-label="正在加载数据">
+      <table class="cpu-table skeleton-table">
+        <thead>
+          <tr>
+            <th class="rank-col"><div class="skeleton-bar w60"></div></th>
+            <th class="model-col"><div class="skeleton-bar w120"></div></th>
+            <th class="game-col"><div class="skeleton-bar w60"></div></th>
+            <th class="perf-col"><div class="skeleton-bar w60"></div></th>
+            <th class="price-col"><div class="skeleton-bar w80"></div></th>
+            <th class="value-col"><div class="skeleton-bar w60"></div></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="i in 12" :key="i" class="skeleton-row">
+            <td><div class="skeleton-bar w20"></div></td>
+            <td><div class="skeleton-bar" :style="{ width: (50 + (i % 3) * 25) + 'px' }"></div></td>
+            <td><div class="skeleton-bar w30"></div></td>
+            <td><div class="skeleton-bar w30"></div></td>
+            <td><div class="skeleton-bar w70"></div></td>
+            <td><div class="skeleton-bar w40"></div></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
     <!-- 错误提示 -->
@@ -1747,6 +1767,61 @@ onUnmounted(() => {
 
 @keyframes spin {
   to { transform: rotate(360deg); }
+}
+
+/* 骨架屏 */
+.skeleton-wrapper {
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.skeleton-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.skeleton-table thead th {
+  background: var(--bg-secondary);
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.skeleton-table tbody td {
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--border-dark);
+}
+
+.skeleton-row:last-child td {
+  border-bottom: none;
+}
+
+.skeleton-bar {
+  height: 14px;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--bg-secondary) 25%,
+    rgba(255, 255, 255, 0.05) 50%,
+    var(--bg-secondary) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+  display: block;
+}
+
+.w20 { width: 20px; }
+.w30 { width: 30px; }
+.w40 { width: 40px; }
+.w50 { width: 50px; }
+.w60 { width: 60px; }
+.w70 { width: 70px; }
+.w80 { width: 80px; }
+.w120 { width: 120px; }
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
 @keyframes fadeIn {

@@ -167,6 +167,33 @@ ${gpuRows}
 </html>`;
 }
 
+async function upsertSiteConfig(key, value) {
+    return new Promise((resolve, reject) => {
+        const body = JSON.stringify({ key, value });
+        const url = new URL('/rest/v1/site_config', SUPABASE_URL);
+        const options = {
+            method: 'POST',
+            headers: {
+                'apikey': SUPABASE_KEY,
+                'Authorization': `Bearer ${SUPABASE_KEY}`,
+                'Content-Type': 'application/json',
+                'Prefer': 'resolution=merge-duplicates'
+            }
+        };
+        const req = https.request(url, options, (res) => {
+            let data = '';
+            res.on('data', c => data += c);
+            res.on('end', () => {
+                try { resolve(JSON.parse(data)); }
+                catch(e) { resolve(null); }
+            });
+        });
+        req.on('error', reject);
+        req.write(body);
+        req.end();
+    });
+}
+
 async function main() {
     console.log('📡 正在获取数据...');
 
@@ -184,6 +211,36 @@ async function main() {
     const stats = fs.statSync(outputPath);
     console.log(`✅ 已生成: ${outputPath}`);
     console.log(`📦 文件大小: ${(stats.size / 1024).toFixed(1)} KB`);
+
+    // 自动追加更新日志
+    console.log('📝 正在更新日志...');
+    let existingLog = [];
+    try {
+        const data = await fetchJSON('/rest/v1/site_config?key=eq.update_log&select=value');
+        if (data && data[0] && data[0].value) {
+            existingLog = JSON.parse(data[0].value);
+        }
+    } catch(e) {}
+
+    const today = new Date();
+    const dateStr = `${today.getFullYear()}.${String(today.getMonth()+1).padStart(2,'0')}.${String(today.getDate()).padStart(2,'0')}`;
+    const newEntry = {
+        date: dateStr,
+        text: `SEO页面自动更新，CPU榜${cpus.length}款 / 显卡榜${gpus.length}款`,
+        type: 'auto'
+    };
+
+    // 去重：同一天已存在则跳过
+    const alreadyExists = existingLog.some(e => e.date === dateStr && e.type === 'auto');
+    if (!alreadyExists) {
+        existingLog.unshift(newEntry);
+        // 最多保留30条
+        if (existingLog.length > 30) existingLog = existingLog.slice(0, 30);
+        await upsertSiteConfig('update_log', JSON.stringify(existingLog));
+        console.log(`✅ 更新日志已追加: ${dateStr} - ${newEntry.text}`);
+    } else {
+        console.log(`ℹ️ 今日(${dateStr})日志已存在，跳过`);
+    }
 }
 
 main().catch(console.error);
