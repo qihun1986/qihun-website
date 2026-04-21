@@ -1121,6 +1121,96 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+
+.filter-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.4rem 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+.filter-summary:hover { background: rgba(255, 255, 255, 0.05); }
+.filter-summary-text { font-size: 0.8rem; color: rgba(255, 255, 255, 0.55); }
+.filter-toggle-btn {
+  display: flex; align-items: center; gap: 0.25rem;
+  padding: 0.2rem 0.6rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.filter-toggle-btn:hover {
+  background: rgba(255, 215, 0, 0.08);
+  border-color: rgba(255, 215, 0, 0.35);
+  color: rgba(255, 215, 0, 0.85);
+}
+.toggle-arrow { font-size: 0.65rem; transition: transform 0.2s; display: inline-block; }
+.filter-toggle-btn.open .toggle-arrow { transform: rotate(180deg); }
+.filter-panel {
+  position: relative;
+  margin-top: 0.4rem;
+  padding: 0.75rem 2.5rem 0.75rem 0.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+}
+.filter-panel-inner { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.price-inputs { display: flex; align-items: center; gap: 0.3rem; }
+.price-input {
+  width: 68px; padding: 0.25rem 0.4rem;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 5px; color: #e0e0e0; font-size: 0.8rem; text-align: center;
+}
+.price-input:focus { outline: none; border-color: #FFD700; background: rgba(255, 215, 0, 0.06); }
+.price-input::placeholder { color: rgba(255, 255, 255, 0.25); }
+.price-sep { color: rgba(255, 255, 255, 0.3); font-size: 0.75rem; }
+.price-presets { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+.preset-btn {
+  padding: 0.28rem 0.6rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.78rem; cursor: pointer; transition: all 0.15s;
+}
+.preset-btn:hover { border-color: rgba(255, 215, 0, 0.4); color: rgba(255, 215, 0, 0.8); }
+.preset-btn.active {
+  background: rgba(255, 215, 0, 0.15);
+  border-color: rgba(255, 215, 0, 0.6); color: #FFD700; font-weight: 600;
+}
+.clear-btn {
+  padding: 0.2rem 0.5rem; background: transparent;
+  border: 1px solid rgba(255, 100, 100, 0.3);
+  border-radius: 20px; color: rgba(255, 120, 120, 0.7);
+  font-size: 0.75rem; cursor: pointer; transition: all 0.15s;
+}
+.clear-btn:hover { background: rgba(255, 80, 80, 0.12); border-color: rgba(255, 80, 80, 0.6); color: #ff8888; }
+.filter-close-btn {
+  position: absolute; top: 0.5rem; right: 0.5rem;
+  width: 24px; height: 24px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.4); font-size: 0.75rem;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+}
+.filter-close-btn:hover { background: rgba(255, 80, 80, 0.15); border-color: rgba(255, 80, 80, 0.5); color: #ff8888; }
+
+/* 抽屉动画 */
+.drawer-enter-active, .drawer-leave-active { transition: all 0.22s ease; }
+.drawer-enter-from, .drawer-leave-to { opacity: 0; transform: translateY(-8px); }
+
+
 .home {
   max-width: 1400px;
   margin: 0 auto;
@@ -2067,6 +2157,15 @@ onUnmounted(() => {
     padding: 0.25rem 0.4rem;
   }
 
+
+  /* 筛选抽屉移动端适配 */
+  .filter-summary { padding: 0.5rem 0.6rem; }
+  .filter-summary-text { font-size: 0.75rem; }
+  .filter-panel { padding: 0.6rem 0.6rem 0.75rem; }
+  .price-input { width: 60px; font-size: 0.75rem; }
+  .preset-btn { padding: 0.28rem 0.5rem; font-size: 0.72rem; }
+  .price-presets { gap: 0.25rem; }
+
   /* 弹窗底部抽屉式适配 */
   .modal-overlay {
     padding: 0.3rem;
@@ -2211,4 +2310,44 @@ onUnmounted(() => {
   font-size: 0.85rem;
   flex-shrink: 0;
 }
+
+/* 确认按钮 */
+.confirm-btn {
+  padding: 0.28rem 0.6rem;
+  background: rgba(255, 215, 0, 0.15);
+  border: 1px solid rgba(255, 215, 0, 0.5);
+  border-radius: 20px;
+  color: #FFD700;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.confirm-btn:hover {
+  background: rgba(255, 215, 0, 0.25);
+  border-color: rgba(255, 215, 0, 0.7);
+}
+
+
+/* 年限筛选行 */
+.year-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+.year-filter-row .year-label {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.45);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.year-filter-row .year-buttons {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
 </style>
