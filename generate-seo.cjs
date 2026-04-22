@@ -98,8 +98,8 @@ function generateHTML(cpus, gpus) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CPU显卡性能排行榜 | 奇魂硬件天梯</title>
-<meta name="description" content="实时CPU/显卡游戏性能排行榜，以i5-12490F为100%基准，含全新价/二手价、性价比分析。持续更新，独家实测数据。">
+<title>CPU性价比榜_显卡性价比榜_历史价格走势 - 奇魂硬件榜</title>
+<meta name="description" content="实时更新CPU显卡性价比榜，每周特价推荐，历史价格走势查询。高性价比CPU显卡选购指南，适合游戏玩家和装机小白。">
 <link rel="canonical" href="https://www.5vip.top/">
 <meta name="robots" content="index, follow">
 <script type="application/ld+json">
@@ -118,7 +118,9 @@ function generateHTML(cpus, gpus) {
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:1400px;margin:0 auto;padding:20px;line-height:1.6;color:#222;font-size:14px}
 h1{font-size:20px;border-bottom:2px solid #1a1a2e;padding-bottom:8px;margin-bottom:4px}
 h2{font-size:16px;margin-top:24px;color:#1a1a2e;background:#f5f5f5;padding:6px 10px;border-left:4px solid #d4af37}
-.updated{color:#888;font-size:12px;margin-bottom:20px}
+.updated{color:#888;font-size:12px;margin-bottom:12px}
+.intro{background:#f8f9fa;padding:12px 16px;border-radius:6px;margin-bottom:20px;line-height:1.8}
+.intro strong{color:#1a1a2e}
 table{width:100%;border-collapse:collapse;margin-top:8px;font-size:13px}
 th{background:#1a1a2e;color:#fff;padding:6px 8px;text-align:left;position:sticky;top:0}
 td{padding:5px 8px;border-bottom:1px solid #eee}
@@ -135,10 +137,12 @@ a:hover{text-decoration:underline}
 </head>
 <body>
 
-<h1>🖥️ CPU显卡性能天梯排行榜</h1>
+<h1>CPU显卡性价比榜</h1>
 <p class="updated">基准CPU：i5-12490F = 100% | 数据更新：${new Date().toLocaleDateString('zh-CN')} | <a href="https://www.5vip.top">查看完整交互版 →</a></p>
 
-<h2>📊 CPU性能排行榜（游戏性能降序）</h2>
+<p class="intro">本榜单每周更新，实时追踪CPU显卡性价比，为您推荐<strong>高性价比CPU</strong>和<strong>高性价比显卡</strong>。包含<strong>历史价格走势</strong>，帮助您把握<strong>特价</strong>时机。数据来源于淘宝、拼多多实测价格，性价比公式为：游戏性能 ÷ 价格 × 倍率。适合预算有限的游戏玩家和装机小白参考。</p>
+
+<h2>高性价比CPU推荐</h2>
 <table>
 <thead>
 <tr><th>#</th><th>型号</th><th>游戏%</th><th>多核%</th><th>游戏帧数</th><th>多核分</th><th>核心</th><th>线程</th><th>基础频率</th><th>加速频率</th><th>TDP</th><th>全新价</th><th>二手价</th></tr>
@@ -148,7 +152,7 @@ ${rows}
 </tbody>
 </table>
 
-<h2>🎮 GPU性能排行榜（2K游戏性能降序）</h2>
+<h2>高性价比显卡推荐</h2>
 <table>
 <thead>
 <tr><th>#</th><th>型号</th><th>1080p帧数</th><th>2K帧数</th><th>4K帧数</th><th>渲染性能</th><th>显存</th><th>TDP</th><th>全新价</th><th>二手价</th></tr>
