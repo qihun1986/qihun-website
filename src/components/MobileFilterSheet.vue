@@ -123,7 +123,7 @@ import { ref, watch, computed, onMounted, onUnmounted } from 'vue'
 import {
   priceMin, priceMax, pricePresets, activePreset,
   gpuPriceMin, gpuPriceMax, gpuActivePreset,
-  gpuYearPreset, gpuYearStart, gpuYearEnd, validateGpuYearRange,
+  gpuYearPreset, gpuYearStart, gpuYearEnd,
   clearCpuPrice, clearGpuPrice, clearGpuYear
 } from './useFilterBar'
 
