@@ -394,7 +394,7 @@ let autoPlayTimer: ReturnType<typeof setInterval> | null = null
 
 const carouselItems = [
   { image: '/images/banner1.jpg', link: 'https://www.bilibili.com/video/BV1NcdaBMEWu/', title: '5600升级5500x3d,7500f值不值？省流推荐！' },
-  { image: '/images/banner2.jpg', link: 'https://www.bilibili.com/video/BV1BD6YBZE9n/', title: '【CPU游戏性能-天梯图】2026年1月29日更新' },
+  { image: '/images/banner2.jpg', link: 'https://www.bilibili.com/video/BV1mch3zgEDY/', title: 'DDR5：4800~8000频率对比测试 / 有彩蛋' },
   { image: '/images/banner3.jpg', link: 'https://www.bilibili.com/video/BV121HkzMESh/', title: '2000元CPU 全面对比，生产力 | 游戏 | 功耗' }
 ]
 
