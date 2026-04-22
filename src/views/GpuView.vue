@@ -32,50 +32,97 @@
       </a>
     </div>
 
-    <!-- GPU 筛选抽屉 -->
-    <div class="filter-drawer gpu-filter-drawer">
-      <div class="filter-summary" @click.stop="gpuFilterExpanded = !gpuFilterExpanded">
-        <span class="filter-summary-text">💰 价格: {{ gpuPriceLabel }} · 年限: {{ gpuYearLabel }}</span>
+    <!-- GPU 筛选抽屉（桌面端） -->
+    <div class="filter-drawer gpu-filter-drawer desktop-only">
+      <div class="filter-summary" @click.stop="openGpuFilter">
+        <span class="filter-summary-text">💰 价格: {{ gpuPriceLabel }} · {{ gpuYearSummaryLabel }}</span>
         <button class="filter-toggle-btn" :class="{ open: gpuFilterExpanded }">筛选 <span class="toggle-arrow">▼</span></button>
       </div>
       <Transition name="drawer">
         <div v-if="gpuFilterExpanded" class="filter-panel" @click.stop>
           <div class="filter-panel-inner">
-            <div class="price-inputs">
-              <input v-model="gpuPriceMin" type="number" placeholder="最低" min="0" class="price-input" @keyup.enter="confirmGpuPrice"/>
-              <span class="price-sep">—</span>
-              <input v-model="gpuPriceMax" type="number" placeholder="最高" min="0" class="price-input" @keyup.enter="confirmGpuPrice"/>
-              <button v-if="gpuPriceMin !== '' || gpuPriceMax !== ''" class="clear-btn" @click.stop="clearGpuPrice">✕ 清空</button>
-              <button class="confirm-btn" @click="confirmGpuPrice">确认</button>
+            <!-- 第一行：价格 -->
+            <div class="filter-row">
+              <span class="row-label">价格</span>
+              <div class="price-inputs">
+                <input v-model="gpuPriceMinDraft" type="number" placeholder="最低" min="0" class="price-input" inputmode="numeric" @keyup.enter="confirmGpuFilter"/>
+                <span class="price-sep">—</span>
+                <input v-model="gpuPriceMaxDraft" type="number" placeholder="最高" min="0" class="price-input" inputmode="numeric" @keyup.enter="confirmGpuFilter"/>
+              </div>
+              <div class="price-presets">
+                <button
+                  v-for="preset in gpuPricePresets"
+                  :key="preset.label"
+                  :class="{ active: gpuPriceMinDraft === preset.min && (preset.max === Infinity ? gpuPriceMaxDraft === '' : gpuPriceMaxDraft === preset.max) }"
+                  class="preset-btn"
+                  @click="applyGpuPresetDraft(preset)"
+                >{{ preset.label }}</button>
+              </div>
+              <button v-if="gpuPriceMinDraft !== '' || gpuPriceMaxDraft !== ''" class="clear-btn" @click.stop="clearGpuPriceDraft">✕ 清空</button>
             </div>
-            <div class="price-presets">
-              <button
-                v-for="preset in gpuPricePresets"
-                :key="preset.label"
-                :class="{ active: gpuActivePreset === preset }"
-                class="preset-btn"
-                @click="applyGpuPreset(preset)"
-              >{{ preset.label }}</button>
-            </div>
-            <!-- 年限筛选 -->
-            <div class="year-filter-row">
-              <span class="year-label">年限</span>
+
+            <!-- 第二行：年限 -->
+            <div class="filter-row year-row">
+              <span class="row-label">年限</span>
+              <div class="year-inputs">
+                <input
+                  v-model="gpuYearStartDraft"
+                  type="number"
+                  placeholder="2015"
+                  min="2000"
+                  max="2027"
+                  class="year-input"
+                  inputmode="numeric"
+                  :class="{ error: gpuYearStartError || gpuYearCrossError }"
+                  @blur="validateYearStartDraft()"
+                  @input="validateYearStartDraft()"
+                />
+                <span class="price-sep">—</span>
+                <input
+                  v-model="gpuYearEndDraft"
+                  type="number"
+                  placeholder="2027"
+                  min="2000"
+                  max="2027"
+                  class="year-input"
+                  inputmode="numeric"
+                  :class="{ error: gpuYearEndError || gpuYearCrossError }"
+                  @blur="validateYearEndDraft()"
+                  @input="validateYearEndDraft()"
+                />
+              </div>
               <div class="year-buttons">
                 <button
                   v-for="yr in [{label:'1年内',val:1},{label:'3年内',val:3}]"
                   :key="yr.val"
-                  :class="{ active: gpuYearPreset === yr.val }"
+                  :class="{ active: gpuYearPresetDraft === yr.val }"
                   class="preset-btn"
-                  @click="setGpuYearPreset(yr.val)"
+                  @click="setGpuYearPresetDraft(yr.val)"
                 >{{ yr.label }}</button>
-                <button v-if="gpuYearPreset !== null" class="clear-btn" @click.stop="clearGpuYear">✕ 清空</button>
               </div>
+              <button v-if="gpuYearStartDraft || gpuYearEndDraft || gpuYearPresetDraft !== null" class="clear-btn" @click.stop="clearGpuYearDraft">✕ 清空</button>
+            </div>
+
+            <!-- 校验错误提示 -->
+            <div v-if="gpuYearStartError || gpuYearEndError || gpuYearCrossError" class="year-error-msg">
+              <span v-if="gpuYearCrossError">{{ gpuYearCrossError }}</span>
+              <span v-else-if="gpuYearStartError">{{ gpuYearStartError }}</span>
+              <span v-else>{{ gpuYearEndError }}</span>
+            </div>
+
+            <!-- 底部操作栏 -->
+            <div class="filter-actions">
+              <button class="reset-btn" @click="resetGpuFilterDraft">重置全部</button>
+              <button class="confirm-btn" @click="confirmGpuFilter">确认</button>
             </div>
           </div>
           <button class="filter-close-btn" @click="gpuFilterExpanded = false">✕</button>
         </div>
       </Transition>
     </div>
+
+    <!-- 移动端筛选浮层 -->
+    <MobileFilterSheet ref="mobileFilterRef" mode="gpu" />
 
     <!-- 骨架屏 -->
     <div v-if="loading" class="skeleton-wrapper" aria-label="正在加载数据">
@@ -355,7 +402,11 @@ import {
   gpuPriceLabel, gpuPriceMin, gpuPriceMax, gpuPricePresets, gpuActivePreset,
   gpuYearPreset, gpuYearLabel,
   clearGpuPrice, clearGpuYear,
+  gpuYearStart, gpuYearEnd,
+  gpuYearStartError, gpuYearEndError, gpuYearCrossError,
+  validateYearStart, validateYearEnd, validateYearCross,
 } from '@/components/useFilterBar'
+import MobileFilterSheet from '@/components/MobileFilterSheet.vue'
 import gpuReleaseDates from '@/assets/gpu_release_dates.json'
 
 echarts.use([LineChart, TitleComponent, TooltipComponent, GridComponent, LegendComponent, CanvasRenderer])
@@ -601,13 +652,23 @@ const filteredGpus = computed(() => {
     }
   }
 
-  // 年限筛选（相对2026）
+  // 年限筛选
   if (gpuYearPreset.value !== null) {
     const cutoff = 2026 - gpuYearPreset.value
     list = list.filter(gpu => {
       const releaseYear = gpuReleaseDates[gpu.model]?.slice(0, 4)
       if (!releaseYear) return false
       return parseInt(releaseYear) >= cutoff
+    })
+  } else if (gpuYearStart.value !== null || gpuYearEnd.value !== null) {
+    // 精确年份区间
+    list = list.filter(gpu => {
+      const releaseYearStr = gpuReleaseDates[gpu.model]?.slice(0, 4)
+      if (!releaseYearStr) return false
+      const ry = parseInt(releaseYearStr)
+      const startOk = gpuYearStart.value === null || ry >= gpuYearStart.value
+      const endOk = gpuYearEnd.value === null || ry <= gpuYearEnd.value
+      return startOk && endOk
     })
   }
 
@@ -811,7 +872,7 @@ const sort = (key: string) => {
     sortOrder.value = sortOrder.value === 'asc' ? 'desc' : 'asc'
   } else {
     sortKey.value = key
-    sortOrder.value = key === 'model' || key === 'price' ? 'asc' : 'desc'
+    sortOrder.value = 'desc' // 所有列默认降序
   }
 
   // 记录排序时的状态快照
@@ -1082,21 +1143,129 @@ const injectJsonLd = () => {
   document.head.appendChild(script)
 }
 
-// ─── GPU 筛选 ───
+// ─── GPU 筛选（桌面抽屉）───
 const gpuFilterExpanded = ref(false)
-const mobileFilterOpen = ref(false)
 
-const applyGpuPreset = (preset: typeof gpuPricePresets[0]) => {
-  gpuPriceMin.value = preset.min
-  gpuPriceMax.value = preset.max === Infinity ? '' : preset.max
+// 年限摘要（显示在摘要条）
+const gpuYearSummaryLabel = computed(() => {
+  if (gpuYearPreset.value !== null) return `${gpuYearPreset.value}年内`
+  if (gpuYearStart.value !== null && gpuYearEnd.value !== null) return `${gpuYearStart.value}–${gpuYearEnd.value}`
+  if (gpuYearStart.value !== null) return `${gpuYearStart.value}年至今`
+  if (gpuYearEnd.value !== null) return `~${gpuYearEnd.value}年`
+  return '全部'
+})
+
+// Draft 状态（编辑中，不影响实际筛选）
+const gpuPriceMinDraft = ref<number | ''>('')
+const gpuPriceMaxDraft = ref<number | ''>('')
+const gpuYearPresetDraft = ref<number | null>(null)
+const gpuYearStartDraft = ref<number | ''>('')
+const gpuYearEndDraft = ref<number | ''>('')
+const gpuYearStartError = ref('')
+const gpuYearEndError = ref('')
+const gpuYearCrossError = ref('')
+
+// 打开抽屉时同步 draft
+const openGpuFilter = () => {
+  gpuFilterExpanded.value = !gpuFilterExpanded.value
+  if (gpuFilterExpanded.value) {
+    gpuPriceMinDraft.value = gpuPriceMin.value
+    gpuPriceMaxDraft.value = gpuPriceMax.value
+    gpuYearPresetDraft.value = gpuYearPreset.value
+    gpuYearStartDraft.value = gpuYearStart.value ?? ''
+    gpuYearEndDraft.value = gpuYearEnd.value ?? ''
+    gpuYearStartError.value = ''
+    gpuYearEndError.value = ''
+    gpuYearCrossError.value = ''
+  }
 }
 
-const confirmGpuPrice = () => {
+const applyGpuPresetDraft = (preset: typeof gpuPricePresets[0]) => {
+  gpuPriceMinDraft.value = preset.min
+  gpuPriceMaxDraft.value = preset.max === Infinity ? '' : preset.max
+}
+
+const setGpuYearPresetDraft = (val: number) => {
+  gpuYearPresetDraft.value = gpuYearPresetDraft.value === val ? null : val
+}
+
+const validateYearStartDraft = () => {
+  const v = gpuYearStartDraft.value
+  if (v === '' || v === null || v === 0) {
+    gpuYearStartError.value = ''
+    return true
+  }
+  if (!Number.isInteger(v) || v < 2000 || v > 2027) {
+    gpuYearStartError.value = '请输入 2000-2027 之间的年份'
+    return false
+  }
+  gpuYearStartError.value = ''
+  return true
+}
+
+const validateYearEndDraft = () => {
+  const v = gpuYearEndDraft.value
+  if (v === '' || v === null || v === 0) {
+    gpuYearEndError.value = ''
+    return true
+  }
+  if (!Number.isInteger(v) || v < 2000 || v > 2027) {
+    gpuYearEndError.value = '请输入 2000-2027 之间的年份'
+    return false
+  }
+  gpuYearEndError.value = ''
+  return true
+}
+
+const validateYearCrossDraft = () => {
+  const s = gpuYearStartDraft.value
+  const e = gpuYearEndDraft.value
+  if (s !== '' && s !== null && s !== 0 && e !== '' && e !== null && e !== 0) {
+    if (s > e) {
+      gpuYearCrossError.value = '起始年不能晚于结束年'
+      return false
+    }
+  }
+  gpuYearCrossError.value = ''
+  return true
+}
+
+const clearGpuPriceDraft = () => {
+  gpuPriceMinDraft.value = ''
+  gpuPriceMaxDraft.value = ''
+}
+
+const clearGpuYearDraft = () => {
+  gpuYearPresetDraft.value = null
+  gpuYearStartDraft.value = ''
+  gpuYearEndDraft.value = ''
+  gpuYearStartError.value = ''
+  gpuYearEndError.value = ''
+  gpuYearCrossError.value = ''
+}
+
+const resetGpuFilterDraft = () => {
+  clearGpuPriceDraft()
+  clearGpuYearDraft()
+}
+
+const confirmGpuFilter = () => {
+  // 校验
+  const sOk = validateYearStartDraft()
+  const eOk = validateYearEndDraft()
+  const cOk = validateYearCrossDraft()
+  if (!sOk || !eOk || !cOk) return
+
+  // 应用价格
+  gpuPriceMin.value = gpuPriceMinDraft.value
+  gpuPriceMax.value = gpuPriceMaxDraft.value
+
+  // 应用年限
+  gpuYearPreset.value = gpuYearPresetDraft.value
+  gpuYearStart.value = gpuYearStartDraft.value === '' ? null : gpuYearStartDraft.value
+  gpuYearEnd.value = gpuYearEndDraft.value === '' ? null : gpuYearEndDraft.value
+
   gpuFilterExpanded.value = false
-}
-
-const setGpuYearPreset = (val: number) => {
-  gpuYearPreset.value = gpuYearPreset.value === val ? null : val
 }
 
 const onGpuFilterDrawerClick = (e: MouseEvent) => {
@@ -1194,6 +1363,68 @@ onUnmounted(() => {
   font-size: 0.75rem; cursor: pointer; transition: all 0.15s;
 }
 .clear-btn:hover { background: rgba(255, 80, 80, 0.12); border-color: rgba(255, 80, 80, 0.6); color: #ff8888; }
+
+/* ─── 桌面抽屉两行布局 ─── */
+.filter-panel-inner { display: flex; flex-direction: column; gap: 0.6rem; }
+
+.filter-row {
+  display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;
+}
+
+.row-label {
+  font-size: 0.78rem; color: rgba(255, 255, 255, 0.45);
+  min-width: 28px; font-weight: 500; flex-shrink: 0;
+}
+
+/* 年份输入 */
+.year-inputs { display: flex; align-items: center; gap: 0.3rem; }
+.year-input {
+  width: 64px; padding: 0.25rem 0.4rem;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 5px; color: #e0e0e0; font-size: 0.8rem; text-align: center;
+  -moz-appearance: textfield;
+}
+.year-input::-webkit-inner-spin-button,
+.year-input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.year-input:focus { outline: none; border-color: #FFD700; background: rgba(255, 215, 0, 0.06); }
+.year-input::placeholder { color: rgba(255, 255, 255, 0.25); }
+.year-input.error {
+  border-color: #ff5555 !important;
+  background: rgba(255, 60, 60, 0.08) !important;
+}
+
+.year-buttons { display: flex; gap: 0.3rem; }
+
+/* 校验错误提示 */
+.year-error-msg {
+  font-size: 0.75rem; color: #ff8888;
+  padding: 0.2rem 0.5rem;
+  background: rgba(255, 60, 60, 0.1);
+  border-radius: 4px; border-left: 2px solid #ff5555;
+  margin-top: -0.2rem;
+}
+
+/* 底部操作栏 */
+.filter-actions {
+  display: flex; justify-content: flex-end; gap: 0.5rem;
+  padding-top: 0.3rem; border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+.reset-btn {
+  padding: 0.35rem 0.8rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px; color: rgba(255, 255, 255, 0.5);
+  font-size: 0.78rem; cursor: pointer; transition: all 0.15s;
+}
+.reset-btn:hover { background: rgba(255, 80, 80, 0.1); border-color: rgba(255, 80, 80, 0.4); color: #ff8888; }
+.confirm-btn {
+  padding: 0.35rem 0.9rem;
+  background: linear-gradient(135deg, #FFD700 0%, #FFB347 100%);
+  border: none; border-radius: 20px; color: #1a1a2e;
+  font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.15s;
+}
+.confirm-btn:hover { filter: brightness(1.08); }
 .filter-close-btn {
   position: absolute; top: 0.5rem; right: 0.5rem;
   width: 24px; height: 24px;
@@ -2036,6 +2267,20 @@ onUnmounted(() => {
     max-width: 100%;
     height: 80px;
     margin-top: 0.5rem;
+  }
+}
+
+/* 桌面端筛选抽屉 */
+@media (min-width: 769px) {
+  .desktop-only {
+    display: block !important;
+  }
+}
+
+/* 移动端隐藏桌面抽屉 */
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
   }
 }
 

@@ -25,8 +25,9 @@
           <button class="action-btn charge-btn" @click="toggleDropdown('charge')">
             ⚡ 充电
           </button>
+          <!-- 桌面端 dropdown -->
           <transition name="fade">
-            <div v-if="showCharge" class="dropdown" @click.stop>
+            <div v-if="showCharge && !isMobile" class="dropdown" @click.stop>
               <img src="/images/payment.png" alt="充电打赏码" class="dropdown-qr" />
             </div>
           </transition>
@@ -35,8 +36,9 @@
           <button class="action-btn group-btn" @click="toggleDropdown('fans')">
             🎮 粉丝群
           </button>
+          <!-- 桌面端 dropdown -->
           <transition name="fade">
-            <div v-if="showFans" class="dropdown" @click.stop>
+            <div v-if="showFans && !isMobile" class="dropdown" @click.stop>
               <img src="/images/qrcode.jpg" alt="QQ粉丝群二维码" class="dropdown-qr" />
             </div>
           </transition>
@@ -44,15 +46,59 @@
       </div>
     </div>
   </header>
+
+  <!-- 移动端充电动画 -->
+  <Teleport to="body">
+    <Transition name="modal">
+      <div v-if="showCharge && isMobile" class="modal-overlay" @click="showCharge = false">
+        <div class="modal" @click.stop>
+          <div class="modal-header">
+            <h3>⚡ 充电支持</h3>
+            <button class="modal-close" @click="showCharge = false">×</button>
+          </div>
+          <div class="modal-body">
+            <img src="/images/payment.png" alt="充电打赏码" class="modal-qr" />
+            <p class="modal-tip">感谢你的支持！</p>
+          </div>
+        </div>
+      </div>
+    </Transition>
+  </Teleport>
+
+  <!-- 移动端粉丝群 -->
+  <Teleport to="body">
+    <Transition name="modal">
+      <div v-if="showFans && isMobile" class="modal-overlay" @click="showFans = false">
+        <div class="modal" @click.stop>
+          <div class="modal-header">
+            <h3>🎮 粉丝群</h3>
+            <button class="modal-close" @click="showFans = false">×</button>
+          </div>
+          <div class="modal-body">
+            <img src="/images/qrcode.jpg" alt="QQ粉丝群二维码" class="modal-qr" />
+            <p class="modal-tip">扫码加入粉丝群</p>
+          </div>
+        </div>
+      </div>
+    </Transition>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const showCharge = ref(false)
 const showFans = ref(false)
+
+// 移动端检测
+const windowWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 1200)
+const isMobile = computed(() => windowWidth.value <= 640)
+
+const handleResize = () => {
+  windowWidth.value = window.innerWidth
+}
 
 // 计算当前路由是否匹配
 const isActive = (path: string): boolean => {
@@ -89,11 +135,13 @@ const handleToggleCharge = () => {
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
   window.addEventListener('toggle-charge', handleToggleCharge)
+  window.addEventListener('resize', handleResize)
 })
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
   window.removeEventListener('toggle-charge', handleToggleCharge)
+  window.removeEventListener('resize', handleResize)
 })
 </script>
 
@@ -337,5 +385,97 @@ onUnmounted(() => {
     left: 50%;
     transform: translateX(-50%);
   }
+}
+
+/* 移动端 Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.modal {
+  background: var(--bg-secondary);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--border);
+  width: 90vw;
+  max-width: 400px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  background: var(--bg-tertiary);
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  min-height: 44px;
+  min-width: 44px;
+}
+
+.modal-close:hover {
+  color: var(--text-primary);
+}
+
+.modal-body {
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.modal-qr {
+  width: 240px;
+  height: 240px;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-tip {
+  margin: 1rem 0 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* Modal 动画 */
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.25s ease;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-active .modal,
+.modal-leave-active .modal {
+  transition: transform 0.25s ease;
+}
+
+.modal-enter-from .modal,
+.modal-leave-to .modal {
+  transform: translateY(20px);
 }
 </style>

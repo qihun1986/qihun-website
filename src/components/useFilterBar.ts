@@ -47,6 +47,59 @@ export const applyGpuPreset = (preset: typeof pricePresets[0]) => {
   gpuPriceMax.value = preset.max === Infinity ? '' : preset.max
 }
 
+// ── GPU 发售年份区间（精确年份） ──
+export const gpuYearStart = ref<number | null>(null)
+export const gpuYearEnd = ref<number | null>(null)
+
+// 年份校验错误信息
+export const gpuYearStartError = ref<string>('')
+export const gpuYearEndError = ref<string>('')
+export const gpuYearCrossError = ref<string>('')
+
+const YEAR_MIN = 2000
+const YEAR_MAX = 2027
+
+export const validateYearStart = () => {
+  const v = gpuYearStart.value
+  if (v === null || v === 0) {
+    gpuYearStartError.value = ''
+    return true
+  }
+  if (!Number.isInteger(v) || v < YEAR_MIN || v > YEAR_MAX) {
+    gpuYearStartError.value = `请输入 ${YEAR_MIN}-${YEAR_MAX} 之间的年份`
+    return false
+  }
+  gpuYearStartError.value = ''
+  return true
+}
+
+export const validateYearEnd = () => {
+  const v = gpuYearEnd.value
+  if (v === null || v === 0) {
+    gpuYearEndError.value = ''
+    return true
+  }
+  if (!Number.isInteger(v) || v < YEAR_MIN || v > YEAR_MAX) {
+    gpuYearEndError.value = `请输入 ${YEAR_MIN}-${YEAR_MAX} 之间的年份`
+    return false
+  }
+  gpuYearEndError.value = ''
+  return true
+}
+
+export const validateYearCross = () => {
+  const s = gpuYearStart.value
+  const e = gpuYearEnd.value
+  if (s !== null && s !== 0 && e !== null && e !== 0) {
+    if (s > e) {
+      gpuYearCrossError.value = '起始年不能晚于结束年'
+      return false
+    }
+  }
+  gpuYearCrossError.value = ''
+  return true
+}
+
 // ── 价格区间匹配 ──
 export const priceInRange = (
   newPrice: number | null,
@@ -90,4 +143,11 @@ export const clearGpuPrice = () => {
 }
 export const clearGpuYear = () => {
   gpuYearPreset.value = null
+}
+export const clearGpuYearExact = () => {
+  gpuYearStart.value = null
+  gpuYearEnd.value = null
+  gpuYearStartError.value = ''
+  gpuYearEndError.value = ''
+  gpuYearCrossError.value = ''
 }

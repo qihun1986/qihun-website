@@ -21,14 +21,9 @@
               访问B站主页
             </a>
             <div class="charge-wrapper">
-              <button class="charge-btn" @click="showCharge = !showCharge">
+              <button class="charge-btn" @click="showCharge = true">
                 充电支持
               </button>
-              <transition name="fade">
-                <div v-if="showCharge" class="charge-popup" @click.stop>
-                  <img src="/images/payment.png" alt="充电收款码" class="charge-qr" />
-                </div>
-              </transition>
             </div>
           </div>
         </div>

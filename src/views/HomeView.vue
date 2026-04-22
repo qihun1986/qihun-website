@@ -33,10 +33,10 @@
       
     </div>
 
-    <!-- 价格筛选抽屉 -->
-    <div class="filter-drawer">
+    <!-- 价格筛选抽屉（桌面端） -->
+    <div class="filter-drawer desktop-only">
       <!-- 收起时的摘要条 -->
-      <div class="filter-summary" @click="filterExpanded = !filterExpanded">
+      <div class="filter-summary" @click="openCpuFilter">
         <span class="filter-summary-text">💰 价格: {{ cpuPriceLabel }}</span>
         <button class="filter-toggle-btn" :class="{ open: filterExpanded }">筛选 <span class="toggle-arrow">▼</span></button>
       </div>
@@ -46,33 +46,39 @@
           <div class="filter-panel-inner">
             <div class="price-inputs">
               <input
-                v-model="priceMin"
+                v-model="priceMinDraft"
                 type="number"
                 placeholder="最低"
                 min="0"
                 class="price-input"
+                inputmode="numeric"
               />
               <span class="price-sep">—</span>
               <input
-                v-model="priceMax"
+                v-model="priceMaxDraft"
                 type="number"
                 placeholder="最高"
                 min="0"
                 class="price-input"
+                inputmode="numeric"
               />
-              <button v-if="priceMin !== '' || priceMax !== ''" class="clear-btn" @click.stop="clearCpuPrice">✕ 清空</button>
+              <button v-if="priceMinDraft !== '' || priceMaxDraft !== ''" class="clear-btn" @click.stop="clearCpuPriceDraft">✕ 清空</button>
             </div>
             <div class="price-presets">
               <button
                 v-for="preset in pricePresets"
                 :key="preset.label"
-                :class="{ active: activePreset === preset }"
+                :class="{ active: priceMinDraft === preset.min && (preset.max === Infinity ? priceMaxDraft === '' : priceMaxDraft === preset.max) }"
                 class="preset-btn"
-                @click="applyCpuPreset(preset)"
+                @click="applyCpuPresetDraft(preset)"
               >{{ preset.label }}</button>
             </div>
           </div>
-          <button class="filter-close-btn" @click="filterExpanded = false">✕</button>
+          <div class="filter-actions">
+            <button class="reset-btn" @click="clearCpuPriceDraft">重置全部</button>
+            <button class="confirm-btn" @click="confirmCpuFilter">确认</button>
+          </div>
+          <button class="filter-close-btn" @click="openCpuFilter">✕</button>
         </div>
       </Transition>
     </div>
@@ -255,6 +261,9 @@
       </div>
     </div>
 
+    <!-- 移动端筛选浮层 -->
+    <MobileFilterSheet ref="mobileFilterRef" mode="cpu" />
+
     <!-- 参数弹窗 -->
     <div v-if="showSpecsModal" class="modal-overlay" @click.self="closeModals" role="dialog" aria-modal="true">
       <div class="modal specs-modal">
@@ -325,6 +334,7 @@ import {
   priceMin, priceMax, pricePresets, activePreset,
   priceInRange, clearCpuPrice, cpuPriceLabel,
 } from '@/components/useFilterBar'
+import MobileFilterSheet from '@/components/MobileFilterSheet.vue'
 
 echarts.use([LineChart, TitleComponent, TooltipComponent, GridComponent, LegendComponent, CanvasRenderer])
 
@@ -433,9 +443,33 @@ const getRelativeMultiPerf = (cpu: Cpu | null): string => {
 // ─── 价格筛选 ───
 const filterExpanded = ref(false)
 
-const applyCpuPreset = (preset: typeof pricePresets[0]) => {
-  priceMin.value = preset.min
-  priceMax.value = preset.max === Infinity ? '' : preset.max
+// Draft 状态（桌面抽屉编辑中）
+const priceMinDraft = ref<number | ''>('')
+const priceMaxDraft = ref<number | ''>('')
+
+// 打开抽屉时同步 draft
+const openCpuFilter = () => {
+  filterExpanded.value = !filterExpanded.value
+  if (filterExpanded.value) {
+    priceMinDraft.value = priceMin.value
+    priceMaxDraft.value = priceMax.value
+  }
+}
+
+const applyCpuPresetDraft = (preset: typeof pricePresets[0]) => {
+  priceMinDraft.value = preset.min
+  priceMaxDraft.value = preset.max === Infinity ? '' : preset.max
+}
+
+const clearCpuPriceDraft = () => {
+  priceMinDraft.value = ''
+  priceMaxDraft.value = ''
+}
+
+const confirmCpuFilter = () => {
+  priceMin.value = priceMinDraft.value
+  priceMax.value = priceMaxDraft.value
+  filterExpanded.value = false
 }
 
 // 价格区间匹配（按当前 priceType）
@@ -1037,6 +1071,26 @@ onUnmounted(() => {
 .price-input::placeholder { color: rgba(255, 255, 255, 0.25); }
 .price-sep { color: rgba(255, 255, 255, 0.3); font-size: 0.75rem; }
 .price-presets { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+.filter-actions {
+  display: flex; justify-content: flex-end; gap: 0.5rem;
+  padding-top: 0.5rem; border-top: 1px solid rgba(255, 255, 255, 0.06);
+  margin-top: 0.3rem;
+}
+.reset-btn {
+  padding: 0.35rem 0.8rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px; color: rgba(255, 255, 255, 0.5);
+  font-size: 0.78rem; cursor: pointer; transition: all 0.15s;
+}
+.reset-btn:hover { background: rgba(255, 80, 80, 0.1); border-color: rgba(255, 80, 80, 0.4); color: #ff8888; }
+.confirm-btn {
+  padding: 0.35rem 0.9rem;
+  background: linear-gradient(135deg, #FFD700 0%, #FFB347 100%);
+  border: none; border-radius: 20px; color: #1a1a2e;
+  font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all 0.15s;
+}
+.confirm-btn:hover { filter: brightness(1.08); }
 .preset-btn {
   padding: 0.28rem 0.6rem;
   background: rgba(255, 255, 255, 0.05);
@@ -1790,6 +1844,20 @@ onUnmounted(() => {
 @keyframes slideUp {
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
+}
+
+/* 桌面端筛选抽屉 */
+@media (min-width: 769px) {
+  .desktop-only {
+    display: block !important;
+  }
+}
+
+/* 移动端隐藏桌面抽屉 */
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none !important;
+  }
 }
 
 /* 响应式 */
