@@ -38,15 +38,17 @@
             @focus="onSearchFocus"
             @keyup.enter="jumpToFirstMatch"
           />
-          <!-- 选中状态：显示清除+添加对比按钮 -->
-          <template v-if="selectedSearchCpu">
-            <button class="search-action-btn add-compare-btn" @click="addSearchSelectedToCompare" title="添加到对比">+对比</button>
-            <button class="search-action-btn clear-btn" @click="clearSearchSelection" title="清除选中">✕</button>
-          </template>
-          <!-- 无选中时显示提示 -->
-          <template v-else-if="!showSearchDropdown">
-            <span class="search-hint">点击CPU可添加对比</span>
-          </template>
+          <!-- +对比按钮常驻右边 -->
+          <button
+            class="search-action-btn add-compare-btn"
+            :class="{ disabled: !selectedSearchCpu }"
+            :disabled="!selectedSearchCpu"
+            @click="addSearchSelectedToCompare"
+            title="添加到对比"
+          >+对比</button>
+          <!-- 选中状态：显示清除按钮 -->
+          <button v-if="selectedSearchCpu" class="search-action-btn clear-btn" @click="clearSearchSelection" title="清除选中">✕</button>
+          <span v-else-if="!showSearchDropdown" class="search-hint">点击CPU可添加对比</span>
           <!-- 下拉待选列表 -->
           <div v-if="showSearchDropdown && searchDropdownItems.length > 0 && !selectedSearchCpu" class="search-dropdown">
             <div
@@ -1452,6 +1454,10 @@ onUnmounted(() => {
   color: #000;
 }
 .add-compare-btn:hover { opacity: 0.85; }
+.add-compare-btn.disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
 .clear-btn {
   background: rgba(239, 68, 68, 0.15);
   color: #ef4444;
