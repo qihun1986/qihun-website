@@ -524,7 +524,7 @@ let autoPlayTimer: ReturnType<typeof setInterval> | null = null
 
 const carouselItems = [
   { image: '/images/banner1.jpg', link: 'https://www.bilibili.com/video/BV1WhXjBDE5p', title: '5060TI、9070GRE~11款游戏对比横评！' },
-  { image: '/images/banner2.jpg', link: 'https://www.bilibili.com/video/BV1sxgAzbEg5', title: '最新显卡评测' },
+  { image: '/images/banner2.jpg', link: 'https://www.bilibili.com/video/BV1L7dnBoE4p/', title: '2026.05二手显卡推荐！萌新适用，省钱避坑~' },
   { image: '/images/banner3.jpg', link: 'https://www.bilibili.com/', title: '显卡天梯图预告' }
 ]
 

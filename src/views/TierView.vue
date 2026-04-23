@@ -308,7 +308,8 @@
           <span class="modal-title">📊 比较（基准：{{ benchmarkCpu ? formatCpuName(benchmarkCpu.model) : '12490F' }}）</span>
           <button class="modal-close" @click="closeBenchModal">✕</button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body bench-modal-body">
+          <!-- 方案E脉冲动画：首次打开CPU列头闪金色边框 -->
           <table v-if="compareList.length > 0" class="compare-table bench-table">
             <thead>
               <tr>
@@ -316,7 +317,7 @@
                 <th v-for="cpu in compareList" :key="cpu.id"
                   class="cpu-col clickable" :class="[isIntelCpu(cpu) ? 'intel' : 'amd', { 'is-benchmark': cpu.id === benchmarkCpu?.id }]"
                   @click="toggleBenchmark(cpu)">
-                  {{ formatCpuName(cpu.model) }}
+                  {{ formatCpuName(cpu.model) }}<span class="bench-hint-icon" title="点击设为基准">◎</span>
                 </th>
               </tr>
             </thead>
@@ -337,6 +338,7 @@
           </table>
           <div v-else class="bench-empty">对比栏为空，点击圆点添加到对比</div>
         </div>
+        <!-- 方案D底部提示：首次未点击过显示，点击可关闭 -->
         <div class="modal-footer" v-if="compareList.length > 0">
           <button class="modal-btn" @click="resetBenchmark">重置基准</button>
         </div>
@@ -2282,6 +2284,28 @@ td.is-benchmark {
   padding: 2rem 1.5rem;
   color: rgba(255, 255, 255, 0.35);
   font-size: 0.85rem;
+}
+
+/* 对比表格列头可点击（基准提示） */
+.cpu-col.clickable {
+  cursor: pointer;
+  background: rgba(255, 215, 0, 0.07);
+  transition: background 0.2s;
+}
+.cpu-col.clickable:hover {
+  background: rgba(255, 215, 0, 0.15);
+}
+
+.bench-hint-icon {
+  font-size: 0.85em;
+  color: rgba(255, 215, 0, 0.55);
+  margin-left: 3px;
+  vertical-align: middle;
+  cursor: help;
+}
+
+.bench-modal-body {
+  padding-bottom: 0;
 }
 
 /* ========== 对比栏内对标按钮 ========== */
