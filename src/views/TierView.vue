@@ -18,14 +18,14 @@
       </button>
     </div>
 
-    <!-- 建设中占位 -->
-    <div v-if="activeTab !== 'cpu-game'" class="building-card">
+    <!-- 建设中占位（显卡相关Tab） -->
+    <div v-if="activeTab.startsWith('gpu-')" class="building-card">
       <div class="building-icon">🚧</div>
       <h2>{{ getTabLabel(activeTab) }}</h2>
       <p>数据采集中，即将上线</p>
     </div>
 
-    <!-- CPU 游戏性能天梯图内容 -->
+    <!-- CPU 天梯图内容（游戏/多核） -->
     <div v-else class="tier-content">
       <!-- 搜索栏 + 对比栏（同行） -->
       <div class="top-bar">
@@ -140,7 +140,7 @@
               'is-dimmed': selectedSearchCpu && !item.isSearched,
               'intel': item.brand === 'INTEL',
               'amd': item.brand === 'AMD',
-              'hollow': item.isEstimated,
+              'hollow': item.isEstimated && isGameMode,
             }"
             :style="{
               left: item.x + '%',
@@ -202,7 +202,7 @@
           </div>
           <div class="cpu-row-right">
             <span class="cpu-row-percent" :class="isIntel(cpu) ? 'intel' : 'amd'">
-              {{ getPerformancePercent(cpu) }}%
+              {{ getCurrentPercent(cpu) }}%
             </span>
             <button class="compare-btn-small" @click.stop="addSingleToCompare(cpu)">⚖️</button>
           </div>
@@ -211,7 +211,12 @@
 
       <!-- 底部备注 -->
       <div class="bottom-notes">
-        注：金色圆点代表实测数据（空心代表推算）；默认基准 i5-12490F；单击 CPU 打开详情，可设为基准或添加对比；数据仅供参考。
+        <template v-if="isGameMode">
+          注：金色圆点代表实测数据（空心代表推算）；默认基准 i5-12490F；单击 CPU 打开详情，可设为基准或添加对比；数据仅供参考。
+        </template>
+        <template v-else>
+          多核分都是上传的真实 R23 跑分平均值，没有估算，放心参考。基准还是那个熟悉的 i5-12490F（100%）。点圆点可以加对比栏、换基准。数据纯手动统计，有不合理的地方群里吼我。
+        </template>
       </div>
     </div>
 
@@ -220,7 +225,7 @@
       <div class="tooltip-title">{{ tooltip.title }}</div>
       <div class="tooltip-game-pct">{{ tooltip.percent }}</div>
       <div class="tooltip-bench">基准：{{ benchmarkCpu ? formatCpuName(benchmarkCpu.model) : 'i5-12490F' }}</div>
-      <div v-if="tooltip.estimated" class="tooltip-estimated">(推算)</div>
+      <div v-if="tooltip.estimated && isGameMode" class="tooltip-estimated">(推算)</div>
     </div>
 
     <!-- CPU 详情弹窗 -->
@@ -348,7 +353,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { ref, reactive, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { supabase } from '@/lib/supabase'
 
 // ============== 类型定义 ==============
@@ -422,14 +427,43 @@ const activeTab = ref('cpu-game')
 const cpus = ref<Cpu[]>([])
 const searchQuery = ref('')
 const searchMatchCount = ref(0)
-const selectedSearchCpu = ref<Cpu | null>(null)
 const showSearchDropdown = ref(false)
-const compareList = ref<Cpu[]>([])
 const compareExpanded = ref(false)
-const benchmarkCpu = ref<Cpu | null>(null)
 const isMobile = ref(false)
 const scatterContainer = ref<HTMLElement | null>(null)
 const scatterPlot = ref<HTMLElement | null>(null)
+
+// 游戏模式独立状态
+const gameState = reactive({
+  benchmarkCpu: null as Cpu | null,
+  compareList: [] as Cpu[],
+  selectedSearchCpu: null as Cpu | null,
+})
+
+// 多核模式独立状态
+const multiState = reactive({
+  benchmarkCpu: null as Cpu | null,
+  compareList: [] as Cpu[],
+  selectedSearchCpu: null as Cpu | null,
+})
+
+// 包装计算属性（根据tab自动选择）
+const isGameMode = computed(() => activeTab.value === 'cpu-game')
+
+const benchmarkCpu = computed({
+  get: () => isGameMode.value ? gameState.benchmarkCpu : multiState.benchmarkCpu,
+  set: (v) => { if (isGameMode.value) gameState.benchmarkCpu = v; else multiState.benchmarkCpu = v }
+})
+
+const compareList = computed({
+  get: () => isGameMode.value ? gameState.compareList : multiState.compareList,
+  set: (v) => { if (isGameMode.value) gameState.compareList = v; else multiState.compareList = v }
+})
+
+const selectedSearchCpu = computed({
+  get: () => isGameMode.value ? gameState.selectedSearchCpu : multiState.selectedSearchCpu,
+  set: (v) => { if (isGameMode.value) gameState.selectedSearchCpu = v; else multiState.selectedSearchCpu = v }
+})
 
 const detailModal = ref({
   show: false,
@@ -451,7 +485,6 @@ const tooltip = ref({
 
 // ============== 计算属性 ==============
 const tabs = computed(() => TABS)
-const isGameMode = computed(() => activeTab.value === 'cpu-game')
 
 const sortedCpus = computed(() => {
   return [...cpus.value].sort((a, b) => {
@@ -471,26 +504,28 @@ const searchDropdownItems = computed(() => {
     .map(c => ({
       cpu: c,
       label: formatCpuName(c.model),
-      pct: getPerformancePercent(c),
+      pct: getCurrentPercent(c),
       isIntel: isIntelCpu(c)
     }))
 })
 
-// 分数范围（固定 2000-15000）
+// 分数范围（根据模式不同）
 const scoreRange = computed(() => {
-  return { min: 2000, max: 15000 }
+  return isGameMode.value
+    ? { min: 3000, max: 15000 }
+    : { min: 5000, max: 50000 }
 })
 
 // 基准分数
 const benchmarkScore = computed(() => {
-  if (!benchmarkCpu.value) return 5000
+  if (!benchmarkCpu.value) return isGameMode.value ? 5000 : 15000
   return isGameMode.value ? benchmarkCpu.value.abs_game_performance : benchmarkCpu.value.abs_multi_performance
 })
 
 // 基准Y位置
 const benchmarkY = computed(() => {
   if (!cpus.value.length) return null
-  return scoreToY(benchmarkScore.value)
+  return getY(benchmarkScore.value)
 })
 
 // Y轴公式：四档等分，3000→100%, 4500→75%, 6000→50%, 8500→25%, 15000→0%
@@ -501,6 +536,21 @@ function scoreToY(score: number): number {
   if (score <= 6000) return 75 - (score - 4500) / 1500 * 25       // 4500-6000, 占25%
   if (score <= 8500) return 50 - (score - 6000) / 2500 * 25       // 6000-8500, 占25%
   return 25 - (score - 8500) / 6500 * 25                           // 8500-15000, 占25%
+}
+
+// 多核Y轴公式：5000→100%, 10000→75%, 18000→50%, 28000→25%, 50000→0%
+function multiScoreToY(score: number): number {
+  if (score <= 5000) return 100
+  if (score >= 50000) return 0
+  if (score <= 10000) return 100 - (score - 5000) / 5000 * 25       // 5000-10000, 占25%
+  if (score <= 18000) return 75 - (score - 10000) / 8000 * 25      // 10000-18000, 占25%
+  if (score <= 28000) return 50 - (score - 18000) / 10000 * 25    // 18000-28000, 占25%
+  return 25 - (score - 28000) / 22000 * 25                         // 28000-50000, 占25%
+}
+
+// 统一Y轴计算（根据模式选择）
+function getY(score: number): number {
+  return isGameMode.value ? scoreToY(score) : multiScoreToY(score)
 }
 
 // 确定CPU属于哪个列（大小写不敏感）
@@ -712,7 +762,7 @@ function buildPositionedCpus(): PositionedCpu[] {
     
     for (const item of items) {
       const score = getScore(item.cpus[0])
-      const rawY = scoreToY(score)
+      const rawY = getY(score)
       
       // 找到不重叠的Y位置
       let finalY = rawY
@@ -767,7 +817,7 @@ const seriesLabels = computed((): SeriesLabel[] => {
     )
     
     // 获取该CPU的Y位置
-    const y = scoreToY(getScore(maxScoreCpu))
+    const y = getY(getScore(maxScoreCpu))
     
     // Ultra 200 系列标签（如果i3列有Ultra芯片）
     if (col.idx === 0) {
@@ -782,7 +832,7 @@ const seriesLabels = computed((): SeriesLabel[] => {
         const coreCpu = coreI3Cpus.reduce((best, cpu) =>
           getScore(cpu) > getScore(best) ? cpu : best
         )
-        const coreY = scoreToY(getScore(coreCpu))
+        const coreY = getY(getScore(coreCpu))
         labels.push({
           key: 'core-i3',
           brand: 'INTEL',
@@ -797,7 +847,7 @@ const seriesLabels = computed((): SeriesLabel[] => {
         const ultraCpu = ultraCpus.reduce((best, cpu) =>
           getScore(cpu) > getScore(best) ? cpu : best
         )
-        const ultraY = scoreToY(getScore(ultraCpu))
+        const ultraY = getY(getScore(ultraCpu))
         labels.push({
           key: 'ultra-200',
           brand: 'INTEL',
@@ -866,14 +916,23 @@ function getSpecValue(cpu: Cpu, key: string): string {
 
 // ============== 方法 ==============
 function getPerformancePercent(cpu: Cpu): number {
+  // 始终返回游戏性能百分比（详情弹窗用）
   if (!benchmarkCpu.value) return 0
-  const pct = (getScore(cpu) / benchmarkScore.value) * 100
+  const pct = (cpu.abs_game_performance / benchmarkCpu.value.abs_game_performance) * 100
   return Math.round(pct)
 }
 
 function getMultiPercent(cpu: Cpu): number {
+  // 始终返回多核性能百分比（详情弹窗用）
   if (!benchmarkCpu.value) return 0
   const pct = (cpu.abs_multi_performance / benchmarkCpu.value.abs_multi_performance) * 100
+  return Math.round(pct)
+}
+
+// 当前模式的百分比（tooltip/标签用）
+function getCurrentPercent(cpu: Cpu): number {
+  if (!benchmarkCpu.value) return 0
+  const pct = (getScore(cpu) / benchmarkScore.value) * 100
   return Math.round(pct)
 }
 
@@ -1015,13 +1074,14 @@ async function loadCpus() {
     isEstimated: isHollowModel(cpu.model),
   }))
   
-  // 设置默认基准
+  // 设置默认基准（两个模式都设置）
   const defaultBench = cpus.value.find(c =>
     c.model.toUpperCase().includes('12490F')
   )
   if (defaultBench) {
-    benchmarkCpu.value = defaultBench
-    console.log('[TierView] 找到基准CPU:', defaultBench.model, '分数:', defaultBench.abs_game_performance)
+    gameState.benchmarkCpu = defaultBench
+    multiState.benchmarkCpu = defaultBench
+    console.log('[TierView] 找到基准CPU:', defaultBench.model, '游戏分:', defaultBench.abs_game_performance, '多核分:', defaultBench.abs_multi_performance)
   } else {
     console.warn('[TierView] 未找到基准CPU 12490F')
   }
@@ -1111,10 +1171,10 @@ function showTooltip(item: PositionedCpu, event: MouseEvent) {
     percentText = item.cpus.map(c => {
       const shortName = stripSuffix(c.model).replace(/INTEL\s*CORE\s*/i, '').replace(/AMD\s*RYZEN\s*/i, '').replace(/AMD\s*/i, '').trim()
       const suffix = c.model.match(/(X3D|KF|KS|K|F|GE?|X|3D)$/i)?.[1] || ''
-      return (shortName.split(/[-\s]/).pop() || '') + suffix + ':' + getPerformancePercent(c) + '%'
+      return (shortName.split(/[-\s]/).pop() || '') + suffix + ':' + getCurrentPercent(c) + '%'
     }).join(' / ')
   } else {
-    percentText = getPerformancePercent(cpu) + '%'
+    percentText = getCurrentPercent(cpu) + '%'
   }
   tooltip.value = {
     visible: true,
@@ -1135,7 +1195,7 @@ function showLabelTooltip(label: SeriesLabel, event: MouseEvent) {
   tooltip.value = {
     visible: true,
     title: formatCpuName(label.cpu.model),
-    percent: getPerformancePercent(label.cpu),
+    percent: getCurrentPercent(label.cpu),
     estimated: label.cpu.isEstimated || false,
     style: {
       position: 'fixed',
@@ -1264,29 +1324,51 @@ function closeCompare() {
   compareExpanded.value = false
 }
 
-// localStorage
+// localStorage（两个模式独立存储）
 function saveCompareToStorage() {
-  const data = {
-    compareList: compareList.value.map(c => c.id),
-    benchmarkId: benchmarkCpu.value?.id,
+  // 游戏模式
+  const gameData = {
+    compareList: gameState.compareList.map(c => c.id),
+    benchmarkId: gameState.benchmarkCpu?.id,
   }
-  localStorage.setItem('tier-compare', JSON.stringify(data))
+  localStorage.setItem('tier-compare-game', JSON.stringify(gameData))
+  // 多核模式
+  const multiData = {
+    compareList: multiState.compareList.map(c => c.id),
+    benchmarkId: multiState.benchmarkCpu?.id,
+  }
+  localStorage.setItem('tier-compare-multi', JSON.stringify(multiData))
 }
 
 function loadCompareFromStorage() {
   try {
-    const stored = localStorage.getItem('tier-compare')
-    if (!stored) return
-    
-    const data = JSON.parse(stored)
-    if (data.benchmarkId) {
-      const bench = cpus.value.find(c => c.id === data.benchmarkId)
-      if (bench) benchmarkCpu.value = bench
+    // 恢复游戏模式
+    const gameStored = localStorage.getItem('tier-compare-game')
+    if (gameStored) {
+      const data = JSON.parse(gameStored)
+      if (data.benchmarkId) {
+        const bench = cpus.value.find(c => c.id === data.benchmarkId)
+        if (bench) gameState.benchmarkCpu = bench
+      }
+      if (data.compareList) {
+        gameState.compareList = cpus.value.filter(c =>
+          data.compareList.includes(c.id)
+        )
+      }
     }
-    if (data.compareList) {
-      compareList.value = cpus.value.filter(c =>
-        data.compareList.includes(c.id)
-      )
+    // 恢复多核模式
+    const multiStored = localStorage.getItem('tier-compare-multi')
+    if (multiStored) {
+      const data = JSON.parse(multiStored)
+      if (data.benchmarkId) {
+        const bench = cpus.value.find(c => c.id === data.benchmarkId)
+        if (bench) multiState.benchmarkCpu = bench
+      }
+      if (data.compareList) {
+        multiState.compareList = cpus.value.filter(c =>
+          data.compareList.includes(c.id)
+        )
+      }
     }
   } catch (e) {
     // ignore
