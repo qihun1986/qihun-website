@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import GpuView from '../views/GpuView.vue'
 import TierView from '../views/TierView.vue'
+import GpuTierChart from '../views/GpuTierChart.vue'
 import AboutView from '../views/AboutView.vue'
 import VideosView from '../views/VideosView.vue'
 import AdminView from '../views/AdminView.vue'
@@ -23,6 +24,15 @@ const routes = [
     meta: {
       title: '显卡性价比排行榜 - 奇魂的小窝',
       description: '显卡性价比排行榜，基于实测数据。涵盖NVIDIA/AMD/Intel主流显卡1080P/2K/4K游戏性能、创作效率、价格走势。'
+    }
+  },
+  { 
+    path: '/gpu-tier', 
+    name: 'gpu-tier', 
+    component: GpuTierChart,
+    meta: {
+      title: '显卡游戏性能天梯图 - 奇魂的小窝',
+      description: 'NVIDIA/AMD/Intel显卡游戏性能天梯图，支持1080p/2K/4K分辨率切换，基于实测数据实时更新。'
     }
   },
   { 

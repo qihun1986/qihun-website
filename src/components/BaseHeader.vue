@@ -11,6 +11,7 @@
       <nav class="nav">
         <router-link to="/" class="nav-link" :class="{ active: isActive('/') }">首页</router-link>
         <router-link to="/tier" class="nav-link" :class="{ active: isActive('/tier') }">天梯图</router-link>
+        <router-link to="/gpu-tier" class="nav-link" :class="{ active: isActive('/gpu-tier') }">显卡天梯</router-link>
         <router-link to="/videos" class="nav-link" :class="{ active: isActive('/videos') }">视频</router-link>
         <router-link to="/about" class="nav-link" :class="{ active: isActive('/about') }">关于</router-link>
       </nav>
@@ -107,6 +108,11 @@ const isActive = (path: string): boolean => {
     return route.path === '/' || route.path === '/gpu'
   }
   return route.path.startsWith(path)
+}
+
+// isActive 也匹配 /gpu-tier
+const isActiveGpuTier = (): boolean => {
+  return route.path === '/gpu-tier'
 }
 
 const toggleDropdown = (type: 'charge' | 'fans') => {
