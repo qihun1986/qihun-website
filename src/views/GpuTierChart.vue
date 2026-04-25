@@ -1,31 +1,7 @@
 <template>
   <div class="tier-page">
-    <div class="page-header">
-      <h1>🎮 显卡游戏性能天梯图</h1>
-    </div>
-
-    <!-- Tab 切换（游戏/渲染/AI） -->
-    <div class="tab-bar">
-      <button
-        v-for="tab in tabs"
-        :key="tab.id"
-        class="tab-btn"
-        :class="{ active: activeTab === tab.id }"
-        @click="switchTab(tab.id)"
-      >
-        {{ tab.label }}
-      </button>
-    </div>
-
-    <!-- 建设中占位（渲染/AI） -->
-    <div v-if="activeTab !== 'gpu-game'" class="building-card">
-      <div class="building-icon">🚧</div>
-      <h2>{{ getTabLabel(activeTab) }}</h2>
-      <p>数据采集中，即将上线</p>
-    </div>
-
     <!-- 游戏性能天梯内容 -->
-    <div v-else class="tier-content">
+    <div class="tier-content">
       <!-- 顶部栏 -->
       <div class="top-bar">
         <div class="search-bar" @focusout="onSearchBlur">
@@ -364,13 +340,8 @@ interface SeriesLabel {
   cpu: Gpu | null
 }
 
+// Tab已移除，只保留游戏性能
 // ============== 常量 ==============
-const tabs = [
-  { id: 'gpu-game', label: '游戏性能' },
-  { id: 'gpu-render', label: '渲染效率' },
-  { id: 'gpu-ai', label: 'AI性能' }
-]
-
 const resolutions = [
   { key: '1080p', label: '1080p', field: 'abs_game_performance_1080p' as const },
   { key: '2k', label: '2K', field: 'abs_game_performance_2k' as const },
@@ -401,7 +372,6 @@ const supabase = createClient(
 )
 
 // ============== 响应式状态 ==============
-const activeTab = ref('gpu-game')
 const gpus = ref<Gpu[]>([])
 const loading = ref(true)
 const showSearchDropdown = ref(false)
@@ -683,15 +653,6 @@ const searchDropdownItems = computed(() => {
 })
 
 // ============== 交互方法 ==============
-function switchTab(tabId: string) {
-  activeTab.value = tabId
-  if (tabId === 'gpu-game') loadGpus()
-}
-
-function getTabLabel(tabId: string) {
-  return tabs.find(t => t.id === tabId)?.label || ''
-}
-
 function switchResolution(res: string) {
   gpuState.resolution = res
   localStorage.setItem('gpu-tier-resolution', res)
@@ -889,53 +850,6 @@ onUnmounted(() => {
   font-weight: 700;
   margin-bottom: 0.8rem;
   text-align: center;
-}
-/* Tab 栏 */
-.tab-bar {
-  display: flex;
-  gap: 0.4rem;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-bottom: 1rem;
-  padding: 0.5rem;
-  background: var(--bg-secondary);
-  border-radius: 8px;
-}
-.tab-btn {
-  padding: 0.5rem 1rem;
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--text-secondary);
-  cursor: pointer;
-  transition: all 0.2s;
-  min-height: 44px;
-}
-.tab-btn.active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: black;
-}
-.building-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem;
-  background: var(--bg-secondary);
-  border-radius: 12px;
-  border: 1px dashed var(--border);
-}
-.building-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-}
-.building-card h2 {
-  color: var(--text-primary);
-  margin-bottom: 0.5rem;
-}
-.building-card p {
-  color: var(--text-secondary);
 }
 /* 顶部栏 */
 .top-bar {

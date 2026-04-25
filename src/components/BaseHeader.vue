@@ -9,8 +9,8 @@
 
       <!-- 导航：首页、天梯图、视频、关于 -->
       <nav class="nav">
-        <router-link to="/" class="nav-link" :class="{ active: isActive('/') }">首页</router-link>
-        <router-link to="/tier" class="nav-link" :class="{ active: isActive('/tier') }">天梯图</router-link>
+        <router-link to="/" class="nav-link" :class="{ active: isActive('/') }">性价榜</router-link>
+        <router-link to="/tier" class="nav-link" :class="{ active: isActive('/tier') }">CPU天梯</router-link>
         <router-link to="/gpu-tier" class="nav-link" :class="{ active: isActive('/gpu-tier') }">显卡天梯</router-link>
         <router-link to="/videos" class="nav-link" :class="{ active: isActive('/videos') }">视频</router-link>
         <router-link to="/about" class="nav-link" :class="{ active: isActive('/about') }">关于</router-link>

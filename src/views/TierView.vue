@@ -1,30 +1,5 @@
 <template>
   <div class="tier-page">
-    <!-- 页面标题 -->
-    <div class="page-header">
-      <h1>🎮 性能天梯图</h1>
-    </div>
-
-    <!-- Tab 切换 -->
-    <div class="tab-bar">
-      <button
-        v-for="tab in tabs"
-        :key="tab.id"
-        class="tab-btn"
-        :class="{ active: activeTab === tab.id }"
-        @click="switchTab(tab.id)"
-      >
-        {{ tab.label }}
-      </button>
-    </div>
-
-    <!-- 建设中占位（显卡相关Tab） -->
-    <div v-if="activeTab.startsWith('gpu-')" class="building-card">
-      <div class="building-icon">🚧</div>
-      <h2>{{ getTabLabel(activeTab) }}</h2>
-      <p>数据采集中，即将上线</p>
-    </div>
-
     <!-- CPU 天梯图内容（游戏/多核） -->
     <div v-else class="tier-content">
       <!-- 搜索栏 + 对比栏（同行） -->
@@ -372,11 +347,6 @@ interface Cpu {
   isEstimated?: boolean
 }
 
-interface Tab {
-  id: string
-  label: string
-}
-
 interface PositionedCpu {
   key: string
   cpus: Cpu[]
@@ -402,14 +372,7 @@ interface SeriesLabel {
 }
 
 // ============== 常量 ==============
-const TABS: Tab[] = [
-  { id: 'cpu-game', label: 'CPU游戏性能' },
-  { id: 'cpu-multi', label: 'CPU多核性能' },
-  { id: 'gpu-game', label: '显卡游戏性能' },
-  { id: 'gpu-create', label: '显卡创作效率' },
-  { id: 'gpu-ai', label: '显卡AI性能' },
-]
-
+// Tab切换已移除，只保留CPU游戏性能
 // 列配置 [colIndex, 系列名, 品牌, 通道宽度]
 const COLUMNS = [
   { idx: 0, series: 'Core i3 / Ultra 200', brand: 'INTEL', prefix: ['i3', 'Ultra 200', 'Ultra'] },
@@ -423,7 +386,8 @@ const COLUMNS = [
 ]
 
 // ============== 响应式状态 ==============
-const activeTab = ref('cpu-game')
+// Tab已移除，默认游戏模式
+const isGameMode = ref(true)
 const cpus = ref<Cpu[]>([])
 const searchQuery = ref('')
 const searchMatchCount = ref(0)
@@ -448,7 +412,8 @@ const multiState = reactive({
 })
 
 // 包装计算属性（根据tab自动选择）
-const isGameMode = computed(() => activeTab.value === 'cpu-game')
+// isGameMode直接控制（Tab已移除）
+const isGameMode = computed(() => true)
 
 const benchmarkCpu = computed({
   get: () => isGameMode.value ? gameState.benchmarkCpu : multiState.benchmarkCpu,
@@ -484,7 +449,7 @@ const tooltip = ref({
 })
 
 // ============== 计算属性 ==============
-const tabs = computed(() => TABS)
+// tabs computed已移除
 
 const sortedCpus = computed(() => {
   return [...cpus.value].sort((a, b) => {
@@ -1032,20 +997,7 @@ function isCpuSearched(cpu: Cpu): boolean {
   return cpu.id === selectedSearchCpu.value.id
 }
 
-function getTabLabel(tabId: string): string {
-  return TABS.find(t => t.id === tabId)?.label || tabId
-}
-
-function switchTab(tabId: string) {
-  activeTab.value = tabId
-  searchQuery.value = ''
-  searchMatchCount.value = 0
-  closeDetailModal()
-  
-  if (tabId === 'cpu-game' || tabId === 'cpu-multi') {
-    loadCpus()
-  }
-}
+// Tab相关函数已移除
 
 // 加载数据
 async function loadCpus() {
@@ -1424,69 +1376,6 @@ onUnmounted(() => {
   font-weight: 700;
 }
 
-/* Tab 切换 */
-.tab-bar {
-  display: flex;
-  gap: 0.4rem;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-bottom: 1rem;
-  padding: 0.5rem;
-  background: var(--bg-secondary);
-  border-radius: 8px;
-}
-
-.tab-btn {
-  padding: 0.5rem 1rem;
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--text-secondary);
-  cursor: pointer;
-  font-size: 0.875rem;
-  transition: all 0.2s;
-  min-height: 44px;
-}
-
-.tab-btn:hover {
-  border-color: var(--accent);
-  color: var(--text-primary);
-}
-
-.tab-btn.active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: white;
-}
-
-/* 建设中占位 */
-.building-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem 2rem;
-  background: var(--bg-secondary);
-  border-radius: 12px;
-  border: 1px dashed var(--border);
-  text-align: center;
-}
-
-.building-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-}
-
-.building-card h2 {
-  color: var(--text-primary);
-  font-size: 1.2rem;
-  margin-bottom: 0.5rem;
-}
-
-.building-card p {
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-}
 
 /* 搜索栏 + 对比栏（同行，各占50%） */
 .top-bar {
@@ -2243,12 +2132,6 @@ onUnmounted(() => {
   .tier-page {
     padding: 0.6rem;
     padding-bottom: 320px;
-  }
-  
-  .tab-btn {
-    padding: 0.4rem 0.7rem;
-    font-size: 0.8rem;
-    min-height: 40px;
   }
   
   .scatter-container {
