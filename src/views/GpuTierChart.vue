@@ -355,7 +355,7 @@ const COLUMNS = [
   { idx: 3, brand: 'NVIDIA', label: 'RTX40', width: 10, match: (m: string) => /RTX 40/i.test(m) },
   { idx: 4, brand: 'NVIDIA', label: 'RTX50', width: 10, match: (m: string) => /RTX 50|GTX 9|GTX 7/i.test(m) },
   { idx: 5, brand: 'AMD', label: 'RX9000', width: 10, match: (m: string) => /RX 9|Vega/i.test(m) },
-  { idx: 6, brand: 'AMD', label: 'RX7000', width: 10, match: (m: string) => /RX 7|RX 5[456789]\d|RX 4\d{2}/i.test(m) },
+  { idx: 6, brand: 'AMD', label: 'RX7000', width: 10, match: (m: string) => /RX 7|RX 5[456789]\d(?!\d)|RX 4\d{2}(?!\d)/i.test(m) },
   { idx: 7, brand: 'AMD', label: 'RX6000', width: 10, match: (m: string) => /RX 6/i.test(m) },
   { idx: 8, brand: 'AMD', label: 'RX5000', width: 10, match: (m: string) => /RX 5\d{3}/i.test(m) },
   { idx: 9, brand: 'INTEL', label: 'Intel', width: 10, match: (m: string) => /INTEL|ARC/i.test(m) }
@@ -373,7 +373,7 @@ const SUB_LABELS: Record<number, { regex: RegExp; label: string }[]> = {
     { regex: /Vega/i, label: 'Vega' }
   ],
   6: [
-    { regex: /RX 5[456789]\d|RX 4\d{2}/i, label: 'RX5/400' }
+    { regex: /RX 5[456789]\d(?!\d)|RX 4\d{2}(?!\d)/i, label: 'RX5/400' }
   ]
 }
 
