@@ -1,7 +1,7 @@
 <template>
   <div class="tier-page">
     <!-- CPU 天梯图内容（游戏/多核） -->
-    <div v-else class="tier-content">
+    <div class="tier-content">
       <!-- 搜索栏 + 对比栏（同行） -->
       <div class="top-bar">
         <div class="search-bar" @focusout="onSearchBlur">
@@ -387,7 +387,6 @@ const COLUMNS = [
 
 // ============== 响应式状态 ==============
 // Tab已移除，默认游戏模式
-const isGameMode = ref(true)
 const cpus = ref<Cpu[]>([])
 const searchQuery = ref('')
 const searchMatchCount = ref(0)
