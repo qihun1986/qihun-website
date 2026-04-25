@@ -127,11 +127,10 @@
             <span class="dot-label">{{ item.displayLabel }}</span>
           </div>
 
-          <!-- 系列标签（单标签 + 双标签） -->
+          <!-- 系列标签（单标签 + 子系列标签） -->
           <template v-for="label in seriesLabels" :key="label.key">
             <div
-              class="series-label"
-              :class="label.brand.toLowerCase()"
+              :class="label.text.includes('GTX') ? 'sub-series-label' : 'series-label ' + label.brand.toLowerCase()"
               :style="{ left: label.x + '%', top: label.y + '%' }"
               @click="label.cpu && showDetailFromCpu(label.cpu)"
             >
@@ -347,12 +346,13 @@ const resolutions = [
 ]
 
 // 列定义（共10列：RTX10/20/30/40/50各一列 + AMD 4列 + Intel 1列）
+// GTX900/GTX700 归入 RTX50列（列4），通过子系列标签区分
 const COLUMNS = [
   { idx: 0, brand: 'NVIDIA', label: 'RTX10', width: 10, match: (m: string) => /RTX 10/i.test(m) },
   { idx: 1, brand: 'NVIDIA', label: 'RTX20', width: 10, match: (m: string) => /RTX 20|GTX 1650|GTX 1660/i.test(m) },
   { idx: 2, brand: 'NVIDIA', label: 'RTX30', width: 10, match: (m: string) => /RTX 30/i.test(m) },
   { idx: 3, brand: 'NVIDIA', label: 'RTX40', width: 10, match: (m: string) => /RTX 40/i.test(m) },
-  { idx: 4, brand: 'NVIDIA', label: 'RTX50', width: 10, match: (m: string) => /RTX 50/i.test(m) },
+  { idx: 4, brand: 'NVIDIA', label: 'RTX50', width: 10, match: (m: string) => /RTX 50|GTX 9|GTX 7/i.test(m) },
   { idx: 5, brand: 'AMD', label: 'RX9000', width: 10, match: (m: string) => /RX 9/i.test(m) },
   { idx: 6, brand: 'AMD', label: 'RX7000', width: 10, match: (m: string) => /RX 7/i.test(m) },
   { idx: 7, brand: 'AMD', label: 'RX6000', width: 10, match: (m: string) => /RX 6/i.test(m) },
@@ -360,8 +360,13 @@ const COLUMNS = [
   { idx: 9, brand: 'INTEL', label: 'Intel', width: 10, match: (m: string) => /INTEL|ARC/i.test(m) }
 ]
 
-// 子系列映射（用于双标签）- 目前无双标签列
-const SUB_LABELS: Record<number, { regex: RegExp; label: string }[]> = {}
+// 子系列映射（用于双标签）- 列4（RTX50列）包含GTX900和GTX700子系列
+const SUB_LABELS: Record<number, { regex: RegExp; label: string }[]> = {
+  4: [
+    { regex: /GTX 9/i, label: 'GTX900' },
+    { regex: /GTX 7/i, label: 'GTX700' }
+  ]
+}
 
 // Supabase 客户端
 const supabase = createClient(
@@ -592,7 +597,7 @@ const positionedGpus = computed(() => {
   return all
 })
 
-// 系列标签（每列最高性能GPU上方3%处）
+// 系列标签（每列最高性能GPU上方3%处，支持子系列）
 const seriesLabels = computed((): SeriesLabel[] => {
   const labels: SeriesLabel[] = []
   const { min, median, max } = scoreRange.value
@@ -609,21 +614,48 @@ const seriesLabels = computed((): SeriesLabel[] => {
     
     if (validGpus.length === 0) continue
     
-    // 找该列最高性能GPU
-    const best = validGpus.reduce((a, b) => (getScore(a) || 0) > (getScore(b) || 0) ? a : b)
-    const bestScore = getScore(best)
-    if (bestScore === null) continue
+    // 检查是否有子系列标签配置
+    const subLabelConfig = SUB_LABELS[colIdx]
     
-    const y = scoreToY(bestScore, min, median, max)
-    
-    labels.push({
-      key: colIdx.toString(),
-      brand: col.brand as 'NVIDIA' | 'AMD' | 'INTEL',
-      text: col.label as string,
-      x: (colIdx + 0.5) * 10,
-      y: y - 3, // 上方3%
-      cpu: best
-    })
+    if (subLabelConfig && subLabelConfig.length > 0) {
+      // 有子系列配置，为每个子系列生成标签
+      for (const subConfig of subLabelConfig) {
+        const subGpus = validGpus.filter(g => subConfig.regex.test(g.model))
+        if (subGpus.length === 0) continue
+        
+        // 找该子系列最高性能GPU
+        const best = subGpus.reduce((a, b) => (getScore(a) || 0) > (getScore(b) || 0) ? a : b)
+        const bestScore = getScore(best)
+        if (bestScore === null) continue
+        
+        const y = scoreToY(bestScore, min, median, max)
+        
+        labels.push({
+          key: `${colIdx}-${subConfig.label}`,
+          brand: col.brand as 'NVIDIA' | 'AMD' | 'INTEL',
+          text: subConfig.label,
+          x: (colIdx + 0.5) * 10,
+          y: y - 3, // 上方3%
+          cpu: best
+        })
+      }
+    } else {
+      // 无子系列，生成主标签
+      const best = validGpus.reduce((a, b) => (getScore(a) || 0) > (getScore(b) || 0) ? a : b)
+      const bestScore = getScore(best)
+      if (bestScore === null) continue
+      
+      const y = scoreToY(bestScore, min, median, max)
+      
+      labels.push({
+        key: colIdx.toString(),
+        brand: col.brand as 'NVIDIA' | 'AMD' | 'INTEL',
+        text: col.label as string,
+        x: (colIdx + 0.5) * 10,
+        y: y - 3, // 上方3%
+        cpu: best
+      })
+    }
   }
   
   return labels
@@ -1044,9 +1076,23 @@ onUnmounted(() => {
 .nvidia-header { background: #76B900; }
 .amd-header { background: #ED1C24; }
 .intel-header { background: #0071C5; }
+/* 子系列标签（GTX900/GTX700） */
+.sub-series-label {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(0,0,0,0.6);
+  color: #76B900;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 5;
+}
 .scatter-plot {
   position: relative;
-  height: 3000px;
+  height: 2000px;
   background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-top: none;
