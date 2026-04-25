@@ -127,10 +127,11 @@
             <span class="dot-label">{{ item.displayLabel }}</span>
           </div>
 
-          <!-- 系列标签（单标签 + 子系列标签） -->
+          <!-- 系列标签（主标签 + 子系列标签） -->
           <template v-for="label in seriesLabels" :key="label.key">
             <div
-              :class="label.text.includes('GTX') ? 'sub-series-label' : 'series-label ' + label.brand.toLowerCase()"
+              class="series-label"
+              :class="label.brand.toLowerCase()"
               :style="{ left: label.x + '%', top: label.y + '%' }"
               @click="label.cpu && showDetailFromCpu(label.cpu)"
             >
@@ -1076,20 +1077,6 @@ onUnmounted(() => {
 .nvidia-header { background: #76B900; }
 .amd-header { background: #ED1C24; }
 .intel-header { background: #0071C5; }
-/* 子系列标签（GTX900/GTX700） */
-.sub-series-label {
-  position: absolute;
-  transform: translate(-50%, -100%);
-  font-size: 12px;
-  font-weight: 600;
-  padding: 2px 6px;
-  border-radius: 4px;
-  background: rgba(0,0,0,0.6);
-  color: #76B900;
-  white-space: nowrap;
-  pointer-events: none;
-  z-index: 5;
-}
 .scatter-plot {
   position: relative;
   height: 2000px;
