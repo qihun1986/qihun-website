@@ -79,13 +79,11 @@
       <div class="benchmark-hint">
         <template v-if="gpuState.benchmarkGpu">
           📌 基准：<strong>{{ formatGpuName(gpuState.benchmarkGpu.model) }}</strong> (100%)
-          <span class="hint-actions">
-            <button class="hint-btn" @click="resetBenchmark">重置基准</button>
-            <button class="hint-btn" @click="openBenchModal(null)">对比表</button>
-          </span>
+          <span class="hint-stats">共 <strong>{{ gpus.length }}</strong> 款显卡，<strong>{{ positionedGpus.length }}</strong> 个圆点</span>
         </template>
         <template v-else>
           💡 点击 GPU 圆点可设为基准或添加到对比
+          <span class="hint-stats">共 <strong>{{ gpus.length }}</strong> 款显卡，<strong>{{ positionedGpus.length }}</strong> 个圆点</span>
         </template>
       </div>
 
@@ -1006,6 +1004,12 @@ onUnmounted(() => {
   color: var(--text-secondary);
   margin-bottom: 0.6rem;
 }
+.hint-stats {
+  margin-left: 1rem;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+.hint-stats strong { color: var(--text-secondary); }
 .hint-btn {
   background: var(--bg-secondary);
   border: 1px solid var(--border);
