@@ -354,18 +354,26 @@ const COLUMNS = [
   { idx: 2, brand: 'NVIDIA', label: 'RTX30', width: 10, match: (m: string) => /RTX 30/i.test(m) },
   { idx: 3, brand: 'NVIDIA', label: 'RTX40', width: 10, match: (m: string) => /RTX 40/i.test(m) },
   { idx: 4, brand: 'NVIDIA', label: 'RTX50', width: 10, match: (m: string) => /RTX 50|GTX 9|GTX 7/i.test(m) },
-  { idx: 5, brand: 'AMD', label: 'RX9000', width: 10, match: (m: string) => /RX 9/i.test(m) },
-  { idx: 6, brand: 'AMD', label: 'RX7000', width: 10, match: (m: string) => /RX 7/i.test(m) },
+  { idx: 5, brand: 'AMD', label: 'RX9000', width: 10, match: (m: string) => /RX 9|Vega/i.test(m) },
+  { idx: 6, brand: 'AMD', label: 'RX7000', width: 10, match: (m: string) => /RX 7|RX 5\d{2}|RX 4\d{2}/i.test(m) },
   { idx: 7, brand: 'AMD', label: 'RX6000', width: 10, match: (m: string) => /RX 6/i.test(m) },
   { idx: 8, brand: 'AMD', label: 'RX5000', width: 10, match: (m: string) => /RX 5\d{3}/i.test(m) },
   { idx: 9, brand: 'INTEL', label: 'Intel', width: 10, match: (m: string) => /INTEL|ARC/i.test(m) }
 ]
 
-// 子系列映射（用于双标签）- 列4（RTX50列）包含GTX900和GTX700子系列
+// 子系列映射（用于多标签列）
+// 列4: RTX50列包含 GTX9/700
+// 列5: RX9000列包含 Vega
+// 列6: RX7000列包含 RX5/400
 const SUB_LABELS: Record<number, { regex: RegExp; label: string }[]> = {
   4: [
-    { regex: /GTX 9/i, label: 'GTX900' },
-    { regex: /GTX 7/i, label: 'GTX700' }
+    { regex: /GTX 9|GTX 7/i, label: 'GTX9/700' }
+  ],
+  5: [
+    { regex: /Vega/i, label: 'Vega' }
+  ],
+  6: [
+    { regex: /RX 5\d{2}|RX 4\d{2}/i, label: 'RX5/400' }
   ]
 }
 
