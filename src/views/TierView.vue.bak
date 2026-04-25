@@ -1,51 +1,32 @@
 <template>
   <div class="tier-page">
-    <!-- 顶部区域：Tab切换 + 轮播图 -->
-    <div class="top-bar">
-      <div class="tabs">
-        <button
-          class="tab-btn"
-          :class="{ active: isGameMode }"
-          @click="switchMode('game')"
-        >
-          🎮 游戏性能
-        </button>
-        <button
-          class="tab-btn"
-          :class="{ active: !isGameMode }"
-          @click="switchMode('multi')"
-        >
-          ⚡ 多核性能
-        </button>
-      </div>
-      
-      <div class="top-bar-spacer"></div>
-      
-      <!-- 顶部轮播图（与CPU榜共用数据） -->
-      <a 
-        :href="carouselItems[currentIndex].link" 
-        target="_blank" 
-        rel="noopener"
-        class="top-carousel"
-        @mouseenter="stopAutoPlay" 
-        @mouseleave="startAutoPlay"
-      >
-        <span class="carousel-text">{{ carouselItems[currentIndex].title }}</span>
-        <div class="carousel-dots">
-          <button 
-            v-for="(_, idx) in carouselItems" 
-            :key="idx"
-            :class="{ active: idx === currentIndex }"
-            @click.prevent="goToSlide(idx)"
-            class="dot-btn"
-            :aria-label="`切换到第${idx + 1}张`"
-          ></button>
-        </div>
-      </a>
+    <!-- 页面标题 -->
+    <div class="page-header">
+      <h1>🎮 性能天梯图</h1>
     </div>
 
-    <!-- CPU 天梯图内容（游戏/多核） -->
-    <div class="tier-content">
+    <!-- Tab 切换 -->
+    <div class="tab-bar">
+      <button
+        v-for="tab in tabs"
+        :key="tab.id"
+        class="tab-btn"
+        :class="{ active: activeTab === tab.id }"
+        @click="switchTab(tab.id)"
+      >
+        {{ tab.label }}
+      </button>
+    </div>
+
+    <!-- 建设中占位 -->
+    <div v-if="activeTab !== 'cpu-game'" class="building-card">
+      <div class="building-icon">🚧</div>
+      <h2>{{ getTabLabel(activeTab) }}</h2>
+      <p>数据采集中，即将上线</p>
+    </div>
+
+    <!-- CPU 游戏性能天梯图内容 -->
+    <div v-else class="tier-content">
       <!-- 搜索栏 + 对比栏（同行） -->
       <div class="top-bar">
         <div class="search-bar" @focusout="onSearchBlur">
@@ -159,7 +140,7 @@
               'is-dimmed': selectedSearchCpu && !item.isSearched,
               'intel': item.brand === 'INTEL',
               'amd': item.brand === 'AMD',
-              'hollow': item.isEstimated && isGameMode,
+              'hollow': item.isEstimated,
             }"
             :style="{
               left: item.x + '%',
@@ -221,7 +202,7 @@
           </div>
           <div class="cpu-row-right">
             <span class="cpu-row-percent" :class="isIntel(cpu) ? 'intel' : 'amd'">
-              {{ getCurrentPercent(cpu) }}%
+              {{ getPerformancePercent(cpu) }}%
             </span>
             <button class="compare-btn-small" @click.stop="addSingleToCompare(cpu)">⚖️</button>
           </div>
@@ -230,12 +211,7 @@
 
       <!-- 底部备注 -->
       <div class="bottom-notes">
-        <template v-if="isGameMode">
-          注：金色圆点代表实测数据（空心代表推算）；默认基准 i5-12490F；单击 CPU 打开详情，可设为基准或添加对比；数据仅供参考。
-        </template>
-        <template v-else>
-          多核分都是上传的真实 R23 跑分平均值，没有估算，放心参考。基准还是那个熟悉的 i5-12490F（100%）。点圆点可以加对比栏、换基准。数据纯手动统计，有不合理的地方群里吼我。
-        </template>
+        注：金色圆点代表实测数据（空心代表推算）；默认基准 i5-12490F；单击 CPU 打开详情，可设为基准或添加对比；数据仅供参考。
       </div>
     </div>
 
@@ -244,7 +220,7 @@
       <div class="tooltip-title">{{ tooltip.title }}</div>
       <div class="tooltip-game-pct">{{ tooltip.percent }}</div>
       <div class="tooltip-bench">基准：{{ benchmarkCpu ? formatCpuName(benchmarkCpu.model) : 'i5-12490F' }}</div>
-      <div v-if="tooltip.estimated && isGameMode" class="tooltip-estimated">(推算)</div>
+      <div v-if="tooltip.estimated" class="tooltip-estimated">(推算)</div>
     </div>
 
     <!-- CPU 详情弹窗 -->
@@ -372,9 +348,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { supabase } from '@/lib/supabase'
-import { carouselItems, AUTO_PLAY_INTERVAL, getDefaultCarouselIndex } from '@/data/carousel'
 
 // ============== 类型定义 ==============
 interface Cpu {
@@ -390,6 +365,11 @@ interface Cpu {
   new_price: number | null
   used_price: number | null
   isEstimated?: boolean
+}
+
+interface Tab {
+  id: string
+  label: string
 }
 
 interface PositionedCpu {
@@ -417,7 +397,14 @@ interface SeriesLabel {
 }
 
 // ============== 常量 ==============
-// Tab切换已移除，只保留CPU游戏性能
+const TABS: Tab[] = [
+  { id: 'cpu-game', label: 'CPU游戏性能' },
+  { id: 'cpu-multi', label: 'CPU多核性能' },
+  { id: 'gpu-game', label: '显卡游戏性能' },
+  { id: 'gpu-create', label: '显卡创作效率' },
+  { id: 'gpu-ai', label: '显卡AI性能' },
+]
+
 // 列配置 [colIndex, 系列名, 品牌, 通道宽度]
 const COLUMNS = [
   { idx: 0, series: 'Core i3 / Ultra 200', brand: 'INTEL', prefix: ['i3', 'Ultra 200', 'Ultra'] },
@@ -431,55 +418,18 @@ const COLUMNS = [
 ]
 
 // ============== 响应式状态 ==============
-// Tab已移除，默认游戏模式
+const activeTab = ref('cpu-game')
 const cpus = ref<Cpu[]>([])
 const searchQuery = ref('')
 const searchMatchCount = ref(0)
+const selectedSearchCpu = ref<Cpu | null>(null)
 const showSearchDropdown = ref(false)
+const compareList = ref<Cpu[]>([])
 const compareExpanded = ref(false)
+const benchmarkCpu = ref<Cpu | null>(null)
 const isMobile = ref(false)
 const scatterContainer = ref<HTMLElement | null>(null)
 const scatterPlot = ref<HTMLElement | null>(null)
-
-// 游戏模式独立状态
-const gameState = reactive({
-  benchmarkCpu: null as Cpu | null,
-  compareList: [] as Cpu[],
-  selectedSearchCpu: null as Cpu | null,
-})
-
-// 多核模式独立状态
-const multiState = reactive({
-  benchmarkCpu: null as Cpu | null,
-  compareList: [] as Cpu[],
-  selectedSearchCpu: null as Cpu | null,
-})
-
-// 模式切换（游戏/多核）
-const isGameMode = ref(true)
-
-function switchMode(mode: 'game' | 'multi') {
-  if (mode === 'game' && !isGameMode.value) {
-    isGameMode.value = true
-  } else if (mode === 'multi' && isGameMode.value) {
-    isGameMode.value = false
-  }
-}
-
-const benchmarkCpu = computed({
-  get: () => isGameMode.value ? gameState.benchmarkCpu : multiState.benchmarkCpu,
-  set: (v) => { if (isGameMode.value) gameState.benchmarkCpu = v; else multiState.benchmarkCpu = v }
-})
-
-const compareList = computed({
-  get: () => isGameMode.value ? gameState.compareList : multiState.compareList,
-  set: (v) => { if (isGameMode.value) gameState.compareList = v; else multiState.compareList = v }
-})
-
-const selectedSearchCpu = computed({
-  get: () => isGameMode.value ? gameState.selectedSearchCpu : multiState.selectedSearchCpu,
-  set: (v) => { if (isGameMode.value) gameState.selectedSearchCpu = v; else multiState.selectedSearchCpu = v }
-})
 
 const detailModal = ref({
   show: false,
@@ -499,33 +449,9 @@ const tooltip = ref({
   style: {} as Record<string, string>,
 })
 
-// ============== 轮播图 ==============
-// carouselItems, AUTO_PLAY_INTERVAL, getDefaultCarouselIndex 从 '@/data/carousel' 导入
-// 默认显示最新的3个（数组最后3个）
-const currentIndex = ref(getDefaultCarouselIndex())
-let autoPlayTimer: ReturnType<typeof setInterval> | null = null
-
-const startAutoPlay = () => {
-  stopAutoPlay()
-  autoPlayTimer = setInterval(() => {
-    currentIndex.value = (currentIndex.value + 1) % carouselItems.length
-  }, AUTO_PLAY_INTERVAL)
-}
-
-const stopAutoPlay = () => {
-  if (autoPlayTimer) {
-    clearInterval(autoPlayTimer)
-    autoPlayTimer = null
-  }
-}
-
-const goToSlide = (idx: number) => {
-  currentIndex.value = idx
-  startAutoPlay()
-}
-
 // ============== 计算属性 ==============
-// tabs computed已移除
+const tabs = computed(() => TABS)
+const isGameMode = computed(() => activeTab.value === 'cpu-game')
 
 const sortedCpus = computed(() => {
   return [...cpus.value].sort((a, b) => {
@@ -545,28 +471,26 @@ const searchDropdownItems = computed(() => {
     .map(c => ({
       cpu: c,
       label: formatCpuName(c.model),
-      pct: getCurrentPercent(c),
+      pct: getPerformancePercent(c),
       isIntel: isIntelCpu(c)
     }))
 })
 
-// 分数范围（根据模式不同）
+// 分数范围（固定 2000-15000）
 const scoreRange = computed(() => {
-  return isGameMode.value
-    ? { min: 3000, max: 15000 }
-    : { min: 5000, max: 50000 }
+  return { min: 2000, max: 15000 }
 })
 
 // 基准分数
 const benchmarkScore = computed(() => {
-  if (!benchmarkCpu.value) return isGameMode.value ? 5000 : 15000
+  if (!benchmarkCpu.value) return 5000
   return isGameMode.value ? benchmarkCpu.value.abs_game_performance : benchmarkCpu.value.abs_multi_performance
 })
 
 // 基准Y位置
 const benchmarkY = computed(() => {
   if (!cpus.value.length) return null
-  return getY(benchmarkScore.value)
+  return scoreToY(benchmarkScore.value)
 })
 
 // Y轴公式：四档等分，3000→100%, 4500→75%, 6000→50%, 8500→25%, 15000→0%
@@ -577,21 +501,6 @@ function scoreToY(score: number): number {
   if (score <= 6000) return 75 - (score - 4500) / 1500 * 25       // 4500-6000, 占25%
   if (score <= 8500) return 50 - (score - 6000) / 2500 * 25       // 6000-8500, 占25%
   return 25 - (score - 8500) / 6500 * 25                           // 8500-15000, 占25%
-}
-
-// 多核Y轴公式：5000→100%, 10000→75%, 18000→50%, 28000→25%, 50000→0%
-function multiScoreToY(score: number): number {
-  if (score <= 5000) return 100
-  if (score >= 50000) return 0
-  if (score <= 10000) return 100 - (score - 5000) / 5000 * 25       // 5000-10000, 占25%
-  if (score <= 18000) return 75 - (score - 10000) / 8000 * 25      // 10000-18000, 占25%
-  if (score <= 28000) return 50 - (score - 18000) / 10000 * 25    // 18000-28000, 占25%
-  return 25 - (score - 28000) / 22000 * 25                         // 28000-50000, 占25%
-}
-
-// 统一Y轴计算（根据模式选择）
-function getY(score: number): number {
-  return isGameMode.value ? scoreToY(score) : multiScoreToY(score)
 }
 
 // 确定CPU属于哪个列（大小写不敏感）
@@ -803,7 +712,7 @@ function buildPositionedCpus(): PositionedCpu[] {
     
     for (const item of items) {
       const score = getScore(item.cpus[0])
-      const rawY = getY(score)
+      const rawY = scoreToY(score)
       
       // 找到不重叠的Y位置
       let finalY = rawY
@@ -858,7 +767,7 @@ const seriesLabels = computed((): SeriesLabel[] => {
     )
     
     // 获取该CPU的Y位置
-    const y = getY(getScore(maxScoreCpu))
+    const y = scoreToY(getScore(maxScoreCpu))
     
     // Ultra 200 系列标签（如果i3列有Ultra芯片）
     if (col.idx === 0) {
@@ -873,7 +782,7 @@ const seriesLabels = computed((): SeriesLabel[] => {
         const coreCpu = coreI3Cpus.reduce((best, cpu) =>
           getScore(cpu) > getScore(best) ? cpu : best
         )
-        const coreY = getY(getScore(coreCpu))
+        const coreY = scoreToY(getScore(coreCpu))
         labels.push({
           key: 'core-i3',
           brand: 'INTEL',
@@ -888,7 +797,7 @@ const seriesLabels = computed((): SeriesLabel[] => {
         const ultraCpu = ultraCpus.reduce((best, cpu) =>
           getScore(cpu) > getScore(best) ? cpu : best
         )
-        const ultraY = getY(getScore(ultraCpu))
+        const ultraY = scoreToY(getScore(ultraCpu))
         labels.push({
           key: 'ultra-200',
           brand: 'INTEL',
@@ -957,23 +866,14 @@ function getSpecValue(cpu: Cpu, key: string): string {
 
 // ============== 方法 ==============
 function getPerformancePercent(cpu: Cpu): number {
-  // 始终返回游戏性能百分比（详情弹窗用）
   if (!benchmarkCpu.value) return 0
-  const pct = (cpu.abs_game_performance / benchmarkCpu.value.abs_game_performance) * 100
+  const pct = (getScore(cpu) / benchmarkScore.value) * 100
   return Math.round(pct)
 }
 
 function getMultiPercent(cpu: Cpu): number {
-  // 始终返回多核性能百分比（详情弹窗用）
   if (!benchmarkCpu.value) return 0
   const pct = (cpu.abs_multi_performance / benchmarkCpu.value.abs_multi_performance) * 100
-  return Math.round(pct)
-}
-
-// 当前模式的百分比（tooltip/标签用）
-function getCurrentPercent(cpu: Cpu): number {
-  if (!benchmarkCpu.value) return 0
-  const pct = (getScore(cpu) / benchmarkScore.value) * 100
   return Math.round(pct)
 }
 
@@ -1073,7 +973,20 @@ function isCpuSearched(cpu: Cpu): boolean {
   return cpu.id === selectedSearchCpu.value.id
 }
 
-// Tab相关函数已移除
+function getTabLabel(tabId: string): string {
+  return TABS.find(t => t.id === tabId)?.label || tabId
+}
+
+function switchTab(tabId: string) {
+  activeTab.value = tabId
+  searchQuery.value = ''
+  searchMatchCount.value = 0
+  closeDetailModal()
+  
+  if (tabId === 'cpu-game' || tabId === 'cpu-multi') {
+    loadCpus()
+  }
+}
 
 // 加载数据
 async function loadCpus() {
@@ -1102,14 +1015,13 @@ async function loadCpus() {
     isEstimated: isHollowModel(cpu.model),
   }))
   
-  // 设置默认基准（两个模式都设置）
+  // 设置默认基准
   const defaultBench = cpus.value.find(c =>
     c.model.toUpperCase().includes('12490F')
   )
   if (defaultBench) {
-    gameState.benchmarkCpu = defaultBench
-    multiState.benchmarkCpu = defaultBench
-    console.log('[TierView] 找到基准CPU:', defaultBench.model, '游戏分:', defaultBench.abs_game_performance, '多核分:', defaultBench.abs_multi_performance)
+    benchmarkCpu.value = defaultBench
+    console.log('[TierView] 找到基准CPU:', defaultBench.model, '分数:', defaultBench.abs_game_performance)
   } else {
     console.warn('[TierView] 未找到基准CPU 12490F')
   }
@@ -1199,10 +1111,10 @@ function showTooltip(item: PositionedCpu, event: MouseEvent) {
     percentText = item.cpus.map(c => {
       const shortName = stripSuffix(c.model).replace(/INTEL\s*CORE\s*/i, '').replace(/AMD\s*RYZEN\s*/i, '').replace(/AMD\s*/i, '').trim()
       const suffix = c.model.match(/(X3D|KF|KS|K|F|GE?|X|3D)$/i)?.[1] || ''
-      return (shortName.split(/[-\s]/).pop() || '') + suffix + ':' + getCurrentPercent(c) + '%'
+      return (shortName.split(/[-\s]/).pop() || '') + suffix + ':' + getPerformancePercent(c) + '%'
     }).join(' / ')
   } else {
-    percentText = getCurrentPercent(cpu) + '%'
+    percentText = getPerformancePercent(cpu) + '%'
   }
   tooltip.value = {
     visible: true,
@@ -1223,7 +1135,7 @@ function showLabelTooltip(label: SeriesLabel, event: MouseEvent) {
   tooltip.value = {
     visible: true,
     title: formatCpuName(label.cpu.model),
-    percent: getCurrentPercent(label.cpu),
+    percent: getPerformancePercent(label.cpu),
     estimated: label.cpu.isEstimated || false,
     style: {
       position: 'fixed',
@@ -1352,51 +1264,29 @@ function closeCompare() {
   compareExpanded.value = false
 }
 
-// localStorage（两个模式独立存储）
+// localStorage
 function saveCompareToStorage() {
-  // 游戏模式
-  const gameData = {
-    compareList: gameState.compareList.map(c => c.id),
-    benchmarkId: gameState.benchmarkCpu?.id,
+  const data = {
+    compareList: compareList.value.map(c => c.id),
+    benchmarkId: benchmarkCpu.value?.id,
   }
-  localStorage.setItem('tier-compare-game', JSON.stringify(gameData))
-  // 多核模式
-  const multiData = {
-    compareList: multiState.compareList.map(c => c.id),
-    benchmarkId: multiState.benchmarkCpu?.id,
-  }
-  localStorage.setItem('tier-compare-multi', JSON.stringify(multiData))
+  localStorage.setItem('tier-compare', JSON.stringify(data))
 }
 
 function loadCompareFromStorage() {
   try {
-    // 恢复游戏模式
-    const gameStored = localStorage.getItem('tier-compare-game')
-    if (gameStored) {
-      const data = JSON.parse(gameStored)
-      if (data.benchmarkId) {
-        const bench = cpus.value.find(c => c.id === data.benchmarkId)
-        if (bench) gameState.benchmarkCpu = bench
-      }
-      if (data.compareList) {
-        gameState.compareList = cpus.value.filter(c =>
-          data.compareList.includes(c.id)
-        )
-      }
+    const stored = localStorage.getItem('tier-compare')
+    if (!stored) return
+    
+    const data = JSON.parse(stored)
+    if (data.benchmarkId) {
+      const bench = cpus.value.find(c => c.id === data.benchmarkId)
+      if (bench) benchmarkCpu.value = bench
     }
-    // 恢复多核模式
-    const multiStored = localStorage.getItem('tier-compare-multi')
-    if (multiStored) {
-      const data = JSON.parse(multiStored)
-      if (data.benchmarkId) {
-        const bench = cpus.value.find(c => c.id === data.benchmarkId)
-        if (bench) multiState.benchmarkCpu = bench
-      }
-      if (data.compareList) {
-        multiState.compareList = cpus.value.filter(c =>
-          data.compareList.includes(c.id)
-        )
-      }
+    if (data.compareList) {
+      compareList.value = cpus.value.filter(c =>
+        data.compareList.includes(c.id)
+      )
     }
   } catch (e) {
     // ignore
@@ -1423,13 +1313,11 @@ onMounted(() => {
   window.addEventListener('resize', checkMobile)
   window.addEventListener('keydown', handleKeydown)
   loadCpus()
-  startAutoPlay()
 })
 
 onUnmounted(() => {
   window.removeEventListener('resize', checkMobile)
   window.removeEventListener('keydown', handleKeydown)
-  stopAutoPlay()
 })
 </script>
 
@@ -1440,111 +1328,6 @@ onUnmounted(() => {
   padding: 1rem;
   min-height: 80vh;
   padding-bottom: 280px;
-}
-
-/* 顶部区域：Tab切换 + 轮播图 */
-.top-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-  flex-wrap: wrap;
-}
-
-.tabs {
-  display: flex;
-  gap: 0.5rem;
-  flex-shrink: 0;
-}
-
-.tab-btn {
-  padding: 0.6rem 1.2rem;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  color: var(--text-secondary);
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  min-height: 44px;
-}
-
-.tab-btn:hover {
-  border-color: var(--accent);
-  color: var(--text-primary);
-}
-
-.tab-btn.active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #000;
-  font-weight: 600;
-}
-
-.top-bar-spacer {
-  flex: 1;
-}
-
-/* 顶部轮播图（纯文字占位） */
-.top-carousel {
-  flex: 1;
-  min-width: 240px;
-  max-width: 450px;
-  height: 44px;
-  position: relative;
-  border-radius: 8px;
-  overflow: hidden;
-  background: var(--bg-tertiary);
-  border: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  text-decoration: none;
-  transition: border-color 0.2s;
-}
-
-.top-carousel:hover {
-  border-color: var(--accent);
-}
-
-.carousel-text {
-  font-size: 0.82rem;
-  color: var(--text-secondary);
-  padding: 0 0.8rem;
-  text-align: center;
-  flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.carousel-dots {
-  position: absolute;
-  bottom: 4px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 4px;
-}
-
-.dot-btn {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.4);
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  transition: background 0.2s;
-}
-
-.dot-btn.active {
-  background: var(--accent);
-}
-
-.dot-btn:hover {
-  background: var(--accent-hover);
 }
 
 /* 页面标题 */
@@ -1559,9 +1342,72 @@ onUnmounted(() => {
   font-weight: 700;
 }
 
+/* Tab 切换 */
+.tab-bar {
+  display: flex;
+  gap: 0.4rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background: var(--bg-secondary);
+  border-radius: 8px;
+}
+
+.tab-btn {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+  min-height: 44px;
+}
+
+.tab-btn:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.tab-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+/* 建设中占位 */
+.building-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  border: 1px dashed var(--border);
+  text-align: center;
+}
+
+.building-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.building-card h2 {
+  color: var(--text-primary);
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.building-card p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
 
 /* 搜索栏 + 对比栏（同行，各占50%） */
-.tier-content .top-bar {
+.top-bar {
   display: flex;
   align-items: stretch;
   gap: 0.75rem;
@@ -2317,6 +2163,12 @@ onUnmounted(() => {
     padding-bottom: 320px;
   }
   
+  .tab-btn {
+    padding: 0.4rem 0.7rem;
+    font-size: 0.8rem;
+    min-height: 40px;
+  }
+  
   .scatter-container {
     /* 移动端不隐藏，显示散点图（含空心圆） */
     overflow-x: auto;
@@ -2495,43 +2347,8 @@ td.is-benchmark {
 
 /* ========== 移动端适配 ========== */
 @media (max-width: 768px) {
-  /* 顶部区域：Tab切换 + 轮播图 */
+  /* 顶栏：搜索栏和对比栏各自单独成行，弹性布局 */
   .top-bar {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.5rem;
-  }
-  
-  .top-bar-spacer {
-    display: none;
-  }
-  
-  .tabs {
-    width: 100%;
-    justify-content: center;
-  }
-  
-  .tab-btn {
-    font-size: 0.85rem;
-    padding: 0.4rem 0.6rem;
-    min-height: 36px;
-    flex: 1;
-    text-align: center;
-  }
-  
-  .top-carousel {
-    max-width: 100%;
-    height: 38px;
-    min-height: 38px;
-  }
-  
-  .dot-btn {
-    width: 6px;
-    height: 6px;
-  }
-  
-  /* 内容区顶栏：搜索栏和对比栏各自单独成行，弹性布局 */
-  .tier-content .top-bar {
     flex-direction: column;
     gap: 0.5rem;
   }

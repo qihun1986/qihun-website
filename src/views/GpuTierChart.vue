@@ -1,5 +1,44 @@
 <template>
   <div class="tier-page">
+    <!-- 顶部区域：Tab切换 + 轮播图 -->
+    <div class="top-bar">
+      <div class="tabs">
+        <button class="tab-btn active">
+          <span class="tab-icon">🎮</span>游戏性能
+        </button>
+        <button class="tab-btn disabled" title="敬请期待">
+          <span class="tab-icon">🎨</span>创作效率 🚧
+        </button>
+        <button class="tab-btn disabled" title="敬请期待">
+          <span class="tab-icon">🤖</span>AI性能 🚧
+        </button>
+      </div>
+      
+      <div class="top-bar-spacer"></div>
+      
+      <!-- 顶部轮播图（与显卡榜共用数据） -->
+      <a 
+        :href="carouselItems[currentIndex]?.link || '# '" 
+        target="_blank" 
+        rel="noopener"
+        class="top-carousel"
+        @mouseenter="stopAutoPlay" 
+        @mouseleave="startAutoPlay"
+      >
+        <span class="carousel-text">{{ carouselItems[currentIndex]?.title || '加载中...' }}</span>
+        <div class="carousel-dots">
+          <button 
+            v-for="(_, idx) in carouselItems" 
+            :key="idx"
+            :class="{ active: idx === currentIndex }"
+            @click.prevent="goToSlide(idx)"
+            class="dot-btn"
+            :aria-label="`切换到第${idx + 1}张`"
+          ></button>
+        </div>
+      </a>
+    </div>
+
     <!-- 游戏性能天梯内容 -->
     <div class="tier-content">
       <!-- 顶部栏 -->
@@ -302,6 +341,7 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted, onUnmounted, watch } from 'vue'
 import { createClient } from '@supabase/supabase-js'
+import { carouselItems, AUTO_PLAY_INTERVAL, getDefaultCarouselIndex } from '@/data/carousel-gpu'
 
 // ============== 类型 ==============
 interface Gpu {
@@ -398,6 +438,30 @@ const gpuState = reactive({
   searchQuery: ''
 })
 
+// ============== 轮播图 ==============
+// carouselItems, AUTO_PLAY_INTERVAL, getDefaultCarouselIndex 从 '@/data/carousel' 导入
+// 默认显示最新的3个（数组最后3个）
+const currentIndex = ref(getDefaultCarouselIndex())
+let autoPlayTimer: ReturnType<typeof setInterval> | null = null
+
+const startAutoPlay = () => {
+  stopAutoPlay()
+  autoPlayTimer = setInterval(() => {
+    currentIndex.value = (currentIndex.value + 1) % carouselItems.length
+  }, AUTO_PLAY_INTERVAL)
+}
+
+const stopAutoPlay = () => {
+  if (autoPlayTimer) {
+    clearInterval(autoPlayTimer)
+    autoPlayTimer = null
+  }
+}
+
+const goToSlide = (idx: number) => {
+  currentIndex.value = idx
+}
+
 const detailModal = ref({ show: false, gpu: null as Gpu | null, mergedGpus: [] as Gpu[] })
 const benchModal = ref({ show: false })
 const tooltip = ref({ visible: false, title: '', percent: '', style: {} as Record<string, string> })
@@ -428,31 +492,31 @@ function getScore(gpu: Gpu): number | null {
   return score
 }
 
-// Y轴映射（中位数分界：高分区30%，低分区70%）
-function scoreToY(score: number, minScore: number, medianScore: number, maxScore: number): number {
+// Y轴映射（60%分界：高分0-30%占30%高度，低分30-100%占70%高度）
+function scoreToY(score: number, minScore: number, p60Score: number, maxScore: number): number {
   if (maxScore === minScore) return 50
-  if (score >= medianScore) {
-    // 高分区：0-30%
-    return 30 * (maxScore - score) / (maxScore - medianScore)
+  if (score >= p60Score) {
+    // 高分区（60%-100%分数）：占图表上方0-30%高度
+    return 30 * (maxScore - score) / (maxScore - p60Score)
   } else {
-    // 低分区：30-100%
-    return 30 + 70 * (medianScore - score) / (medianScore - minScore)
+    // 低分区（0%-60%分数）：占图表下方30-100%高度
+    return 30 + 70 * (p60Score - score) / (p60Score - minScore)
   }
 }
 
-// 当前分辨率下的分数范围（动态，含中位数）
+// 当前分辨率下的分数范围（动态，含60%分位点）
 const scoreRange = computed(() => {
   const scores = gpus.value.map(g => getScore(g)).filter((s): s is number => s !== null && s > 0)
-  if (scores.length === 0) return { min: 0, median: 500, max: 1000 }
+  if (scores.length === 0) return { min: 0, p60: 500, max: 1000 }
   let min = Math.min(...scores)
   let max = Math.max(...scores)
   // 顶部留白20%，避免最高分顶到头
   max = max * 1.2
-  // 计算中位数
+  // 计算60%分位点（第60百分位数）
   const sorted = [...scores].sort((a, b) => a - b)
-  const mid = Math.floor(sorted.length / 2)
-  const median = sorted.length % 2 !== 0 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2
-  return { min, median, max }
+  const p60Index = Math.floor(sorted.length * 0.6)
+  const p60 = sorted[p60Index] || sorted[sorted.length - 1]
+  return { min, p60, max }
 })
 
 // 基准分数
@@ -466,7 +530,7 @@ const benchmarkY = computed(() => {
   if (!gpuState.benchmarkGpu) return null
   const score = getScore(gpuState.benchmarkGpu)
   if (score === null) return null
-  return scoreToY(score, scoreRange.value.min, scoreRange.value.median, scoreRange.value.max)
+  return scoreToY(score, scoreRange.value.min, scoreRange.value.p60, scoreRange.value.max)
 })
 
 // 获取百分比（指定分辨率）
@@ -552,7 +616,7 @@ function mergeAndPosition(gpusInCol: Gpu[], colIdx: number): PositionedGpu[] {
   const items = groups.map(g => ({ gpus: g, merged: g.length > 1 }))
   const usedYs: number[] = []
   const minSpacing = 1.2
-  const { min, median, max } = scoreRange.value
+  const { min, p60, max } = scoreRange.value
   const result: PositionedGpu[] = []
   
   // 圆点左偏移15%
@@ -560,7 +624,7 @@ function mergeAndPosition(gpusInCol: Gpu[], colIdx: number): PositionedGpu[] {
   
   for (const item of items) {
     const score = getScore(item.gpus[0]) || 0
-    let rawY = scoreToY(score, min, median, max)
+    let rawY = scoreToY(score, min, p60, max)
     let finalY = rawY
     let attempts = 0
     
@@ -609,7 +673,7 @@ const positionedGpus = computed(() => {
 // 系列标签（每列最高性能GPU上方3%处，支持子系列）
 const seriesLabels = computed((): SeriesLabel[] => {
   const labels: SeriesLabel[] = []
-  const { min, median, max } = scoreRange.value
+  const { min, p60, max } = scoreRange.value
   
   for (let colIdx = 0; colIdx < COLUMNS.length; colIdx++) {
     const col = COLUMNS[colIdx]
@@ -630,7 +694,7 @@ const seriesLabels = computed((): SeriesLabel[] => {
     const mainBest = validGpus.reduce((a, b) => (getScore(a) || 0) > (getScore(b) || 0) ? a : b)
     const mainBestScore = getScore(mainBest)
     if (mainBestScore !== null) {
-      const mainY = scoreToY(mainBestScore, min, median, max)
+      const mainY = scoreToY(mainBestScore, min, p60, max)
       labels.push({
         key: colIdx.toString(),
         brand: col.brand as 'NVIDIA' | 'AMD' | 'INTEL',
@@ -652,7 +716,7 @@ const seriesLabels = computed((): SeriesLabel[] => {
         const bestScore = getScore(best)
         if (bestScore === null) continue
         
-        const y = scoreToY(bestScore, min, median, max)
+        const y = scoreToY(bestScore, min, p60, max)
         
         labels.push({
           key: `${colIdx}-${subConfig.label}`,
@@ -867,10 +931,12 @@ onMounted(() => {
   checkMobile()
   window.addEventListener('resize', checkMobile)
   loadGpus()
+  startAutoPlay()
 })
 
 onUnmounted(() => {
   window.removeEventListener('resize', checkMobile)
+  stopAutoPlay()
 })
 </script>
 
@@ -882,6 +948,129 @@ onUnmounted(() => {
   padding: 1rem;
   min-height: 80vh;
 }
+
+/* 顶部区域：Tab切换 + 轮播图 */
+.top-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.top-bar-spacer {
+  flex: 1;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.tab-btn {
+  padding: 0.6rem 1.2rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.tab-btn:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.tab-btn.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+  font-weight: 600;
+}
+
+.tab-btn.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tab-btn.disabled:hover {
+  background: var(--bg-secondary);
+  border-color: var(--border);
+}
+
+.tab-icon {
+  font-size: 1rem;
+  line-height: 1;
+}
+
+/* 顶部轮播图 */
+.top-carousel {
+  flex: 1;
+  min-width: 240px;
+  max-width: 450px;
+  height: 44px;
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color 0.2s;
+}
+
+.top-carousel:hover {
+  border-color: var(--accent);
+}
+
+.carousel-text {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  padding: 0 0.8rem;
+  text-align: center;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.carousel-dots {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 4px;
+}
+
+.dot-btn {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s;
+}
+
+.dot-btn.active {
+  background: var(--accent);
+}
+
+.dot-btn:hover {
+  background: var(--accent-hover);
+}
 .page-header h1 {
   color: var(--text-primary);
   font-size: 1.5rem;
@@ -889,8 +1078,8 @@ onUnmounted(() => {
   margin-bottom: 0.8rem;
   text-align: center;
 }
-/* 顶部栏 */
-.top-bar {
+/* 内容区顶部栏 */
+.tier-content .top-bar {
   display: flex;
   align-items: stretch;
   gap: 0.75rem;
@@ -1338,7 +1527,48 @@ onUnmounted(() => {
 /* 响应式 */
 @media (max-width: 768px) {
   .scatter-container { display: none; }
-  .top-bar { flex-direction: column; align-items: stretch; }
+  
+  /* 顶部区域：Tab切换 + 轮播图 */
+  .tier-page > .top-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+  
+  .tier-page > .top-bar .top-bar-spacer {
+    display: none;
+  }
+  
+  .tier-page > .top-bar .tabs {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .tier-page > .top-bar .tab-btn {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.6rem;
+    min-height: 36px;
+    flex: 1;
+    text-align: center;
+  }
+  
+  .tier-page > .top-bar .top-carousel {
+    max-width: 100%;
+    height: 38px;
+    min-height: 38px;
+  }
+  
+  .tier-page > .top-bar .dot-btn {
+    width: 6px;
+    height: 6px;
+  }
+  
+  /* 内容区顶部栏 */
+  .tier-content .top-bar { 
+    flex-direction: column; 
+    align-items: stretch; 
+  }
+  
   .resolution-switcher { justify-content: center; }
   .compare-inline { width: 100%; }
   .brand-headers { display: none; }

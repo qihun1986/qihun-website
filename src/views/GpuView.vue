@@ -408,6 +408,7 @@ import {
 } from '@/components/useFilterBar'
 import MobileFilterSheet from '@/components/MobileFilterSheet.vue'
 import gpuReleaseDates from '@/assets/gpu_release_dates.json'
+import { carouselItems, AUTO_PLAY_INTERVAL, getDefaultCarouselIndex } from '@/data/carousel-gpu'
 
 echarts.use([LineChart, TitleComponent, TooltipComponent, GridComponent, LegendComponent, CanvasRenderer])
 
@@ -519,20 +520,16 @@ const chartContainer = ref<HTMLElement | null>(null)
 const priceChartLoading = ref(false)
 
 // 轮播图
-const currentIndex = ref(0)
+// carouselItems, AUTO_PLAY_INTERVAL, getDefaultCarouselIndex 从 '@/data/carousel-gpu' 导入
+// 默认显示最新的3个（数组最后3个）
+const currentIndex = ref(getDefaultCarouselIndex())
 let autoPlayTimer: ReturnType<typeof setInterval> | null = null
-
-const carouselItems = [
-  { image: '/images/banner1.jpg', link: 'https://www.bilibili.com/video/BV1WhXjBDE5p', title: '5060TI、9070GRE~11款游戏对比横评！' },
-  { image: '/images/banner2.jpg', link: 'https://www.bilibili.com/video/BV1L7dnBoE4p/', title: '2026.05二手显卡推荐！萌新适用，省钱避坑~' },
-  { image: '/images/banner3.jpg', link: 'https://www.bilibili.com/', title: '显卡天梯图预告' }
-]
 
 const startAutoPlay = () => {
   stopAutoPlay()
   autoPlayTimer = setInterval(() => {
     currentIndex.value = (currentIndex.value + 1) % carouselItems.length
-  }, 5000)
+  }, AUTO_PLAY_INTERVAL)
 }
 
 const stopAutoPlay = () => {

@@ -3,8 +3,12 @@
     <!-- 顶部区域：标签 + 轮播图 -->
     <div class="top-bar">
       <div class="tabs">
-        <router-link to="/" class="tab-btn" :class="{ active: $route.path === '/' }">CPU榜</router-link>
-        <router-link to="/gpu" class="tab-btn" :class="{ active: $route.path === '/gpu' }">显卡榜</router-link>
+        <router-link to="/" class="tab-btn" :class="{ active: $route.path === '/' }">
+          <span class="tab-icon">🖥️</span>CPU榜
+        </router-link>
+        <router-link to="/gpu" class="tab-btn" :class="{ active: $route.path === '/gpu' }">
+          <span class="tab-icon">🎮</span>显卡榜
+        </router-link>
       </div>
       
       <div class="top-bar-spacer"></div>
@@ -335,6 +339,7 @@ import {
   priceInRange, clearCpuPrice, cpuPriceLabel,
 } from '@/components/useFilterBar'
 import MobileFilterSheet from '@/components/MobileFilterSheet.vue'
+import { carouselItems, AUTO_PLAY_INTERVAL, getDefaultCarouselIndex } from '@/data/carousel'
 
 echarts.use([LineChart, TitleComponent, TooltipComponent, GridComponent, LegendComponent, CanvasRenderer])
 
@@ -389,20 +394,18 @@ const chartContainer = ref<HTMLElement | null>(null)
 const priceChartLoading = ref(false)
 
 // 轮播图
-const currentIndex = ref(0)
+// 默认显示最新的3个（数组最后3个）
+const currentIndex = ref(getDefaultCarouselIndex())
 let autoPlayTimer: ReturnType<typeof setInterval> | null = null
 
-const carouselItems = [
-  { image: '/images/banner1.jpg', link: 'https://www.bilibili.com/video/BV1NcdaBMEWu/', title: '5600升级5500x3d,7500f值不值？省流推荐！' },
-  { image: '/images/banner2.jpg', link: 'https://www.bilibili.com/video/BV1mch3zgEDY/', title: 'DDR5：4800~8000频率对比测试 / 有彩蛋' },
-  { image: '/images/banner3.jpg', link: 'https://www.bilibili.com/video/BV121HkzMESh/', title: '2000元CPU 全面对比，生产力 | 游戏 | 功耗' }
-]
+// 轮播图数据从共享文件导入
+// carouselItems, AUTO_PLAY_INTERVAL, getDefaultCarouselIndex 来自 '@/data/carousel'
 
 const startAutoPlay = () => {
   stopAutoPlay()
   autoPlayTimer = setInterval(() => {
     currentIndex.value = (currentIndex.value + 1) % carouselItems.length
-  }, 5000)
+  }, AUTO_PLAY_INTERVAL)
 }
 
 const stopAutoPlay = () => {
@@ -1143,6 +1146,10 @@ onUnmounted(() => {
   cursor: pointer;
   transition: all 0.2s;
   min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
 }
 
 .tab-btn:hover {
@@ -1156,6 +1163,11 @@ onUnmounted(() => {
   border-color: var(--accent);
   color: #000;
   font-weight: 600;
+}
+
+.tab-icon {
+  font-size: 1rem;
+  line-height: 1;
 }
 
 /* 顶部轮播图（纯文字占位） */
