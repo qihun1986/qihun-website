@@ -8,9 +8,30 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 
-// Supabase 配置
-const SUPABASE_URL = 'https://azvcjobnbgreffuuceyi.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_hV8gIo_nFvqyYHhKqsi6Rw_S9AfwazX';
+// Supabase 配置（从 .env 读取，不硬编码密钥）
+function loadEnv() {
+  const envPath = path.join(__dirname, '.env');
+  if (!fs.existsSync(envPath)) return {};
+  const lines = fs.readFileSync(envPath, 'utf8').split('\n');
+  const env = {};
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) continue;
+    const idx = trimmed.indexOf('=');
+    if (idx < 0) continue;
+    const key = trimmed.slice(0, idx).trim();
+    const val = trimmed.slice(idx + 1).trim().replace(/^['"]|['"]$/g, '');
+    env[key] = val;
+  }
+  return env;
+}
+const env = loadEnv();
+const SUPABASE_URL = env.VITE_SUPABASE_URL;
+const SUPABASE_KEY = env.VITE_SUPABASE_ANON_KEY;
+if (!SUPABASE_URL || !SUPABASE_KEY) {
+  console.error('❌ 缺少环境变量 VITE_SUPABASE_URL 或 VITE_SUPABASE_ANON_KEY，请检查 .env 文件');
+  process.exit(1);
+}
 
 function fetchJSON(path_url) {
     return new Promise((resolve, reject) => {
