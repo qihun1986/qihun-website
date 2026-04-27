@@ -63,12 +63,65 @@ function escapeHtml(str) {
 }
 
 function generateHTML(cpus, gpus) {
-    // 计算性价比分数
+    // 计算排序
     const cpusSorted = [...cpus].sort((a, b) => (b.abs_game_performance || 0) - (a.abs_game_performance || 0));
     const gpusSorted = [...gpus].sort((a, b) => (b.abs_game_performance_2k || 0) - (a.abs_game_performance_2k || 0));
 
     const baseCPU = cpus.find(c => c.model === 'INTEL Core i5-12490F') || cpus.find(c => c.model.includes('12490F')) || cpusSorted[0];
     const baseGame = baseCPU?.abs_game_performance || 100;
+    const today = new Date().toISOString().split('T')[0];
+    const dateDisplay = new Date().toLocaleDateString('zh-CN');
+    const year = new Date().getFullYear();
+
+    // --- 构建 ItemList JSON-LD (TOP10 CPU + TOP10 GPU) ---
+    const cpuListItems = cpusSorted.slice(0, 10).map((cpu, i) => ({
+        '@type': 'ListItem',
+        'position': i + 1,
+        'url': `https://www.5vip.top/?search=${encodeURIComponent(cpu.model)}`,
+        'name': cpu.model
+    }));
+    const gpuListItems = gpusSorted.slice(0, 10).map((gpu, i) => ({
+        '@type': 'ListItem',
+        'position': i + 1,
+        'url': `https://www.5vip.top/gpu?search=${encodeURIComponent(gpu.model)}`,
+        'name': gpu.model
+    }));
+
+    // --- 构建 Product JSON-LD (TOP3 CPU + TOP3 GPU) ---
+    const cpuProducts = cpusSorted.slice(0, 3).filter(c => c.new_price).map(cpu => ({
+        '@type': 'Product',
+        'name': cpu.model,
+        'description': `游戏性能 ${((cpu.abs_game_performance / baseGame) * 100).toFixed(0)}% / ${cpu.cores || '-'}核${cpu.threads || '-'}线程`,
+        'offers': {
+            '@type': 'Offer',
+            'price': cpu.new_price,
+            'priceCurrency': 'CNY',
+            'availability': 'https://schema.org/InStock',
+            'seller': {'@type': 'Person', 'name': '奇魂'}
+        },
+        'additionalProperty': [
+            {'@type': 'PropertyValue', 'name': '游戏性能基准分', 'value': cpu.abs_game_performance},
+            {'@type': 'PropertyValue', 'name': '核心线程', 'value': `${cpu.cores || '-'}/${cpu.threads || '-'}`},
+            {'@type': 'PropertyValue', 'name': 'TDP', 'value': cpu.tdp ? cpu.tdp + 'W' : '-'}
+        ]
+    }));
+    const gpuProducts = gpusSorted.slice(0, 3).filter(g => g.new_price).map(gpu => ({
+        '@type': 'Product',
+        'name': gpu.model,
+        'description': `2K游戏帧数 ${gpu.abs_game_performance_2k || '-'} / 显存 ${gpu.vram || '-'}`,
+        'offers': {
+            '@type': 'Offer',
+            'price': gpu.new_price,
+            'priceCurrency': 'CNY',
+            'availability': 'https://schema.org/InStock',
+            'seller': {'@type': 'Person', 'name': '奇魂'}
+        },
+        'additionalProperty': [
+            {'@type': 'PropertyValue', 'name': '2K帧数', 'value': gpu.abs_game_performance_2k || '-'},
+            {'@type': 'PropertyValue', 'name': '显存', 'value': gpu.vram || '-'},
+            {'@type': 'PropertyValue', 'name': 'TDP', 'value': gpu.tdp ? gpu.tdp + 'W' : '-'}
+        ]
+    }));
 
     let rows = '';
 
@@ -119,8 +172,9 @@ function generateHTML(cpus, gpus) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CPU性价比榜_显卡性价比榜_历史价格走势 - 奇魂硬件榜</title>
-<meta name="description" content="实时更新CPU显卡性价比榜，每周特价推荐，历史价格走势查询。高性价比CPU显卡选购指南，适合游戏玩家和装机小白。">
+<title>${year}年CPU性价比排行榜（含游戏帧数/多核性能）_显卡性价比榜_历史最低价查询 - 奇魂硬件榜</title>
+<meta name="description" content="奇魂硬件榜实时更新${year}年CPU显卡性价比排行榜，涵盖${cpusSorted.length}款CPU和${gpusSorted.length}款显卡，含游戏帧数、多核性能对比及历史最低价走势。适合游戏玩家和装机用户，高性价比CPU显卡推荐。">
+<meta name="keywords" content="CPU性价比排行榜,${year}年CPU推荐,显卡性价比排行,游戏CPU天梯图,显卡天梯图,历史最低价,装机推荐,游戏帧数对比">
 <link rel="canonical" href="https://www.5vip.top/">
 <meta name="robots" content="index, follow">
 <script type="application/ld+json">
@@ -128,13 +182,47 @@ function generateHTML(cpus, gpus) {
   "@context": "https://schema.org",
   "@type": "Dataset",
   "name": "奇魂CPU显卡性能排行榜",
-  "description": "CPU/显卡游戏性能天梯图，含性价比分析和实时价格",
+  "description": "${year}年最新CPU/显卡性价比排行榜，含游戏帧数、多核性能、实时价格及历史走势分析。收录${cpusSorted.length}款主流CPU和${gpusSorted.length}款显卡数据。",
   "creator": {"@type": "Person", "name": "奇魂", "url": "https://www.5vip.top"},
-  "dateModified": "${new Date().toISOString().split('T')[0]}",
+  "dateModified": "${today}",
   "spatialCoverage": "全球硬件市场",
-  "license": "https://creativecommons.org/licenses/by-nc/4.0/"
+  "license": "https://creativecommons.org/licenses/by-nc/4.0/",
+  "variableMeasured": [
+    {"@type": "PropertyValue", "name": "CPU数量", "value": "${cpusSorted.length}"},
+    {"@type": "PropertyValue", "name": "GPU数量", "value": "${gpusSorted.length}"}
+  ]
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "${year}年CPU性价比排行榜TOP10",
+  "description": "按游戏性能排序的CPU推荐榜单，基准：i5-12490F=100%",
+  "itemListElement": ${JSON.stringify(cpuListItems)}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "name": "${year}年显卡性价比排行榜TOP10",
+  "description": "按2K游戏性能排序的显卡推荐榜单",
+  "itemListElement": ${JSON.stringify(gpuListItems)}
+}
+</script>
+${cpuProducts.length ? `<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": ${JSON.stringify(cpuProducts)}
+}
+</script>` : ''}
+${gpuProducts.length ? `<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": ${JSON.stringify(gpuProducts)}
+}
+</script>` : ''}
 <style>
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:1400px;margin:0 auto;padding:20px;line-height:1.6;color:#222;font-size:14px}
 h1{font-size:20px;border-bottom:2px solid #1a1a2e;padding-bottom:8px;margin-bottom:4px}
@@ -158,10 +246,10 @@ a:hover{text-decoration:underline}
 </head>
 <body>
 
-<h1>CPU显卡性价比榜</h1>
-<p class="updated">基准CPU：i5-12490F = 100% | 数据更新：${new Date().toLocaleDateString('zh-CN')} | <a href="https://www.5vip.top">查看完整交互版 →</a></p>
+<h1>${year}年CPU显卡性价比排行榜</h1>
+<p class="updated">基准CPU：i5-12490F = 100% | 数据更新：${dateDisplay}（${today}） | 共${cpusSorted.length}款CPU / ${gpusSorted.length}款显卡 | <a href="https://www.5vip.top">查看完整交互版 →</a></p>
 
-<p class="intro">本榜单每周更新，实时追踪CPU显卡性价比，为您推荐<strong>高性价比CPU</strong>和<strong>高性价比显卡</strong>。包含<strong>历史价格走势</strong>，帮助您把握<strong>特价</strong>时机。数据来源于淘宝、拼多多实测价格，性价比公式为：游戏性能 ÷ 价格 × 倍率。适合预算有限的游戏玩家和装机小白参考。</p>
+<p class="intro"><strong>奇魂硬件榜</strong>实时追踪<strong>${year}年最新CPU显卡性价比排行榜</strong>，收录<strong>${cpusSorted.length}款主流CPU</strong>和<strong>${gpusSorted.length}款显卡</strong>游戏帧数实测数据。按游戏性能/多核性能排序，支持按价格筛选，关注<strong>历史最低价</strong>走势。数据来源淘宝/拼多多全新散片实售价格，每日更新。适合游戏玩家、装机小白和硬件爱好者参考。</p>
 
 <h2>高性价比CPU推荐</h2>
 <table>
