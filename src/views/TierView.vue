@@ -1047,7 +1047,7 @@ const TESTED_MODELS = new Set([
   'AMD Ryzen 7 7700',
   'AMD Ryzen 7 5800',
   'AMD Ryzen 7 5700X',
-  'AMD Ryzen 7 7600X3D',
+  'AMD Ryzen 5 7600X3D',
   'AMD Ryzen 5 9600X',
   'AMD Ryzen 5 7600X',
   'AMD Ryzen 5 5500X3D',
