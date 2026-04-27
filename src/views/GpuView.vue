@@ -25,9 +25,9 @@
             :key="idx"
             :class="{ active: idx === currentIndex }"
             @click.prevent="goToSlide(idx)"
-            class="dot-btn"
+            class="dot-btn numbered"
             :aria-label="`切换到第${idx + 1}张`"
-          ></button>
+          >{{ idx + 1 }}</button>
         </div>
       </a>
     </div>
@@ -316,7 +316,10 @@
 
     <!-- 无数据提示 -->
     <div v-if="!loading && !error && filteredGpus.length === 0" class="no-data">
-      <p>暂无数据</p>
+      <div class="no-data-icon">😊</div>
+      <p class="no-data-title">没有找到符合条件的显卡</p>
+      <p class="no-data-hint">试试放宽价格范围或调整筛选条件</p>
+      <button class="no-data-reset" @click="resetGpuFilter">重置筛选</button>
     </div>
 
     <!-- 参数弹窗 -->
@@ -399,9 +402,8 @@ import { TitleComponent, TooltipComponent, GridComponent, LegendComponent } from
 import { CanvasRenderer } from 'echarts/renderers'
 import { supabase } from '@/lib/supabase'
 import {
-  gpuPriceLabel, gpuPriceMin, gpuPriceMax, gpuPricePresets, gpuActivePreset,
+  gpuPriceLabel, gpuPriceMin, gpuPriceMax, gpuPricePresets,
   gpuYearPreset, gpuYearLabel,
-  clearGpuPrice, clearGpuYear,
   gpuYearStart, gpuYearEnd,
   gpuYearStartError, gpuYearEndError, gpuYearCrossError,
   validateYearStart, validateYearEnd, validateYearCross,
@@ -1244,6 +1246,12 @@ const clearGpuYearDraft = () => {
 const resetGpuFilterDraft = () => {
   clearGpuPriceDraft()
   clearGpuYearDraft()
+  // 立即生效，无需点击确认
+  gpuPriceMin.value = ''
+  gpuPriceMax.value = ''
+  gpuYearPreset.value = null
+  gpuYearStart.value = null
+  gpuYearEnd.value = null
 }
 
 const confirmGpuFilter = () => {
@@ -1263,6 +1271,25 @@ const confirmGpuFilter = () => {
   gpuYearEnd.value = gpuYearEndDraft.value === '' ? null : gpuYearEndDraft.value
 
   gpuFilterExpanded.value = false
+}
+
+// 直接重置筛选（用于无数据提示的"重置筛选"按钮）
+const resetGpuFilter = () => {
+  // 清空价格
+  gpuPriceMin.value = ''
+  gpuPriceMax.value = ''
+  gpuPriceMinDraft.value = ''
+  gpuPriceMaxDraft.value = ''
+  // 清空年限
+  gpuYearPreset.value = null
+  gpuYearStart.value = null
+  gpuYearEnd.value = null
+  gpuYearPresetDraft.value = null
+  gpuYearStartDraft.value = ''
+  gpuYearEndDraft.value = ''
+  gpuYearStartError.value = ''
+  gpuYearEndError.value = ''
+  gpuYearCrossError.value = ''
 }
 
 const onGpuFilterDrawerClick = (e: MouseEvent) => {
@@ -1576,6 +1603,29 @@ onUnmounted(() => {
 
 .dot-btn:hover {
   background: var(--accent-hover);
+}
+
+/* 数字标记的轮播指示器 */
+.dot-btn.numbered {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.dot-btn.numbered.active {
+  background: var(--accent);
+  color: #000;
+  font-weight: 600;
+}
+
+.dot-btn.numbered:hover {
+  background: rgba(255, 215, 0, 0.5);
 }
 
 /* 表格 */
@@ -2007,6 +2057,48 @@ onUnmounted(() => {
   background: rgba(248, 113, 113, 0.08);
   border: 1px solid #F87171;
   border-radius: 12px;
+}
+
+/* 无数据提示 - 筛选结果为空 */
+.no-data {
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+.no-data-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.8;
+}
+
+.no-data-title {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+}
+
+.no-data-hint {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0 0 1.5rem 0;
+}
+
+.no-data-reset {
+  padding: 0.6rem 1.5rem;
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  color: #000;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.no-data-reset:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
 }
 
 /* 弹窗 */

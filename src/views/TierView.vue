@@ -37,9 +37,9 @@
             :key="idx"
             :class="{ active: idx === currentIndex }"
             @click.prevent="goToSlide(idx)"
-            class="dot-btn"
+            class="dot-btn numbered"
             :aria-label="`切换到第${idx + 1}张`"
-          ></button>
+          >{{ idx + 1 }}</button>
         </div>
       </a>
     </div>
@@ -231,7 +231,7 @@
       <!-- 底部备注 -->
       <div class="bottom-notes">
         <template v-if="isGameMode">
-          注：金色圆点代表实测数据（空心代表推算）；默认基准 i5-12490F；单击 CPU 打开详情，可设为基准或添加对比；数据仅供参考。
+          注：实心圆点代表实测数据（空心代表推算）；默认基准 i5-12490F；单击 CPU 打开详情，可设为基准或添加对比；数据仅供参考。
         </template>
         <template v-else>
           多核分都是上传的真实 R23 跑分平均值，没有估算，放心参考。基准还是那个熟悉的 i5-12490F（100%）。点圆点可以加对比栏、换基准。数据纯手动统计，有不合理的地方群里吼我。
@@ -1016,56 +1016,53 @@ function isIntelCpu(cpu: Cpu | null): boolean {
   return isIntel(cpu)
 }
 
-// 未实测CPU名单 → 显示为空心圆点
-const HOLLOW_MODELS = new Set([
-  'AMD Ryzen 3 3300X',
-  'AMD Ryzen 5 7400F',
-  'AMD Ryzen 5 8400F',
-  'AMD Ryzen 5 8600G',
-  'AMD Ryzen 7 3700X',
-  'AMD Ryzen 7 3800X',
-  'AMD Ryzen 7 5700X3D',
-  'AMD Ryzen 7 5800X3D',
-  'AMD Ryzen 7 7700X',
-  'AMD Ryzen 7 8700F',
-  'AMD Ryzen 7 8700G',
-  'AMD Ryzen 7 9850X3D',
-  'AMD Ryzen 9 3900X',
-  'AMD Ryzen 9 3950X',
-  'AMD Ryzen 9 5900X',
-  'AMD Ryzen 9 5950X',
-  'AMD Ryzen 9 7950X',
-  'AMD Ryzen 9 7950X3D',
-  'AMD Ryzen 9 9900X3D',
-  'AMD Ryzen 9 9950X',
-  'AMD Ryzen 9 9950X3D',
-  'INTEL Core Ultra 5 225',
-  'INTEL Core Ultra 5 225F',
-  'INTEL Core Ultra 5 230F',
-  'INTEL Core Ultra 5 245K',
-  'INTEL Core Ultra 7 265K',
-  'INTEL Core Ultra 9 285K',
-  'INTEL Core i3-10100',
-  'INTEL Core i3-10100F',
-  'INTEL Core i5-10600K',
-  'INTEL Core i5-10600KF',
-  'INTEL Core i5-13500',
-  'INTEL Core i7-10700K',
-  'INTEL Core i7-10700KF',
-  'INTEL Core i7-11700',
-  'INTEL Core i7-11700F',
-  'INTEL Core i7-11700K',
-  'INTEL Core i7-11700KF',
-  'INTEL Core i9-10900K',
-  'INTEL Core i9-10900KF',
-  'INTEL Core i9-11900',
-  'INTEL Core i9-11900F',
-  'INTEL Core i9-11900K',
-  'INTEL Core i9-11900KF',
+// 实测CPU名单 → 显示为实心圆点（默认空心，名单内为实心）
+const TESTED_MODELS = new Set([
+  // INTEL 实测
+  'INTEL Core i7-14700K',
+  'INTEL Core i7-14700KF',
+  'INTEL Core i7-12700K',
+  'INTEL Core i7-12700KF',
+  'INTEL Core i5-14600K',
+  'INTEL Core i5-14600KF',
+  'INTEL Core i5-13600K',
+  'INTEL Core i5-13600KF',
+  'INTEL Core i5-12600K',
+  'INTEL Core i5-12600KF',
+  'INTEL Core i5-13400',
+  'INTEL Core i5-13400F',
+  'INTEL Core i5-11600K',
+  'INTEL Core i5-11600KF',
+  'INTEL Core i5-12500',
+  'INTEL Core i5-12490F',
+  'INTEL Core Ultra 5 265K',
+  'INTEL Core Ultra 5 265KF',
+  'INTEL Core i3-14100',
+  'INTEL Core i3-14000F',
+  // AMD 实测
+  'AMD Ryzen 9 7900X3D',
+  'AMD Ryzen 9 9800X3D',
+  'AMD Ryzen 7 7800X3D',
+  'AMD Ryzen 7 9700X',
+  'AMD Ryzen 7 7700',
+  'AMD Ryzen 7 5800',
+  'AMD Ryzen 7 5700X',
+  'AMD Ryzen 7 7600X3D',
+  'AMD Ryzen 5 9600X',
+  'AMD Ryzen 5 7600X',
+  'AMD Ryzen 5 5500X3D',
+  'AMD Ryzen 5 7500F',
+  'AMD Ryzen 5 5600X',
+  'AMD Ryzen 5 5600',
+  'AMD Ryzen 5 5500',
+  'AMD Ryzen 3 3600',
+  'AMD Ryzen 3 3500X',
+  'AMD Ryzen 3 3100',
 ])
 
 function isHollowModel(model: string): boolean {
-  return HOLLOW_MODELS.has(model)
+  // 逻辑反转：不在实测名单里的显示空心
+  return !TESTED_MODELS.has(model)
 }
 
 function isCpuSearched(cpu: Cpu): boolean {
@@ -1545,6 +1542,29 @@ onUnmounted(() => {
 
 .dot-btn:hover {
   background: var(--accent-hover);
+}
+
+/* 数字标记的轮播指示器 */
+.dot-btn.numbered {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.dot-btn.numbered.active {
+  background: var(--accent);
+  color: #000;
+  font-weight: 600;
+}
+
+.dot-btn.numbered:hover {
+  background: rgba(255, 215, 0, 0.5);
 }
 
 /* 页面标题 */

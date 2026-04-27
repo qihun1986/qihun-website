@@ -32,9 +32,9 @@
             :key="idx"
             :class="{ active: idx === currentIndex }"
             @click.prevent="goToSlide(idx)"
-            class="dot-btn"
+            class="dot-btn numbered"
             :aria-label="`切换到第${idx + 1}张`"
-          ></button>
+          >{{ idx + 1 }}</button>
         </div>
       </a>
     </div>
@@ -1071,6 +1071,30 @@ onUnmounted(() => {
 .dot-btn:hover {
   background: var(--accent-hover);
 }
+
+/* 数字标记的轮播指示器 */
+.dot-btn.numbered {
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  font-size: 0.65rem;
+  color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.dot-btn.numbered.active {
+  background: var(--accent);
+  color: #000;
+  font-weight: 600;
+}
+
+.dot-btn.numbered:hover {
+  background: rgba(255, 215, 0, 0.5);
+}
+
 .page-header h1 {
   color: var(--text-primary);
   font-size: 1.5rem;
