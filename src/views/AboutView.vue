@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div class="about-page">
     <div class="page-header">
       <h1>关于奇魂</h1>
