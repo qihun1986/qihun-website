@@ -229,13 +229,36 @@
       </div>
 
       <!-- 底部备注 -->
-      <div class="bottom-notes">
-        <template v-if="isGameMode">
-          注：实心圆点代表实测数据（空心代表推算）；默认基准 i5-12490F；单击 CPU 打开详情，可设为基准或添加对比；数据仅供参考。
-        </template>
-        <template v-else>
-          多核分都是上传的真实 R23 跑分平均值，没有估算，放心参考。基准还是那个熟悉的 i5-12490F（100%）。点圆点可以加对比栏、换基准。数据纯手动统计，有不合理的地方群里吼我。
-        </template>
+      <div class="unique-legend">
+        <div class="unique-title-row">
+          <span class="unique-icon">🏆</span>
+          <strong>全网独家·原创CPU游戏性能天梯图</strong>
+          <span class="unique-badge">实测 + 同架构推算</span>
+        </div>
+        <div class="legend-items">
+          <div class="legend-item">
+            <span class="dot-legend filled"></span>
+            <div>
+              <strong>实心圆点 = 实测型号</strong>
+              <p>基于多套统一测试平台，1080P/游戏预设中档画质，12款主流游戏帧数平均帧率</p>
+            </div>
+          </div>
+          <div class="legend-item">
+            <span class="dot-legend hollow"></span>
+            <div>
+              <strong>空心圆点 = 同架构推算</strong>
+              <p>基于同架构性能比例推算（同Die/同核心型号按基准规则换算），误差通常在 ±5% 以内</p>
+            </div>
+          </div>
+          <div class="legend-item">
+            <span class="dot-legend bench"></span>
+            <div>
+              <strong>基准说明</strong>
+              <p>以 i5-12490F = 100% 为基准，可手动更改；点击型号打开详情对比</p>
+            </div>
+          </div>
+        </div>
+        <p class="unique-disclaimer">数据仅供参考。测试平台·推算方法详见 <a href="/about#test-methodology" target="_self">关于栏测方法</a>。</p>
       </div>
     </div>
 
@@ -254,6 +277,9 @@
           <span class="modal-title">
             {{ detailModal.mergedCpus.length > 1 ? getDisplayLabel(detailModal.mergedCpus) : formatCpuName(detailModal.cpu?.model || '') }}
             <span class="modal-bench-inline">（基准：{{ benchmarkCpu ? formatCpuName(benchmarkCpu.model) : '12490F' }}）</span>
+            <span v-if="detailModal.cpu" class="data-source-tag" :class="detailModal.cpu.isEstimated ? 'tag-estimated' : 'tag-tested'">
+              {{ detailModal.cpu.isEstimated ? '同架构推算' : '实测数据' }}
+            </span>
           </span>
           <button class="modal-close" @click="closeDetailModal">✕</button>
         </div>
@@ -1414,6 +1440,40 @@ function handleKeydown(e: KeyboardEvent) {
 }
 
 // ============== 生命周期 ==============
+const injectDatasetSchema = () => {
+  const existing = document.querySelector('script[data-jsonld="tier-dataset"]')
+  if (existing) existing.remove()
+  const today = new Date().toISOString().slice(0, 10)
+  const schema = {
+    '@context': 'https://schema.org',
+    '@type': 'Dataset',
+    name: 'CPU游戏性能天梯图（独家）',
+    description: '全网独家CPU游戏性能天梯图，基于多套统一测试平台实测帧数+同架构性能比例推算。i5-12490F=100%基准，涵盖150+款CPU，包含实测型号和推算型号两类数据。测试环境：1080P / 游戏预设中档画质。',
+    url: 'https://www.5vip.top/tier',
+    keywords: 'CPU天梯图,CPU游戏性能排行,CPU排行,硬件天梯,实测数据,同架构推算,全网独家',
+    creator: { '@type': 'Person', name: '奇魂', url: 'https://www.5vip.top' },
+    publisher: { '@type': 'Organization', name: '奇魂的小窝', url: 'https://www.5vip.top' },
+    datePublished: '2024-01-01',
+    dateModified: today,
+    license: 'https://creativecommons.org/licenses/by-nc/4.0/',
+    isBasedOn: {
+      '@type': 'CreativeWork',
+      name: '测试方法说明',
+      description: '实测：多套统一测试平台，1080P/游戏预设中档画质，帧数取平均值，热门游戏平均表现，不同游戏差距较大，具体表现到去B站主页看实测视频。推算：基于同架构性能比例推算（同Die/同核心型号按基准规则换算），误差通常在 ±5% 以内。',
+      url: 'https://www.5vip.top/about#test-methodology'
+    },
+    variableMeasured: [
+      { '@type': 'PropertyValue', name: '游戏性能分数', description: '以i5-12490F=100%为基准；以上为热门游戏平均表现，不同游戏差距较大，具体表现到B站主页看实测视频' },
+      { '@type': 'PropertyValue', name: '数据类型', description: '实测（实心圆）或推算（空心圆）' }
+    ]
+  }
+  const script = document.createElement('script')
+  script.type = 'application/ld+json'
+  script.setAttribute('data-jsonld', 'tier-dataset')
+  script.textContent = JSON.stringify(schema)
+  document.head.appendChild(script)
+}
+
 onMounted(() => {
   console.log('[TierView] onMounted, isMobile:', window.innerWidth < 768)
   checkMobile()
@@ -1421,12 +1481,15 @@ onMounted(() => {
   window.addEventListener('keydown', handleKeydown)
   loadCpus()
   startAutoPlay()
+  injectDatasetSchema()
 })
 
 onUnmounted(() => {
   window.removeEventListener('resize', checkMobile)
   window.removeEventListener('keydown', handleKeydown)
   stopAutoPlay()
+  const old = document.querySelector('script[data-jsonld="tier-dataset"]')
+  if (old) old.remove()
 })
 </script>
 
@@ -2239,6 +2302,24 @@ onUnmounted(() => {
 .modal-header.header-gold {
   background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.05));
 }
+.data-source-tag {
+  display: inline-block;
+  font-size: 0.65rem;
+  padding: 2px 7px;
+  border-radius: 10px;
+  margin-left: 8px;
+  vertical-align: middle;
+  font-weight: 600;
+}
+.tag-tested {
+  background: rgba(255, 215, 0, 0.18);
+  color: #FFD700;
+}
+.tag-estimated {
+  background: rgba(100, 100, 100, 0.2);
+  color: rgba(200, 200, 200, 0.7);
+  border: 1px solid rgba(200, 200, 200, 0.2);
+}
 
 .modal-title {
   font-size: 1.05rem;
@@ -2613,4 +2694,86 @@ td.is-benchmark {
 .compare-btn-small:hover {
   background: rgba(255, 255, 255, 0.2);
 }
+
+/* ========== 全网独家声明 + 图例 ========== */
+.unique-legend {
+  margin-top: 1.5rem;
+  padding: 1.25rem 1.5rem;
+  background: rgba(255,215,0,0.05);
+  border: 1px solid rgba(255,215,0,0.15);
+  border-radius: 10px;
+}
+.unique-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+.unique-icon { font-size: 1.2rem; }
+.unique-title-row strong {
+  color: #FFD700;
+  font-size: 0.95rem;
+}
+.unique-badge {
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  background: rgba(255,215,0,0.12);
+  color: rgba(255,215,0,0.7);
+  border-radius: 8px;
+  border: 1px solid rgba(255,215,0,0.2);
+}
+.legend-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.legend-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.dot-legend {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+.dot-legend.filled {
+  background: #FFD700;
+  box-shadow: 0 0 6px rgba(255,215,0,0.5);
+}
+.dot-legend.hollow {
+  background: transparent;
+  border: 2px solid rgba(255,255,255,0.35);
+}
+.dot-legend.bench {
+  background: rgba(255,255,255,0.15);
+  border: 1px dashed rgba(255,255,255,0.4);
+}
+.legend-item div strong {
+  color: rgba(255,255,255,0.85);
+  font-size: 0.82rem;
+  display: block;
+}
+.legend-item div p {
+  color: rgba(255,255,255,0.45);
+  font-size: 0.75rem;
+  margin: 2px 0 0;
+  line-height: 1.4;
+}
+.unique-disclaimer {
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.35);
+  margin: 0;
+}
+.unique-disclaimer a {
+  color: rgba(255,215,0,0.6);
+  text-decoration: none;
+}
+.unique-disclaimer a:hover { text-decoration: underline; }
+
 </style>
