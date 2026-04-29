@@ -254,7 +254,7 @@
             <span class="dot-legend bench"></span>
             <div>
               <strong>基准说明</strong>
-              <p>以 i5-12490F = 100% 为基准，可手动更改；点击型号打开详情对比。数据为热门游戏平均表现，不同游戏差距较大。详见<a href="https://space.bilibili.com/1937706381" target="_blank" rel="noopener">B站测试视频</a>。</p>
+              <p>以 i5-12490F = 100% 为基准，可手动更改；点击型号打开详情对比。</p>
             </div>
           </div>
         </div>
