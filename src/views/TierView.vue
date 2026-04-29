@@ -256,12 +256,7 @@
               <div>
                 <strong>实心圆点 = 实测型号</strong>
                 <p>
-                  数据为热门游戏平均表现，不同游戏差距较大。详见<a
-                    href="https://space.bilibili.com/3546785037420940"
-                    target="_blank"
-                    rel="noopener"
-                    >B站测试视频</a
-                  >。
+                  数据为默认设置下，12款热门游戏实际表现。
                 </p>
               </div>
             </div>
@@ -295,7 +290,6 @@
           <div class="unique-title-row">
             <span class="unique-icon">⚡</span>
             <strong>CPU多核性能天梯图</strong>
-            <span class="unique-badge">推算数据</span>
           </div>
           <div class="legend-items">
             <div class="legend-item">
@@ -314,7 +308,7 @@
             </div>
           </div>
           <p class="unique-disclaimer">
-            注：数据参考R23多核跑分，代表CPU重度生产效率，默认基准12490F（100%）；单击型号打开详情，可设为基准或添加对比；轻度生产效率请参考游戏天梯图或CPU单核性能。
+            注：轻度生产效率请参考游戏天梯图或CPU单核性能。
           </p>
         </div>
       </div>
