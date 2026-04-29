@@ -240,7 +240,7 @@
             <span class="dot-legend filled"></span>
             <div>
               <strong>实心圆点 = 实测型号</strong>
-              <p>基于多套统一测试平台，1080P/游戏预设中档画质，12款主流游戏帧数平均帧率</p>
+              <p>数据为热门游戏平均表现，不同游戏差距较大。详见<a href="https://space.bilibili.com/1937706381" target="_blank" rel="noopener">B站测试视频</a>。</p>
             </div>
           </div>
           <div class="legend-item">
@@ -254,11 +254,11 @@
             <span class="dot-legend bench"></span>
             <div>
               <strong>基准说明</strong>
-              <p>以 i5-12490F = 100% 为基准，可手动更改；点击型号打开详情对比</p>
+              <p>以 i5-12490F = 100% 为基准，可手动更改；点击型号打开详情对比。数据为热门游戏平均表现，不同游戏差距较大。详见<a href="https://space.bilibili.com/1937706381" target="_blank" rel="noopener">B站测试视频</a>。</p>
             </div>
           </div>
         </div>
-        <p class="unique-disclaimer">数据仅供参考。测试平台·推算方法详见 <a href="/about#test-methodology" target="_self">关于栏测方法</a>。</p>
+        <p class="unique-disclaimer">数据为多款热门游戏平均表现，不同游戏差距较大。详见<a href="https://space.bilibili.com/1937706381" target="_blank" rel="noopener">B站测试视频</a>。</p>
       </div>
     </div>
 
@@ -1459,11 +1459,11 @@ const injectDatasetSchema = () => {
     isBasedOn: {
       '@type': 'CreativeWork',
       name: '测试方法说明',
-      description: '实测：多套统一测试平台，1080P/游戏预设中档画质，帧数取平均值，热门游戏平均表现，不同游戏差距较大，具体表现到去B站主页看实测视频。推算：基于同架构性能比例推算（同Die/同核心型号按基准规则换算），误差通常在 ±5% 以内。',
+      description: '实测：多套统一测试平台，1080P/游戏预设中档画质，帧数取平均值。数据为热门游戏平均表现，不同游戏差距较大。详见B站测试视频。推算：基于同架构性能比例推算（同Die/同核心型号按基准规则换算），误差通常在 ±5% 以内。',
       url: 'https://www.5vip.top/about#test-methodology'
     },
     variableMeasured: [
-      { '@type': 'PropertyValue', name: '游戏性能分数', description: '以i5-12490F=100%为基准；以上为热门游戏平均表现，不同游戏差距较大，具体表现到B站主页看实测视频' },
+      { '@type': 'PropertyValue', name: '游戏性能分数', description: '以i5-12490F=100%为基准。数据为热门游戏平均表现，不同游戏差距较大。详见B站测试视频。' },
       { '@type': 'PropertyValue', name: '数据类型', description: '实测（实心圆）或推算（空心圆）' }
     ]
   }
