@@ -34,35 +34,19 @@ const updateTime = ref('加载中...')
 const { stats, loading, fetchStats } = usePageStats()
 
 onMounted(async () => {
-  // 加载数据更新时间 —— 从价格历史表取最新日期
+  // 加载数据更新时间 —— 取 CPU/GPU 价格历史表中最新日期
+  const fmt = (d: Date) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`
   try {
-    const { data } = await supabase
-      .from('cpu_price_history')
-      .select('recorded_at')
-      .order('recorded_at', { ascending: false })
-      .limit(1)
-
-    if (data && data.length > 0) {
-      const d = new Date(data[0].recorded_at)
-      updateTime.value = `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`
-    } else {
-      // fallback: gpu_price_history
-      const { data: gpuData } = await supabase
-        .from('gpu_price_history')
-        .select('recorded_at')
-        .order('recorded_at', { ascending: false })
-        .limit(1)
-      if (gpuData && gpuData.length > 0) {
-        const d = new Date(gpuData[0].recorded_at)
-        updateTime.value = `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`
-      } else {
-        const now = new Date()
-        updateTime.value = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`
-      }
-    }
+    const [cpuRes, gpuRes] = await Promise.all([
+      supabase.from('cpu_price_history').select('recorded_at').order('recorded_at', { ascending: false }).limit(1),
+      supabase.from('gpu_price_history').select('recorded_at').order('recorded_at', { ascending: false }).limit(1),
+    ])
+    const cpuDate = cpuRes.data?.[0]?.recorded_at
+    const gpuDate = gpuRes.data?.[0]?.recorded_at
+    const latest = [cpuDate, gpuDate].filter(Boolean).sort().pop()
+    updateTime.value = latest ? fmt(new Date(latest)) : fmt(new Date())
   } catch {
-    const now = new Date()
-    updateTime.value = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}.${String(now.getDate()).padStart(2, '0')}`
+    updateTime.value = fmt(new Date())
   }
 
   // 加载访问统计
