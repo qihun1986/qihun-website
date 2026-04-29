@@ -59,6 +59,35 @@
               </div>
             </div>
 
+            <!-- 插槽筛选（仅 CPU 模式） -->
+            <div v-if="mode === 'cpu'" class="socket-section">
+              <div class="section-label">插槽</div>
+              <div class="filter-btn-row">
+                <button
+                  v-for="opt in socketOptions"
+                  :key="opt.value"
+                  :class="{ active: localSocket === opt.value }"
+                  class="preset-btn"
+                  @click="toggleSocket(opt.value)"
+                >{{ opt.label }}</button>
+              </div>
+            </div>
+            <!-- 内存类型筛选（仅 CPU 模式） -->
+            <div v-if="mode === 'cpu'" class="memory-section">
+              <div class="section-label">内存类型</div>
+              <div class="filter-btn-row">
+                <button
+                  v-for="opt in memoryOptions"
+                  :key="opt.value"
+                  :class="{ active: localMemory === opt.value }"
+                  class="preset-btn"
+                  @click="toggleMemory(opt.value)"
+                >{{ opt.label }}</button>
+              </div>
+              <div v-if="localIncompatible" class="filter-warning">
+                ⚠️ {{ localIncompatible }}
+              </div>
+            </div>
             <!-- 年限筛选（仅 GPU 模式） -->
             <div v-if="mode === 'gpu'" class="year-section">
               <div class="section-label">发售年限</div>
@@ -124,7 +153,9 @@ import {
   priceMin, priceMax, pricePresets, activePreset,
   gpuPriceMin, gpuPriceMax, gpuActivePreset,
   gpuYearPreset, gpuYearStart, gpuYearEnd,
-  clearCpuPrice, clearGpuPrice, clearGpuYear
+  clearCpuPrice, clearGpuPrice, clearGpuYear,
+  cpuSocket, cpuMemory, cpuSocketOptions, cpuMemoryOptions,
+  incompatibleCombo,
 } from './useFilterBar'
 
 const props = defineProps<{
@@ -148,6 +179,11 @@ const yearStartError = ref(false)
 const yearEndError = ref(false)
 const activePresetLocal = ref<string | null>(null)
 
+// CPU 插槽/内存本地状态
+const localSocket = ref<string>('')
+const localMemory = ref<string>('')
+const localIncompatible = ref<string>('')
+
 // 计算当前激活的预设
 const activePresetComputed = computed(() => {
   if (props.mode === 'cpu') {
@@ -163,6 +199,21 @@ watch([visible, () => props.mode], ([isVisible]) => {
     if (props.mode === 'cpu') {
       localMin.value = priceMin.value
       localMax.value = priceMax.value
+      localSocket.value = cpuSocket.value
+      localMemory.value = cpuMemory.value
+      // 实时检测不兼容组合
+      const s = cpuSocket.value
+      const m = cpuMemory.value
+      if (s && m) {
+        const map: Record<string, string[]> = {
+          'AM4': ['DDR5'], 'AM5': ['DDR4'],
+          'LGA1200': ['DDR5'], 'LGA1700': [], 'LGA1851': ['DDR4'],
+        }
+        localIncompatible.value = (map[s] || []).includes(m)
+          ? `${s} 插槽不支持 ${m} 内存` : ''
+      } else {
+        localIncompatible.value = ''
+      }
     } else {
       localMin.value = gpuPriceMin.value
       localMax.value = gpuPriceMax.value
@@ -187,6 +238,35 @@ const closeSheet = () => {
   visible.value = false
   document.body.style.overflow = ''
 }
+
+// 切换插槽/内存（仅 CPU 模式）
+const toggleSocket = (val: string) => {
+  localSocket.value = localSocket.value === val ? '' : val
+  checkIncompatible()
+}
+
+const toggleMemory = (val: string) => {
+  localMemory.value = localMemory.value === val ? '' : val
+  checkIncompatible()
+}
+
+const checkIncompatible = () => {
+  const s = localSocket.value
+  const m = localMemory.value
+  if (s && m) {
+    const map: Record<string, string[]> = {
+      'AM4': ['DDR5'], 'AM5': ['DDR4'],
+      'LGA1200': ['DDR5'], 'LGA1700': [], 'LGA1851': ['DDR4'],
+    }
+    localIncompatible.value = (map[s] || []).includes(m)
+      ? `${s} 插槽不支持 ${m} 内存` : ''
+  } else {
+    localIncompatible.value = ''
+  }
+}
+
+const socketOptions = cpuSocketOptions
+const memoryOptions = cpuMemoryOptions
 
 // 应用预设
 const applyPreset = (preset: typeof pricePresets[0]) => {
@@ -245,6 +325,9 @@ const clearAll = () => {
   localMin.value = ''
   localMax.value = ''
   activePresetLocal.value = null
+  localSocket.value = ''
+  localMemory.value = ''
+  localIncompatible.value = ''
   if (props.mode === 'gpu') {
     clearYearFilter()
   }
@@ -258,6 +341,8 @@ const confirmAndClose = () => {
   if (props.mode === 'cpu') {
     priceMin.value = localMin.value
     priceMax.value = localMax.value
+    cpuSocket.value = localSocket.value
+    cpuMemory.value = localMemory.value
   } else {
     gpuPriceMin.value = localMin.value
     gpuPriceMax.value = localMax.value
