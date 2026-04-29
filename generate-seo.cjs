@@ -67,8 +67,18 @@ function generateHTML(cpus, gpus) {
     const cpusSorted = [...cpus].sort((a, b) => (b.abs_game_performance || 0) - (a.abs_game_performance || 0));
     const gpusSorted = [...gpus].sort((a, b) => (b.abs_game_performance_2k || 0) - (a.abs_game_performance_2k || 0));
 
+    // 性价比排序（游戏性能/全新价格，仅计算有价格的型号）
+    const cpusWithValue = cpus.filter(c => c.new_price && c.abs_game_performance);
+    const gpusWithValue = gpus.filter(g => g.new_price && g.abs_game_performance_2k);
+    const cpusValueSorted = [...cpusWithValue].sort((a, b) => (a.new_price / a.abs_game_performance) - (b.new_price / b.abs_game_performance));
+    const gpusValueSorted = [...gpusWithValue].sort((a, b) => (a.new_price / a.abs_game_performance_2k) - (b.new_price / b.abs_game_performance_2k));
+
     const baseCPU = cpus.find(c => c.model === 'INTEL Core i5-12490F') || cpus.find(c => c.model.includes('12490F')) || cpusSorted[0];
     const baseGame = baseCPU?.abs_game_performance || 100;
+    const baseNewPrice = baseCPU?.new_price || 1; // 用于计算性价比基准
+    const baseValueCPU = cpusWithValue.find(c => c.model === 'INTEL Core i5-12490F') || cpusWithValue[0];
+    const cpuValueBase = baseValueCPU ? (baseValueCPU.new_price / baseValueCPU.abs_game_performance) : 1;
+
     const today = new Date().toISOString().split('T')[0];
     const dateDisplay = new Date().toLocaleDateString('zh-CN');
     const year = new Date().getFullYear();
@@ -123,9 +133,71 @@ function generateHTML(cpus, gpus) {
         ]
     }));
 
+    // --- 构建 FAQPage JSON-LD ---
+    const topCpu = cpusValueSorted[0];
+    const topGpu = gpusValueSorted[0];
+    const cheapGamingCpu = cpusWithValue.filter(c => c.new_price <= 800).sort((a, b) => (b.abs_game_performance || 0) - (a.abs_game_performance || 0))[0];
+    const midGpu = gpusWithValue.filter(g => g.new_price >= 2000 && g.new_price <= 4000).sort((a, b) => (b.abs_game_performance_2k || 0) - (a.abs_game_performance_2k || 0))[0];
+
+    const faqItems = [
+        {
+            question: `${year}年性价比最高的游戏CPU是哪款？`,
+            answer: topCpu ? `根据奇魂硬件榜实测数据，${topCpu.model}是${year}年性价比最高的游戏CPU，全新价¥${topCpu.new_price}，游戏性能达${((topCpu.abs_game_performance / baseGame) * 100).toFixed(0)}%（以i5-12490F为100%基准），每元性能最高。数据来源：https://www.5vip.top` : `${year}年游戏CPU性价比排行请参考奇魂硬件榜，以i5-12490F为100%基准，按游戏性能/价格计算性价比。`
+        },
+        {
+            question: `${year}年性价比最高的显卡是哪款？`,
+            answer: topGpu ? `根据奇魂硬件榜实测数据，${topGpu.model}是${year}年性价比最高的显卡，全新价¥${topGpu.new_price}，2K游戏帧数${topGpu.abs_game_performance_2k}，每元帧数最高。数据来源：https://www.5vip.top` : `${year}年显卡性价比排行请参考奇魂硬件榜，按2K游戏帧数/价格计算性价比。`
+        },
+        {
+            question: `800元以内游戏CPU推荐？`,
+            answer: cheapGamingCpu ? `预算800元以内，推荐${cheapGamingCpu.model}，全新价¥${cheapGamingCpu.new_price}，游戏性能${((cheapGamingCpu.abs_game_performance / baseGame) * 100).toFixed(0)}%，是入门游戏最优选。更多预算档位推荐见：https://www.5vip.top` : `800元以内游戏CPU推荐请参考奇魂硬件榜，按性价比排序筛选。`
+        },
+        {
+            question: `2000-4000元显卡推荐？`,
+            answer: midGpu ? `2000-4000元档位推荐${midGpu.model}，全新价¥${midGpu.new_price}，2K游戏帧数${midGpu.abs_game_performance_2k}，是中端游戏甜点级选择。更多档位推荐见：https://www.5vip.top` : `2000-4000元显卡推荐请参考奇魂硬件榜，按性价比排序筛选。`
+        },
+        {
+            question: `CPU游戏性能天梯图怎么看？`,
+            answer: `奇魂硬件榜CPU天梯图以i5-12490F为100%基准，所有CPU按12款热门游戏实际表现排名，非跑分。百分比越高游戏帧数越强，可按预算和需求筛选。访问 https://www.5vip.top/tier 查看完整天梯图。`
+        },
+        {
+            question: `显卡游戏性能天梯图怎么看？`,
+            answer: `奇魂硬件榜显卡天梯图按2K游戏帧数排名，包含1080p/2K/4K三档分辨率性能数据。百分比越高游戏表现越强。访问 https://www.5vip.top/gpu 查看完整榜单。`
+        }
+    ];
+
+    // --- 构建 HowTo JSON-LD ---
+    const howToSteps = [
+        {
+            '@type': 'HowToStep',
+            'name': '确定预算',
+            'text': '先确定整体装机预算，建议CPU占总预算15-25%，显卡占30-50%。例如5000元装机，CPU预算750-1250元，显卡1500-2500元。'
+        },
+        {
+            '@type': 'HowToStep',
+            'name': '选择CPU',
+            'text': '根据游戏需求选择CPU：纯游戏优先看游戏性能%（i5-12490F=100%基准），兼顾生产力看多核性能。入门推荐12400F/5600，中端推荐12490F/7500F，高端推荐9800X3D/14600K。'
+        },
+        {
+            '@type': 'HowToStep',
+            'name': '选择显卡',
+            'text': '根据分辨率选择显卡：1080p选RX 6600/RTX 3060以上，2K选RTX 4060 Ti/RX 7700 XT以上，4K选RTX 4080S/RX 7900 XTX以上。关注显存容量和功耗。'
+        },
+        {
+            '@type': 'HowToStep',
+            'name': '查看性价比排行',
+            'text': '在奇魂硬件榜(https://www.5vip.top)按性价比排序，找到同价位性能最强的型号。注意价格波动，参考历史最低价判断入手时机。'
+        },
+        {
+            '@type': 'HowToStep',
+            'name': '确认兼容性',
+            'text': '确认CPU和主板接口匹配（Intel用LGA1700/LGA1851，AMD用AM5），内存选择对应平台（DDR4/DDR5），电源功率满足显卡和CPU的TDP需求。'
+        }
+    ];
+
     let rows = '';
 
-    // CPU表
+    // CPU表（加性价比列）
     cpusSorted.forEach((cpu, i) => {
         const gamePct = cpu.abs_game_performance
             ? ((cpu.abs_game_performance / baseGame) * 100).toFixed(0) + '%'
@@ -133,9 +205,14 @@ function generateHTML(cpus, gpus) {
         const multiPct = baseCPU?.abs_multi_performance
             ? ((cpu.abs_multi_performance / baseCPU.abs_multi_performance) * 100).toFixed(0) + '%'
             : '-';
+        // 性价比 = (游戏性能/价格) / 基准CPU的(游戏性能/价格) * 100
+        const cpuValue = (cpu.new_price && cpu.abs_game_performance)
+            ? ((cpuValueBase / (cpu.new_price / cpu.abs_game_performance)) * 100).toFixed(0) + '%'
+            : '-';
         rows += `<tr>
   <td>${i + 1}</td>
   <td>${escapeHtml(cpu.model)}</td>
+  <td>${cpuValue}</td>
   <td>${gamePct}</td>
   <td>${multiPct}</td>
   <td>${cpu.abs_game_performance || '-'}</td>
@@ -150,12 +227,20 @@ function generateHTML(cpus, gpus) {
 </tr>`;
     });
 
-    // GPU表
+    // GPU性价比基准
+    const baseValueGpu = gpusWithValue.find(g => g.model.includes('RTX 4060')) || gpusWithValue[0];
+    const gpuValueBase = baseValueGpu ? (baseValueGpu.new_price / baseValueGpu.abs_game_performance_2k) : 1;
+
+    // GPU表（加性价比列）
     let gpuRows = '';
     gpusSorted.forEach((gpu, i) => {
+        const gpuValue = (gpu.new_price && gpu.abs_game_performance_2k)
+            ? ((gpuValueBase / (gpu.new_price / gpu.abs_game_performance_2k)) * 100).toFixed(0) + '%'
+            : '-';
         gpuRows += `<tr>
   <td>${i + 1}</td>
   <td>${escapeHtml(gpu.model)}</td>
+  <td>${gpuValue}</td>
   <td>${gpu.abs_game_performance_1080p || '-'}</td>
   <td>${gpu.abs_game_performance_2k || '-'}</td>
   <td>${gpu.abs_game_performance_4k || '-'}</td>
@@ -223,6 +308,30 @@ ${gpuProducts.length ? `<script type="application/ld+json">
   "@graph": ${JSON.stringify(gpuProducts)}
 }
 </script>` : ''}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": ${JSON.stringify(faqItems.map(f => ({
+    '@type': 'Question',
+    'name': f.question,
+    'acceptedAnswer': {'@type': 'Answer', 'text': f.answer}
+  })))}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "如何选择游戏CPU和显卡",
+  "description": "${year}年游戏装机CPU显卡选购指南，根据预算和需求选择性价比最高的搭配方案",
+  "step": ${JSON.stringify(howToSteps)},
+  "tool": [
+    {"@type": "HowToTool", "name": "奇魂硬件榜 - CPU显卡性价比排行"},
+    {"@type": "HowToTool", "name": "B站奇魂硬件 - 实测视频"}
+  ]
+}
+</script>
 <style>
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;max-width:1400px;margin:0 auto;padding:20px;line-height:1.6;color:#222;font-size:14px}
 h1{font-size:20px;border-bottom:2px solid #1a1a2e;padding-bottom:8px;margin-bottom:4px}
@@ -254,7 +363,7 @@ a:hover{text-decoration:underline}
 <h2>高性价比CPU推荐</h2>
 <table>
 <thead>
-<tr><th>#</th><th>型号</th><th>游戏%</th><th>多核%</th><th>游戏帧数</th><th>多核分</th><th>核心</th><th>线程</th><th>基础频率</th><th>加速频率</th><th>TDP</th><th>全新价</th><th>二手价</th></tr>
+<tr><th>#</th><th>型号</th><th>性价比</th><th>游戏%</th><th>多核%</th><th>游戏帧数</th><th>多核分</th><th>核心</th><th>线程</th><th>基础频率</th><th>加速频率</th><th>TDP</th><th>全新价</th><th>二手价</th></tr>
 </thead>
 <tbody>
 ${rows}
@@ -264,7 +373,7 @@ ${rows}
 <h2>高性价比显卡推荐</h2>
 <table>
 <thead>
-<tr><th>#</th><th>型号</th><th>1080p帧数</th><th>2K帧数</th><th>4K帧数</th><th>渲染性能</th><th>显存</th><th>TDP</th><th>全新价</th><th>二手价</th></tr>
+<tr><th>#</th><th>型号</th><th>性价比</th><th>1080p帧数</th><th>2K帧数</th><th>4K帧数</th><th>渲染性能</th><th>显存</th><th>TDP</th><th>全新价</th><th>二手价</th></tr>
 </thead>
 <tbody>
 ${gpuRows}
@@ -272,7 +381,7 @@ ${gpuRows}
 </table>
 
 <footer>
-<p>📌 数据来源：<a href="https://www.5vip.top">奇魂硬件评测</a> | B站：<a href="https://space.bilibili.com/1723592174">奇魂硬件</a></p>
+<p>📌 数据来源：<a href="https://www.5vip.top">奇魂硬件评测</a> | B站：<a href="https://space.bilibili.com/3546785037420940">奇魂硬件</a></p>
 <p>⚠️ 价格仅供参考，以实际售价为准。性能数据基于公开评测综合整理。</p>
 </footer>
 
