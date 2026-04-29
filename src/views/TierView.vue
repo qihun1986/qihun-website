@@ -3,43 +3,37 @@
     <!-- 顶部区域：Tab切换 + 轮播图 -->
     <div class="top-bar">
       <div class="tabs">
-        <button
-          class="tab-btn"
-          :class="{ active: isGameMode }"
-          @click="switchMode('game')"
-        >
+        <button class="tab-btn" :class="{ active: isGameMode }" @click="switchMode('game')">
           🎮 游戏性能
         </button>
-        <button
-          class="tab-btn"
-          :class="{ active: !isGameMode }"
-          @click="switchMode('multi')"
-        >
+        <button class="tab-btn" :class="{ active: !isGameMode }" @click="switchMode('multi')">
           ⚡ 多核性能
         </button>
       </div>
-      
+
       <div class="top-bar-spacer"></div>
-      
+
       <!-- 顶部轮播图（与CPU榜共用数据） -->
-      <a 
-        :href="carouselItems[currentIndex].link" 
-        target="_blank" 
+      <a
+        :href="carouselItems[currentIndex].link"
+        target="_blank"
         rel="noopener"
         class="top-carousel"
-        @mouseenter="stopAutoPlay" 
+        @mouseenter="stopAutoPlay"
         @mouseleave="startAutoPlay"
       >
         <span class="carousel-text">{{ carouselItems[currentIndex].title }}</span>
         <div class="carousel-dots">
-          <button 
-            v-for="(_, idx) in carouselItems" 
+          <button
+            v-for="(_, idx) in carouselItems"
             :key="idx"
             :class="{ active: idx === currentIndex }"
             @click.prevent="goToSlide(idx)"
             class="dot-btn numbered"
             :aria-label="`切换到第${idx + 1}张`"
-          >{{ idx + 1 }}</button>
+          >
+            {{ idx + 1 }}
+          </button>
         </div>
       </a>
     </div>
@@ -64,12 +58,24 @@
             :disabled="!selectedSearchCpu"
             @click="addSearchSelectedToCompare"
             title="添加到对比"
-          >+对比</button>
+          >
+            +对比
+          </button>
           <!-- 选中状态：显示清除按钮 -->
-          <button v-if="selectedSearchCpu" class="search-action-btn clear-btn" @click="clearSearchSelection" title="清除选中">✕</button>
+          <button
+            v-if="selectedSearchCpu"
+            class="search-action-btn clear-btn"
+            @click="clearSearchSelection"
+            title="清除选中"
+          >
+            ✕
+          </button>
           <span v-else-if="!showSearchDropdown" class="search-hint">点击CPU可添加对比</span>
           <!-- 下拉待选列表 -->
-          <div v-if="showSearchDropdown && searchDropdownItems.length > 0 && !selectedSearchCpu" class="search-dropdown">
+          <div
+            v-if="showSearchDropdown && searchDropdownItems.length > 0 && !selectedSearchCpu"
+            class="search-dropdown"
+          >
             <div
               v-for="item in searchDropdownItems"
               :key="item.cpu.id"
@@ -94,12 +100,18 @@
               :class="{ 'is-benchmark': cpu.id === benchmarkCpu?.id }"
             >
               <span class="chip-brand" :class="isIntelCpu(cpu) ? 'intel' : 'amd'">●</span>
-              <span class="chip-name" @click="openBenchModal(cpu)">{{ formatCpuName(cpu.model) }}</span>
+              <span class="chip-name" @click="openBenchModal(cpu)">{{
+                formatCpuName(cpu.model)
+              }}</span>
               <span class="chip-bench-hint" title="点击设为基准">◎</span>
-              <button class="chip-remove" @click.stop="removeFromCompare(cpu)" title="移除">✕</button>
+              <button class="chip-remove" @click.stop="removeFromCompare(cpu)" title="移除">
+                ✕
+              </button>
             </span>
             <button class="compare-inline-clear" @click="clearCompare" title="清空">清空</button>
-            <button class="compare-inline-bench" @click="resetBenchmark" title="重置基准">重置</button>
+            <button class="compare-inline-bench" @click="resetBenchmark" title="重置基准">
+              重置
+            </button>
           </div>
           <!-- 无数据时显示提示 -->
           <span v-else class="compare-empty-hint">点击CPU查看详情</span>
@@ -110,7 +122,9 @@
             :disabled="compareList.length === 0"
             @click="openBenchModal(null)"
             title="对标对比"
-          >比较</button>
+          >
+            比较
+          </button>
         </div>
       </div>
 
@@ -119,16 +133,12 @@
         <template v-if="benchmarkCpu">
           📌 基准：{{ formatCpuName(benchmarkCpu.model) }} (100%)
         </template>
-        <template v-else>
-          ⚠️ 未找到基准CPU
-        </template>
+        <template v-else> ⚠️ 未找到基准CPU </template>
         · 共 {{ cpus.length }} 款CPU · {{ positionedCpus.length }} 个圆点
       </div>
-      
+
       <!-- DEBUG: 数据加载状态 -->
-      <div v-if="cpus.length === 0" class="debug-loading">
-        ⏳ 数据加载中...
-      </div>
+      <div v-if="cpus.length === 0" class="debug-loading">⏳ 数据加载中...</div>
 
       <!-- 桌面端散点图 -->
       <div class="scatter-container" ref="scatterContainer" v-if="!isMobile">
@@ -157,9 +167,9 @@
               'is-merged': item.merged && item.cpus.length > 1,
               'is-searched': item.isSearched,
               'is-dimmed': selectedSearchCpu && !item.isSearched,
-              'intel': item.brand === 'INTEL',
-              'amd': item.brand === 'AMD',
-              'hollow': item.isEstimated && isGameMode,
+              intel: item.brand === 'INTEL',
+              amd: item.brand === 'AMD',
+              hollow: item.isEstimated && isGameMode,
             }"
             :style="{
               left: item.x + '%',
@@ -196,7 +206,12 @@
 
         <!-- X轴标签 -->
         <div class="x-axis">
-          <span v-for="col in columnLabels" :key="col.key" class="x-label" :style="{ left: col.x + '%' }">
+          <span
+            v-for="col in columnLabels"
+            :key="col.key"
+            class="x-label"
+            :style="{ left: col.x + '%' }"
+          >
             {{ col.text }}
           </span>
         </div>
@@ -210,8 +225,8 @@
           class="cpu-row"
           :class="{
             'is-searched': isCpuSearched(cpu),
-            'intel': isIntel(cpu),
-            'amd': isAmd(cpu),
+            intel: isIntel(cpu),
+            amd: isAmd(cpu),
           }"
           @click="showDetailMobile(cpu)"
         >
@@ -228,37 +243,80 @@
         </div>
       </div>
 
-      <!-- 底部备注 -->
-      <div class="unique-legend">
-        <div class="unique-title-row">
-          <span class="unique-icon">🏆</span>
-          <strong>全网独家·原创CPU游戏性能天梯图</strong>
-          <span class="unique-badge">实测 + 同架构推算</span>
+        <!-- 游戏模式图例 -->
+        <div v-if="isGameMode">
+          <div class="unique-title-row">
+            <span class="unique-icon">🏆</span>
+            <strong>全网独家·原创CPU游戏性能天梯图</strong>
+            <span class="unique-badge">实测 + 同架构推算</span>
+          </div>
+          <div class="legend-items">
+            <div class="legend-item">
+              <span class="dot-legend filled"></span>
+              <div>
+                <strong>实心圆点 = 实测型号</strong>
+                <p>
+                  数据为热门游戏平均表现，不同游戏差距较大。详见<a
+                    href="https://space.bilibili.com/3546785037420940"
+                    target="_blank"
+                    rel="noopener"
+                    >B站测试视频</a
+                  >。
+                </p>
+              </div>
+            </div>
+            <div class="legend-item">
+              <span class="dot-legend hollow"></span>
+              <div>
+                <strong>空心圆点 = 同架构推算</strong>
+                <p>基于同架构性能比例推算（同Die/同核心型号按基准规则换算），误差通常在 ±5% 以内</p>
+              </div>
+            </div>
+            <div class="legend-item">
+              <span class="dot-legend bench"></span>
+              <div>
+                <strong>基准说明</strong>
+                <p>以 i5-12490F = 100% 为默认基准，可手动更改；点击型号打开详情对比。</p>
+              </div>
+            </div>
+          </div>
+          <p class="unique-disclaimer">
+            数据为热门游戏平均表现，不同游戏差距较大。详见<a
+              href="https://space.bilibili.com/3546785037420940"
+              target="_blank"
+              rel="noopener"
+              >B站测试视频</a
+            >。
+          </p>
         </div>
-        <div class="legend-items">
-          <div class="legend-item">
-            <span class="dot-legend filled"></span>
-            <div>
-              <strong>实心圆点 = 实测型号</strong>
-              <p>数据为热门游戏平均表现，不同游戏差距较大。详见<a href="https://space.bilibili.com/1937706381" target="_blank" rel="noopener">B站测试视频</a>。</p>
+
+        <!-- 多核模式图例 -->
+        <div v-else>
+          <div class="unique-title-row">
+            <span class="unique-icon">⚡</span>
+            <strong>CPU多核性能天梯图</strong>
+            <span class="unique-badge">推算数据</span>
+          </div>
+          <div class="legend-items">
+            <div class="legend-item">
+              <span class="dot-legend bench"></span>
+              <div>
+                <strong>基准说明</strong>
+                <p>以 i5-12490F = 100% 为默认基准，可手动更改；点击型号打开详情对比。</p>
+              </div>
+            </div>
+            <div class="legend-item">
+              <span class="dot-legend hollow"></span>
+              <div>
+                <strong>说明</strong>
+                <p>基于Cinebench R23/R24多核跑分推算，代表 CPU 渲染、编译、转码等满载生产力性能</p>
+              </div>
             </div>
           </div>
-          <div class="legend-item">
-            <span class="dot-legend hollow"></span>
-            <div>
-              <strong>空心圆点 = 同架构推算</strong>
-              <p>基于同架构性能比例推算（同Die/同核心型号按基准规则换算），误差通常在 ±5% 以内</p>
-            </div>
-          </div>
-          <div class="legend-item">
-            <span class="dot-legend bench"></span>
-            <div>
-              <strong>基准说明</strong>
-              <p>以 i5-12490F = 100% 为基准，可手动更改；点击型号打开详情对比。</p>
-            </div>
-          </div>
+          <p class="unique-disclaimer">
+            注：数据参考R23多核跑分，代表CPU重度生产效率，默认基准12490F（100%）；单击型号打开详情，可设为基准或添加对比；轻度生产效率请参考游戏天梯图或CPU单核性能。
+          </p>
         </div>
-        <p class="unique-disclaimer">数据为多款热门游戏平均表现，不同游戏差距较大。详见<a href="https://space.bilibili.com/1937706381" target="_blank" rel="noopener">B站测试视频</a>。</p>
       </div>
     </div>
 
@@ -266,18 +324,33 @@
     <div v-if="tooltip.visible" class="cpu-tooltip" :style="tooltip.style">
       <div class="tooltip-title">{{ tooltip.title }}</div>
       <div class="tooltip-game-pct">{{ tooltip.percent }}</div>
-      <div class="tooltip-bench">基准：{{ benchmarkCpu ? formatCpuName(benchmarkCpu.model) : 'i5-12490F' }}</div>
+      <div class="tooltip-bench">
+        基准：{{ benchmarkCpu ? formatCpuName(benchmarkCpu.model) : 'i5-12490F' }}
+      </div>
       <div v-if="tooltip.estimated && isGameMode" class="tooltip-estimated">(推算)</div>
     </div>
 
     <!-- CPU 详情弹窗 -->
     <div v-if="detailModal.show" class="modal-overlay" @click="closeDetailModal">
       <div class="modal-content detail-modal" @click.stop>
-        <div class="modal-header" :class="isIntelCpu(detailModal.cpu) ? 'header-intel' : 'header-amd'">
+        <div
+          class="modal-header"
+          :class="isIntelCpu(detailModal.cpu) ? 'header-intel' : 'header-amd'"
+        >
           <span class="modal-title">
-            {{ detailModal.mergedCpus.length > 1 ? getDisplayLabel(detailModal.mergedCpus) : formatCpuName(detailModal.cpu?.model || '') }}
-            <span class="modal-bench-inline">（基准：{{ benchmarkCpu ? formatCpuName(benchmarkCpu.model) : '12490F' }}）</span>
-            <span v-if="detailModal.cpu" class="data-source-tag" :class="detailModal.cpu.isEstimated ? 'tag-estimated' : 'tag-tested'">
+            {{
+              detailModal.mergedCpus.length > 1
+                ? getDisplayLabel(detailModal.mergedCpus)
+                : formatCpuName(detailModal.cpu?.model || '')
+            }}
+            <span class="modal-bench-inline"
+              >（基准：{{ benchmarkCpu ? formatCpuName(benchmarkCpu.model) : '12490F' }}）</span
+            >
+            <span
+              v-if="detailModal.cpu"
+              class="data-source-tag"
+              :class="detailModal.cpu.isEstimated ? 'tag-estimated' : 'tag-tested'"
+            >
               {{ detailModal.cpu.isEstimated ? '同架构推算' : '实测数据' }}
             </span>
           </span>
@@ -289,9 +362,16 @@
               <thead>
                 <tr>
                   <th></th>
-                  <th v-for="cpu in detailModal.mergedCpus" :key="cpu.id"
-                    class="cpu-col" :class="[isIntelCpu(cpu) ? 'intel' : 'amd', { 'is-benchmark': cpu.id === benchmarkCpu?.id }]"
-                    @click="toggleBenchmark(cpu)">
+                  <th
+                    v-for="cpu in detailModal.mergedCpus"
+                    :key="cpu.id"
+                    class="cpu-col"
+                    :class="[
+                      isIntelCpu(cpu) ? 'intel' : 'amd',
+                      { 'is-benchmark': cpu.id === benchmarkCpu?.id },
+                    ]"
+                    @click="toggleBenchmark(cpu)"
+                  >
                     {{ formatCpuName(cpu.model) }}
                   </th>
                 </tr>
@@ -299,15 +379,42 @@
               <tbody>
                 <tr>
                   <td class="label-cell highlight-row">游戏性能</td>
-                  <td v-for="cpu in detailModal.mergedCpus" :key="cpu.id" class="value-cell highlight-row" :class="[isIntelCpu(cpu) ? 'intel' : 'amd', { 'is-benchmark': cpu.id === benchmarkCpu?.id }]">{{ getPerformancePercent(cpu) }}%</td>
+                  <td
+                    v-for="cpu in detailModal.mergedCpus"
+                    :key="cpu.id"
+                    class="value-cell highlight-row"
+                    :class="[
+                      isIntelCpu(cpu) ? 'intel' : 'amd',
+                      { 'is-benchmark': cpu.id === benchmarkCpu?.id },
+                    ]"
+                  >
+                    {{ getPerformancePercent(cpu) }}%
+                  </td>
                 </tr>
                 <tr class="striped">
                   <td class="label-cell">多核性能</td>
-                  <td v-for="cpu in detailModal.mergedCpus" :key="cpu.id" class="value-cell" :class="[isIntelCpu(cpu) ? 'intel' : 'amd', { 'is-benchmark': cpu.id === benchmarkCpu?.id }]">{{ getMultiPercent(cpu) }}%</td>
+                  <td
+                    v-for="cpu in detailModal.mergedCpus"
+                    :key="cpu.id"
+                    class="value-cell"
+                    :class="[
+                      isIntelCpu(cpu) ? 'intel' : 'amd',
+                      { 'is-benchmark': cpu.id === benchmarkCpu?.id },
+                    ]"
+                  >
+                    {{ getMultiPercent(cpu) }}%
+                  </td>
                 </tr>
                 <tr v-for="(row, idx) in detailRows" :key="idx" :class="{ striped: idx % 2 === 1 }">
                   <td class="label-cell">{{ row.label }}</td>
-                  <td v-for="cpu in detailModal.mergedCpus" :key="cpu.id" class="value-cell" :class="{ 'is-benchmark': cpu.id === benchmarkCpu?.id }">{{ getSpecValue(cpu, row.key) }}</td>
+                  <td
+                    v-for="cpu in detailModal.mergedCpus"
+                    :key="cpu.id"
+                    class="value-cell"
+                    :class="{ 'is-benchmark': cpu.id === benchmarkCpu?.id }"
+                  >
+                    {{ getSpecValue(cpu, row.key) }}
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -317,8 +424,14 @@
               <thead>
                 <tr>
                   <th></th>
-                  <th class="cpu-col" :class="[isIntelCpu(detailModal.cpu) ? 'intel' : 'amd', { 'is-benchmark': detailModal.cpu?.id === benchmarkCpu?.id }]"
-                    @click="toggleBenchmark(detailModal.cpu)">
+                  <th
+                    class="cpu-col"
+                    :class="[
+                      isIntelCpu(detailModal.cpu) ? 'intel' : 'amd',
+                      { 'is-benchmark': detailModal.cpu?.id === benchmarkCpu?.id },
+                    ]"
+                    @click="toggleBenchmark(detailModal.cpu)"
+                  >
                     {{ detailModal.cpu ? formatCpuName(detailModal.cpu.model) : '' }}
                   </th>
                 </tr>
@@ -326,25 +439,54 @@
               <tbody>
                 <tr>
                   <td class="label-cell highlight-row">游戏性能</td>
-                  <td class="value-cell highlight-row" :class="[isIntelCpu(detailModal.cpu) ? 'intel' : 'amd', { 'is-benchmark': detailModal.cpu?.id === benchmarkCpu?.id }]">{{ detailModal.cpu ? getPerformancePercent(detailModal.cpu) : 0 }}%</td>
+                  <td
+                    class="value-cell highlight-row"
+                    :class="[
+                      isIntelCpu(detailModal.cpu) ? 'intel' : 'amd',
+                      { 'is-benchmark': detailModal.cpu?.id === benchmarkCpu?.id },
+                    ]"
+                  >
+                    {{ detailModal.cpu ? getPerformancePercent(detailModal.cpu) : 0 }}%
+                  </td>
                 </tr>
                 <tr class="striped">
                   <td class="label-cell">多核性能</td>
-                  <td class="value-cell" :class="[isIntelCpu(detailModal.cpu) ? 'intel' : 'amd', { 'is-benchmark': detailModal.cpu?.id === benchmarkCpu?.id }]">{{ detailModal.cpu ? getMultiPercent(detailModal.cpu) : 0 }}%</td>
+                  <td
+                    class="value-cell"
+                    :class="[
+                      isIntelCpu(detailModal.cpu) ? 'intel' : 'amd',
+                      { 'is-benchmark': detailModal.cpu?.id === benchmarkCpu?.id },
+                    ]"
+                  >
+                    {{ detailModal.cpu ? getMultiPercent(detailModal.cpu) : 0 }}%
+                  </td>
                 </tr>
                 <tr v-for="(row, idx) in detailRows" :key="idx" :class="{ striped: idx % 2 === 0 }">
                   <td class="label-cell">{{ row.label }}</td>
-                  <td class="value-cell" :class="{ 'is-benchmark': detailModal.cpu?.id === benchmarkCpu?.id }">{{ detailModal.cpu ? getSpecValue(detailModal.cpu, row.key) : '-' }}</td>
+                  <td
+                    class="value-cell"
+                    :class="{ 'is-benchmark': detailModal.cpu?.id === benchmarkCpu?.id }"
+                  >
+                    {{ detailModal.cpu ? getSpecValue(detailModal.cpu, row.key) : '-' }}
+                  </td>
                 </tr>
               </tbody>
             </table>
           </template>
         </div>
         <div class="modal-footer">
-          <button class="modal-btn bench-toggle" :class="{ active: detailModal.cpu?.id === benchmarkCpu?.id }" @click="toggleBenchmark(detailModal.cpu)">
+          <button
+            class="modal-btn bench-toggle"
+            :class="{ active: detailModal.cpu?.id === benchmarkCpu?.id }"
+            @click="toggleBenchmark(detailModal.cpu)"
+          >
             {{ detailModal.cpu?.id === benchmarkCpu?.id ? '取消基准' : '设为基准CPU' }}
           </button>
-          <button class="modal-btn secondary" :class="{ disabled: isInCompare(detailModal.cpu) }" @click="addDetailToCompare">
+          <button
+            class="modal-btn secondary"
+            :class="{ disabled: isInCompare(detailModal.cpu) }"
+            @click="addDetailToCompare"
+          >
             {{ isInCompare(detailModal.cpu) ? '已在对比' : '添加到对比栏' }}
           </button>
         </div>
@@ -355,7 +497,11 @@
     <div v-if="benchModal.show" class="modal-overlay" @click="closeBenchModal">
       <div class="modal-content bench-modal" @click.stop>
         <div class="modal-header header-gold">
-          <span class="modal-title">📊 比较（基准：{{ benchmarkCpu ? formatCpuName(benchmarkCpu.model) : '12490F' }}）</span>
+          <span class="modal-title"
+            >📊 比较（基准：{{
+              benchmarkCpu ? formatCpuName(benchmarkCpu.model) : '12490F'
+            }}）</span
+          >
           <button class="modal-close" @click="closeBenchModal">✕</button>
         </div>
         <div class="modal-body bench-modal-body">
@@ -364,25 +510,60 @@
             <thead>
               <tr>
                 <th></th>
-                <th v-for="cpu in compareList" :key="cpu.id"
-                  class="cpu-col clickable" :class="[isIntelCpu(cpu) ? 'intel' : 'amd', { 'is-benchmark': cpu.id === benchmarkCpu?.id }]"
-                  @click="toggleBenchmark(cpu)">
-                  {{ formatCpuName(cpu.model) }}<span class="bench-hint-icon" title="点击设为基准">◎</span>
+                <th
+                  v-for="cpu in compareList"
+                  :key="cpu.id"
+                  class="cpu-col clickable"
+                  :class="[
+                    isIntelCpu(cpu) ? 'intel' : 'amd',
+                    { 'is-benchmark': cpu.id === benchmarkCpu?.id },
+                  ]"
+                  @click="toggleBenchmark(cpu)"
+                >
+                  {{ formatCpuName(cpu.model)
+                  }}<span class="bench-hint-icon" title="点击设为基准">◎</span>
                 </th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td class="label-cell highlight-row">游戏性能</td>
-                <td v-for="cpu in compareList" :key="cpu.id" class="value-cell highlight-row" :class="[isIntelCpu(cpu) ? 'intel' : 'amd', { 'is-benchmark': cpu.id === benchmarkCpu?.id }]">{{ getPerformancePercent(cpu) }}%</td>
+                <td
+                  v-for="cpu in compareList"
+                  :key="cpu.id"
+                  class="value-cell highlight-row"
+                  :class="[
+                    isIntelCpu(cpu) ? 'intel' : 'amd',
+                    { 'is-benchmark': cpu.id === benchmarkCpu?.id },
+                  ]"
+                >
+                  {{ getPerformancePercent(cpu) }}%
+                </td>
               </tr>
               <tr class="striped">
                 <td class="label-cell">多核性能</td>
-                <td v-for="cpu in compareList" :key="cpu.id" class="value-cell" :class="[isIntelCpu(cpu) ? 'intel' : 'amd', { 'is-benchmark': cpu.id === benchmarkCpu?.id }]">{{ getMultiPercent(cpu) }}%</td>
+                <td
+                  v-for="cpu in compareList"
+                  :key="cpu.id"
+                  class="value-cell"
+                  :class="[
+                    isIntelCpu(cpu) ? 'intel' : 'amd',
+                    { 'is-benchmark': cpu.id === benchmarkCpu?.id },
+                  ]"
+                >
+                  {{ getMultiPercent(cpu) }}%
+                </td>
               </tr>
               <tr v-for="(row, idx) in detailRows" :key="idx" :class="{ striped: idx % 2 === 0 }">
                 <td class="label-cell">{{ row.label }}</td>
-                <td v-for="cpu in compareList" :key="cpu.id" class="value-cell" :class="{ 'is-benchmark': cpu.id === benchmarkCpu?.id }">{{ getSpecValue(cpu, row.key) }}</td>
+                <td
+                  v-for="cpu in compareList"
+                  :key="cpu.id"
+                  class="value-cell"
+                  :class="{ 'is-benchmark': cpu.id === benchmarkCpu?.id }"
+                >
+                  {{ getSpecValue(cpu, row.key) }}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -394,7 +575,6 @@
         </div>
       </div>
     </div>
-  </div>
 </template>
 
 <script setup lang="ts">
@@ -493,18 +673,27 @@ function switchMode(mode: 'game' | 'multi') {
 }
 
 const benchmarkCpu = computed({
-  get: () => isGameMode.value ? gameState.benchmarkCpu : multiState.benchmarkCpu,
-  set: (v) => { if (isGameMode.value) gameState.benchmarkCpu = v; else multiState.benchmarkCpu = v }
+  get: () => (isGameMode.value ? gameState.benchmarkCpu : multiState.benchmarkCpu),
+  set: (v) => {
+    if (isGameMode.value) gameState.benchmarkCpu = v
+    else multiState.benchmarkCpu = v
+  },
 })
 
 const compareList = computed({
-  get: () => isGameMode.value ? gameState.compareList : multiState.compareList,
-  set: (v) => { if (isGameMode.value) gameState.compareList = v; else multiState.compareList = v }
+  get: () => (isGameMode.value ? gameState.compareList : multiState.compareList),
+  set: (v) => {
+    if (isGameMode.value) gameState.compareList = v
+    else multiState.compareList = v
+  },
 })
 
 const selectedSearchCpu = computed({
-  get: () => isGameMode.value ? gameState.selectedSearchCpu : multiState.selectedSearchCpu,
-  set: (v) => { if (isGameMode.value) gameState.selectedSearchCpu = v; else multiState.selectedSearchCpu = v }
+  get: () => (isGameMode.value ? gameState.selectedSearchCpu : multiState.selectedSearchCpu),
+  set: (v) => {
+    if (isGameMode.value) gameState.selectedSearchCpu = v
+    else multiState.selectedSearchCpu = v
+  },
 })
 
 const detailModal = ref({
@@ -566,27 +755,27 @@ const searchDropdownItems = computed(() => {
   if (!searchQuery.value || searchQuery.value.length < 1) return []
   const q = searchQuery.value.toLowerCase()
   return cpus.value
-    .filter(c => c.model.toLowerCase().includes(q))
+    .filter((c) => c.model.toLowerCase().includes(q))
     .slice(0, 8)
-    .map(c => ({
+    .map((c) => ({
       cpu: c,
       label: formatCpuName(c.model),
       pct: getCurrentPercent(c),
-      isIntel: isIntelCpu(c)
+      isIntel: isIntelCpu(c),
     }))
 })
 
 // 分数范围（根据模式不同）
 const scoreRange = computed(() => {
-  return isGameMode.value
-    ? { min: 3000, max: 15000 }
-    : { min: 5000, max: 50000 }
+  return isGameMode.value ? { min: 3000, max: 15000 } : { min: 5000, max: 50000 }
 })
 
 // 基准分数
 const benchmarkScore = computed(() => {
   if (!benchmarkCpu.value) return isGameMode.value ? 5000 : 15000
-  return isGameMode.value ? benchmarkCpu.value.abs_game_performance : benchmarkCpu.value.abs_multi_performance
+  return isGameMode.value
+    ? benchmarkCpu.value.abs_game_performance
+    : benchmarkCpu.value.abs_multi_performance
 })
 
 // 基准Y位置
@@ -599,20 +788,20 @@ const benchmarkY = computed(() => {
 function scoreToY(score: number): number {
   if (score <= 3000) return 100
   if (score >= 15000) return 0
-  if (score <= 4500) return 100 - (score - 3000) / 1500 * 25       // 3000-4500, 占25%
-  if (score <= 6000) return 75 - (score - 4500) / 1500 * 25       // 4500-6000, 占25%
-  if (score <= 8500) return 50 - (score - 6000) / 2500 * 25       // 6000-8500, 占25%
-  return 25 - (score - 8500) / 6500 * 25                           // 8500-15000, 占25%
+  if (score <= 4500) return 100 - ((score - 3000) / 1500) * 25 // 3000-4500, 占25%
+  if (score <= 6000) return 75 - ((score - 4500) / 1500) * 25 // 4500-6000, 占25%
+  if (score <= 8500) return 50 - ((score - 6000) / 2500) * 25 // 6000-8500, 占25%
+  return 25 - ((score - 8500) / 6500) * 25 // 8500-15000, 占25%
 }
 
 // 多核Y轴公式：5000→100%, 10000→75%, 18000→50%, 28000→25%, 50000→0%
 function multiScoreToY(score: number): number {
   if (score <= 5000) return 100
   if (score >= 50000) return 0
-  if (score <= 10000) return 100 - (score - 5000) / 5000 * 25       // 5000-10000, 占25%
-  if (score <= 18000) return 75 - (score - 10000) / 8000 * 25      // 10000-18000, 占25%
-  if (score <= 28000) return 50 - (score - 18000) / 10000 * 25    // 18000-28000, 占25%
-  return 25 - (score - 28000) / 22000 * 25                         // 28000-50000, 占25%
+  if (score <= 10000) return 100 - ((score - 5000) / 5000) * 25 // 5000-10000, 占25%
+  if (score <= 18000) return 75 - ((score - 10000) / 8000) * 25 // 10000-18000, 占25%
+  if (score <= 28000) return 50 - ((score - 18000) / 10000) * 25 // 18000-28000, 占25%
+  return 25 - ((score - 28000) / 22000) * 25 // 28000-50000, 占25%
 }
 
 // 统一Y轴计算（根据模式选择）
@@ -623,10 +812,10 @@ function getY(score: number): number {
 // 确定CPU属于哪个列（大小写不敏感）
 function getColumn(cpu: Cpu): number {
   const m = cpu.model.toUpperCase()
-  
+
   // Intel Ultra 系列 → i3 列
   if (m.includes('ULTRA')) return 0
-  
+
   // Intel Core i3/i5/i7/i9
   if (m.includes('INTEL')) {
     if (m.includes('I9')) return 3
@@ -635,7 +824,7 @@ function getColumn(cpu: Cpu): number {
     if (m.includes('I3')) return 0
     return 1 // 默认i5列
   }
-  
+
   // AMD Ryzen 系列 — 只用系列名匹配，数字型号会误判（如9600X是R5不是R9）
   if (m.includes('AMD')) {
     if (m.includes('RYZEN 9') || m.includes('R9')) return 4
@@ -644,7 +833,7 @@ function getColumn(cpu: Cpu): number {
     if (m.includes('RYZEN 3') || m.includes('R3')) return 7
     return 6 // 默认R5列
   }
-  
+
   return 1
 }
 
@@ -659,44 +848,44 @@ function getScore(cpu: Cpu): number {
 }
 
 // 合并逻辑：同核心+不同尾缀+分数差≤2%
-function mergeCpus(cpuList: Cpu[]): { groups: Cpu[][], singles: Cpu[] } {
+function mergeCpus(cpuList: Cpu[]): { groups: Cpu[][]; singles: Cpu[] } {
   if (cpuList.length === 0) return { groups: [], singles: [] }
-  
+
   const sorted = [...cpuList].sort((a, b) => getScore(b) - getScore(a))
   const used = new Set<number>()
   const groups: Cpu[][] = []
-  
+
   for (let i = 0; i < sorted.length; i++) {
     if (used.has(sorted[i].id)) continue
-    
+
     const group: Cpu[] = [sorted[i]]
     used.add(sorted[i].id)
-    
+
     for (let j = i + 1; j < sorted.length; j++) {
       if (used.has(sorted[j].id)) continue
-      
+
       const cpu1 = group[0]
       const cpu2 = sorted[j]
-      
+
       // 检查是否同核心（去掉尾缀比较）
       const core1 = stripSuffix(cpu1.model)
       const core2 = stripSuffix(cpu2.model)
-      
+
       if (core1 === core2) {
-        const diff = Math.abs(getScore(cpu1) - getScore(cpu2)) / getScore(cpu1) * 100
+        const diff = (Math.abs(getScore(cpu1) - getScore(cpu2)) / getScore(cpu1)) * 100
         if (diff <= 2) {
           group.push(cpu2)
           used.add(cpu2.id)
         }
       }
     }
-    
+
     if (group.length > 1) {
       groups.push(group)
     }
   }
-  
-  const singles = sorted.filter(c => !used.has(c.id))
+
+  const singles = sorted.filter((c) => !used.has(c.id))
   return { groups, singles }
 }
 
@@ -722,9 +911,9 @@ function stripSuffix(model: string): string {
 // 生成分组标签：11600K/KF, 12400/F, 5800X/X3D, Ultra 5 250K/KF Plus
 function getDisplayLabel(cpus: Cpu[]): string {
   if (cpus.length === 1) return formatCpuName(cpus[0].model)
-  
+
   // 分离末尾修饰词(Plus等)和技术后缀(K/KF/F/X3D等)
-  const parts = cpus.map(c => {
+  const parts = cpus.map((c) => {
     // 先分离Plus等修饰词
     let name = c.model
     let trailingWord = ''
@@ -736,27 +925,30 @@ function getDisplayLabel(cpus: Cpu[]): string {
     // 匹配技术后缀
     const match = name.match(/(X3D|KF|KS|K|F|GE?|X|3D)$/i)
     const suffix = match ? match[1] : ''
-    const base = name.replace(/(X3D|KF|KS|K|F|GE?|X|3D)$/i, '').replace(/\s*\(.*?\)\s*/g, '').trim()
+    const base = name
+      .replace(/(X3D|KF|KS|K|F|GE?|X|3D)$/i, '')
+      .replace(/\s*\(.*?\)\s*/g, '')
+      .trim()
     return { base, suffix, trailingWord }
   })
-  
+
   const numBase = parts[0].base
-  const allSuffixes = parts.map(p => p.suffix)
+  const allSuffixes = parts.map((p) => p.suffix)
   // 如果所有都有相同的trailingWord（如Plus），保留
-  const trailingWords = parts.map(p => p.trailingWord)
-  const allSameTrailing = trailingWords.every(t => t === trailingWords[0])
+  const trailingWords = parts.map((p) => p.trailingWord)
+  const allSameTrailing = trailingWords.every((t) => t === trailingWords[0])
   const commonTrailing = allSameTrailing ? trailingWords[0] : ''
-  
+
   // 找技术后缀的公共前缀（如 K 是 K 和 KF 的公共前缀）
   const commonPrefix = allSuffixes.reduce((acc, suf) => {
     let i = 0
     while (i < acc.length && i < suf.length && acc[i] === suf[i]) i++
     return acc.substring(0, i)
   })
-  
+
   // 显示base = 数字base + 公共前缀（如 Ultra 5 250K）
   const displayBase = formatCpuName(numBase + commonPrefix)
-  
+
   // 拼接后缀差异部分
   const parts2 = [displayBase]
   for (let i = 0; i < allSuffixes.length; i++) {
@@ -765,7 +957,7 @@ function getDisplayLabel(cpus: Cpu[]): string {
       parts2.push(fullSuffix)
     }
   }
-  
+
   // 加上公共修饰词（如 Plus）
   const result = parts2.join('/') + (commonTrailing ? ' ' + commonTrailing : '')
   return result
@@ -774,83 +966,84 @@ function getDisplayLabel(cpus: Cpu[]): string {
 // 计算每个通道内已使用的Y位置（用于避免重叠）
 function buildPositionedCpus(): PositionedCpu[] {
   if (!cpus.value.length) return []
-  
+
   const result: PositionedCpu[] = []
-  
+
   // 按列分组
   const colCpus: Map<number, Cpu[]> = new Map()
   for (let i = 0; i < 8; i++) colCpus.set(i, [])
-  
+
   for (const cpu of cpus.value) {
     const col = getColumn(cpu)
     if (colCpus.has(col)) {
       colCpus.get(col)!.push(cpu)
     }
   }
-  
+
   // 处理每列
   for (const [colIdx, cpuList] of colCpus.entries()) {
     if (cpuList.length === 0) continue
-    
+
     // 按分数降序排列
     const sorted = [...cpuList].sort((a, b) => getScore(b) - getScore(a))
-    
+
     // 简单合并：同核心+不同尾缀+分数差<=2%
     const processed = new Set<number>()
     const items: { cpus: Cpu[]; merged: boolean }[] = []
-    
+
     for (let i = 0; i < sorted.length; i++) {
       if (processed.has(i)) continue
-      
+
       const group: Cpu[] = [sorted[i]]
       processed.add(i)
-      
+
       for (let j = i + 1; j < sorted.length; j++) {
         if (processed.has(j)) continue
-        
+
         const core1 = stripSuffix(sorted[i].model)
         const core2 = stripSuffix(sorted[j].model)
-        
+
         if (core1 === core2) {
-          const diff = Math.abs(getScore(sorted[i]) - getScore(sorted[j])) / getScore(sorted[i]) * 100
+          const diff =
+            (Math.abs(getScore(sorted[i]) - getScore(sorted[j])) / getScore(sorted[i])) * 100
           if (diff <= 2) {
             group.push(sorted[j])
             processed.add(j)
           }
         }
       }
-      
+
       items.push({ cpus: group, merged: group.length > 1 })
     }
-    
+
     // 分配Y位置，避免重叠
     const usedYs: number[] = []
     const minSpacing = 0.9 // 最小间距百分比（2000px高度下约18px）
-    
+
     for (const item of items) {
       const score = getScore(item.cpus[0])
       const rawY = getY(score)
-      
+
       // 找到不重叠的Y位置
       let finalY = rawY
       let attempts = 0
-      
+
       while (attempts < 30) {
-        const overlapped = usedYs.some(uy => Math.abs(uy - finalY) < minSpacing)
+        const overlapped = usedYs.some((uy) => Math.abs(uy - finalY) < minSpacing)
         if (!overlapped) break
         finalY = rawY + (attempts % 2 === 0 ? 1 : -1) * (Math.floor(attempts / 2) + 1) * minSpacing
         attempts++
       }
-      
+
       // 限制范围
       finalY = Math.max(0.5, Math.min(99.5, finalY))
       usedYs.push(finalY)
-      
+
       const brand = getBrand(item.cpus[0])
-      const isSearched = item.cpus.some(c => isCpuSearched(c))
-      
+      const isSearched = item.cpus.some((c) => isCpuSearched(c))
+
       result.push({
-        key: item.cpus.map(c => String(c.id)).join('-'),
+        key: item.cpus.map((c) => String(c.id)).join('-'),
         cpus: item.cpus,
         displayLabel: getDisplayLabel(item.cpus),
         brand,
@@ -861,11 +1054,11 @@ function buildPositionedCpus(): PositionedCpu[] {
         xOffset: 0,
         merged: item.merged,
         isSearched,
-        isEstimated: item.cpus.some(c => c.isEstimated),
+        isEstimated: item.cpus.some((c) => c.isEstimated),
       })
     }
   }
-  
+
   return result
 }
 
@@ -874,30 +1067,27 @@ const positionedCpus = computed(() => buildPositionedCpus())
 // 系列标签
 const seriesLabels = computed((): SeriesLabel[] => {
   const labels: SeriesLabel[] = []
-  
+
   for (const col of COLUMNS) {
-    const colCpus = cpus.value.filter(c => getColumn(c) === col.idx)
+    const colCpus = cpus.value.filter((c) => getColumn(c) === col.idx)
     if (colCpus.length === 0) continue
-    
-    const maxScoreCpu = colCpus.reduce((best, cpu) =>
-      getScore(cpu) > getScore(best) ? cpu : best
-    )
-    
+
+    const maxScoreCpu = colCpus.reduce((best, cpu) => (getScore(cpu) > getScore(best) ? cpu : best))
+
     // 获取该CPU的Y位置
     const y = getY(getScore(maxScoreCpu))
-    
+
     // Ultra 200 系列标签（如果i3列有Ultra芯片）
     if (col.idx === 0) {
-      const ultraCpus = colCpus.filter(c =>
-        c.model.toUpperCase().includes('ULTRA') || c.model.toUpperCase().includes('CORE ULTRA')
+      const ultraCpus = colCpus.filter(
+        (c) =>
+          c.model.toUpperCase().includes('ULTRA') || c.model.toUpperCase().includes('CORE ULTRA'),
       )
-      const coreI3Cpus = colCpus.filter(c =>
-        !c.model.toUpperCase().includes('ULTRA')
-      )
-      
+      const coreI3Cpus = colCpus.filter((c) => !c.model.toUpperCase().includes('ULTRA'))
+
       if (coreI3Cpus.length > 0) {
         const coreCpu = coreI3Cpus.reduce((best, cpu) =>
-          getScore(cpu) > getScore(best) ? cpu : best
+          getScore(cpu) > getScore(best) ? cpu : best,
         )
         const coreY = getY(getScore(coreCpu))
         labels.push({
@@ -912,7 +1102,7 @@ const seriesLabels = computed((): SeriesLabel[] => {
 
       if (ultraCpus.length > 0) {
         const ultraCpu = ultraCpus.reduce((best, cpu) =>
-          getScore(cpu) > getScore(best) ? cpu : best
+          getScore(cpu) > getScore(best) ? cpu : best,
         )
         const ultraY = getY(getScore(ultraCpu))
         labels.push({
@@ -935,13 +1125,13 @@ const seriesLabels = computed((): SeriesLabel[] => {
       })
     }
   }
-  
+
   return labels
 })
 
 // X轴标签
 const columnLabels = computed(() => {
-  return COLUMNS.map(col => ({
+  return COLUMNS.map((col) => ({
     key: col.series.replace(/\s/g, '-'),
     text: col.series,
     x: (col.idx + 0.5) * (100 / 8),
@@ -950,7 +1140,7 @@ const columnLabels = computed(() => {
 
 // 分隔线位置
 function getColDividerStyle(i: number): Record<string, string> {
-  return { left: (i * 100 / 8) + '%' }
+  return { left: (i * 100) / 8 + '%' }
 }
 
 // Intel/AMD 分隔线（i9和R9之间，即第4列和第5列之间 = 50%位置）
@@ -973,11 +1163,16 @@ const detailRows = [
 
 function getSpecValue(cpu: Cpu, key: string): string {
   switch (key) {
-    case 'cores_threads': return `${cpu.cores} / ${cpu.threads}`
-    case 'base_freq': return `${cpu.base_freq} GHz`
-    case 'boost_freq': return `${cpu.boost_freq} GHz`
-    case 'tdp': return `${cpu.tdp}W`
-    default: return '-'
+    case 'cores_threads':
+      return `${cpu.cores} / ${cpu.threads}`
+    case 'base_freq':
+      return `${cpu.base_freq} GHz`
+    case 'boost_freq':
+      return `${cpu.boost_freq} GHz`
+    case 'tdp':
+      return `${cpu.tdp}W`
+    default:
+      return '-'
   }
 }
 
@@ -1005,10 +1200,10 @@ function getCurrentPercent(cpu: Cpu): number {
 
 function formatCpuName(model: string): string {
   return model
-    .replace(/INTEL\s+CORE\s+/i, '')        // "INTEL Core i7-13700K" → "i7-13700K"
-    .replace(/ULTRA\s+\d+\s+/i, '')          // "Ultra 7 265K" → "265K"
-    .replace(/I\d+-/i, '')                   // "i7-13700K" → "13700K"
-    .replace(/AMD\s+RYZEN\s+\d+\s+/i, '')    // "AMD Ryzen 7 5800X" → "5800X"
+    .replace(/INTEL\s+CORE\s+/i, '') // "INTEL Core i7-13700K" → "i7-13700K"
+    .replace(/ULTRA\s+\d+\s+/i, '') // "Ultra 7 265K" → "265K"
+    .replace(/I\d+-/i, '') // "i7-13700K" → "13700K"
+    .replace(/AMD\s+RYZEN\s+\d+\s+/i, '') // "AMD Ryzen 7 5800X" → "5800X"
     .replace(/AMD\s+/i, '')
     .trim()
 }
@@ -1101,58 +1296,64 @@ function isCpuSearched(cpu: Cpu): boolean {
 // 加载数据
 async function loadCpus() {
   console.log('[TierView] 开始加载CPU数据...')
-  
+
   const { data, error } = await supabase
     .from('cpu_current')
     .select('*')
     .order('abs_game_performance', { ascending: false })
-  
+
   if (error) {
     console.error('[TierView] 加载CPU数据失败:', error.message, error.details, error.hint)
     return
   }
-  
+
   if (!data || data.length === 0) {
     console.warn('[TierView] CPU数据为空！')
     return
   }
-  
+
   console.log(`[TierView] 加载了 ${data.length} 条CPU数据`)
-  console.log('[TierView] 前3条:', data.slice(0, 3).map(d => ({ id: d.id, model: d.model, game: d.abs_game_performance })))
-  
-  cpus.value = data.map(cpu => ({
+  console.log(
+    '[TierView] 前3条:',
+    data.slice(0, 3).map((d) => ({ id: d.id, model: d.model, game: d.abs_game_performance })),
+  )
+
+  cpus.value = data.map((cpu) => ({
     ...cpu,
     isEstimated: isHollowModel(cpu.model),
   }))
-  
+
   // 设置默认基准（两个模式都设置）
-  const defaultBench = cpus.value.find(c =>
-    c.model.toUpperCase().includes('12490F')
-  )
+  const defaultBench = cpus.value.find((c) => c.model.toUpperCase().includes('12490F'))
   if (defaultBench) {
     gameState.benchmarkCpu = defaultBench
     multiState.benchmarkCpu = defaultBench
-    console.log('[TierView] 找到基准CPU:', defaultBench.model, '游戏分:', defaultBench.abs_game_performance, '多核分:', defaultBench.abs_multi_performance)
+    console.log(
+      '[TierView] 找到基准CPU:',
+      defaultBench.model,
+      '游戏分:',
+      defaultBench.abs_game_performance,
+      '多核分:',
+      defaultBench.abs_multi_performance,
+    )
   } else {
     console.warn('[TierView] 未找到基准CPU 12490F')
   }
-  
+
   // 从localStorage恢复对比栏
   loadCompareFromStorage()
 }
 
 // 搜索
 function onSearchInput() {
-  selectedSearchCpu.value = null  // 输入新内容时取消选中
+  selectedSearchCpu.value = null // 输入新内容时取消选中
   if (!searchQuery.value) {
     searchMatchCount.value = 0
     showSearchDropdown.value = false
     return
   }
   const q = searchQuery.value.toLowerCase()
-  const matches = cpus.value.filter(c =>
-    c.model.toLowerCase().includes(q)
-  )
+  const matches = cpus.value.filter((c) => c.model.toLowerCase().includes(q))
   searchMatchCount.value = matches.length
   showSearchDropdown.value = true
 }
@@ -1165,7 +1366,9 @@ function onSearchFocus() {
 
 function onSearchBlur() {
   // 延迟关闭，让mousedown事件先触发
-  setTimeout(() => { showSearchDropdown.value = false }, 200)
+  setTimeout(() => {
+    showSearchDropdown.value = false
+  }, 200)
 }
 
 // 点击下拉项 → 选中 + 跳转高亮
@@ -1178,9 +1381,7 @@ function onSearchItemClick(cpu: Cpu) {
 
 // 跳转到指定CPU
 function jumpToCpu(cpu: Cpu) {
-  const target = positionedCpus.value.find(item =>
-    item.cpus.some(c => c.id === cpu.id)
-  )
+  const target = positionedCpus.value.find((item) => item.cpus.some((c) => c.id === cpu.id))
   if (target && scatterContainer.value) {
     const container = scatterContainer.value
     const plotEl = scatterPlot.value
@@ -1219,11 +1420,17 @@ function showTooltip(item: PositionedCpu, event: MouseEvent) {
   let percentText: string
   if (item.cpus.length > 1) {
     // 合并组：显示每个CPU的百分比，用短标签
-    percentText = item.cpus.map(c => {
-      const shortName = stripSuffix(c.model).replace(/INTEL\s*CORE\s*/i, '').replace(/AMD\s*RYZEN\s*/i, '').replace(/AMD\s*/i, '').trim()
-      const suffix = c.model.match(/(X3D|KF|KS|K|F|GE?|X|3D)$/i)?.[1] || ''
-      return (shortName.split(/[-\s]/).pop() || '') + suffix + ':' + getCurrentPercent(c) + '%'
-    }).join(' / ')
+    percentText = item.cpus
+      .map((c) => {
+        const shortName = stripSuffix(c.model)
+          .replace(/INTEL\s*CORE\s*/i, '')
+          .replace(/AMD\s*RYZEN\s*/i, '')
+          .replace(/AMD\s*/i, '')
+          .trim()
+        const suffix = c.model.match(/(X3D|KF|KS|K|F|GE?|X|3D)$/i)?.[1] || ''
+        return (shortName.split(/[-\s]/).pop() || '') + suffix + ':' + getCurrentPercent(c) + '%'
+      })
+      .join(' / ')
   } else {
     percentText = getCurrentPercent(cpu) + '%'
   }
@@ -1234,8 +1441,8 @@ function showTooltip(item: PositionedCpu, event: MouseEvent) {
     estimated: item.isEstimated,
     style: {
       position: 'fixed',
-      left: (event.clientX + 12) + 'px',
-      top: (event.clientY - 40) + 'px',
+      left: event.clientX + 12 + 'px',
+      top: event.clientY - 40 + 'px',
     },
   }
 }
@@ -1250,8 +1457,8 @@ function showLabelTooltip(label: SeriesLabel, event: MouseEvent) {
     estimated: label.cpu.isEstimated || false,
     style: {
       position: 'fixed',
-      left: (event.clientX + 12) + 'px',
-      top: (event.clientY - 40) + 'px',
+      left: event.clientX + 12 + 'px',
+      top: event.clientY - 40 + 'px',
     },
   }
 }
@@ -1308,7 +1515,7 @@ function addDetailToCompare() {
 
 function isInCompare(cpu: Cpu | null): boolean {
   if (!cpu) return false
-  return compareList.value.some(c => c.id === cpu.id)
+  return compareList.value.some((c) => c.id === cpu.id)
 }
 
 // 对比栏
@@ -1327,16 +1534,16 @@ function addToCompareCore(cpu: Cpu) {
   if (compareList.value.length >= 4) {
     return
   }
-  if (!compareList.value.find(c => c.id === cpu.id)) {
+  if (!compareList.value.find((c) => c.id === cpu.id)) {
     compareList.value.push(cpu)
     saveCompareToStorage()
   }
 }
 
 function removeFromCompare(cpu: Cpu) {
-  compareList.value = compareList.value.filter(c => c.id !== cpu.id)
+  compareList.value = compareList.value.filter((c) => c.id !== cpu.id)
   saveCompareToStorage()
-  
+
   // 如果移除后空了，收起对比栏
   if (compareList.value.length === 0) {
     compareExpanded.value = false
@@ -1355,9 +1562,7 @@ function setAsBenchmark(cpu: Cpu) {
 }
 
 function resetBenchmark() {
-  const defaultBench = cpus.value.find(c =>
-    c.model.toUpperCase().includes('12490F')
-  )
+  const defaultBench = cpus.value.find((c) => c.model.toUpperCase().includes('12490F'))
   if (defaultBench) {
     benchmarkCpu.value = defaultBench
     saveCompareToStorage()
@@ -1379,13 +1584,13 @@ function closeCompare() {
 function saveCompareToStorage() {
   // 游戏模式
   const gameData = {
-    compareList: gameState.compareList.map(c => c.id),
+    compareList: gameState.compareList.map((c) => c.id),
     benchmarkId: gameState.benchmarkCpu?.id,
   }
   localStorage.setItem('tier-compare-game', JSON.stringify(gameData))
   // 多核模式
   const multiData = {
-    compareList: multiState.compareList.map(c => c.id),
+    compareList: multiState.compareList.map((c) => c.id),
     benchmarkId: multiState.benchmarkCpu?.id,
   }
   localStorage.setItem('tier-compare-multi', JSON.stringify(multiData))
@@ -1398,13 +1603,11 @@ function loadCompareFromStorage() {
     if (gameStored) {
       const data = JSON.parse(gameStored)
       if (data.benchmarkId) {
-        const bench = cpus.value.find(c => c.id === data.benchmarkId)
+        const bench = cpus.value.find((c) => c.id === data.benchmarkId)
         if (bench) gameState.benchmarkCpu = bench
       }
       if (data.compareList) {
-        gameState.compareList = cpus.value.filter(c =>
-          data.compareList.includes(c.id)
-        )
+        gameState.compareList = cpus.value.filter((c) => data.compareList.includes(c.id))
       }
     }
     // 恢复多核模式
@@ -1412,13 +1615,11 @@ function loadCompareFromStorage() {
     if (multiStored) {
       const data = JSON.parse(multiStored)
       if (data.benchmarkId) {
-        const bench = cpus.value.find(c => c.id === data.benchmarkId)
+        const bench = cpus.value.find((c) => c.id === data.benchmarkId)
         if (bench) multiState.benchmarkCpu = bench
       }
       if (data.compareList) {
-        multiState.compareList = cpus.value.filter(c =>
-          data.compareList.includes(c.id)
-        )
+        multiState.compareList = cpus.value.filter((c) => data.compareList.includes(c.id))
       }
     }
   } catch (e) {
@@ -1448,7 +1649,8 @@ const injectDatasetSchema = () => {
     '@context': 'https://schema.org',
     '@type': 'Dataset',
     name: 'CPU游戏性能天梯图（独家）',
-    description: '全网独家CPU游戏性能天梯图，基于多套统一测试平台实测帧数+同架构性能比例推算。i5-12490F=100%基准，涵盖150+款CPU，包含实测型号和推算型号两类数据。测试环境：1080P / 游戏预设中档画质。',
+    description:
+      '全网独家CPU游戏性能天梯图，基于多套统一测试平台实测帧数+同架构性能比例推算。i5-12490F=100%基准，涵盖150+款CPU，包含实测型号和推算型号两类数据。测试环境：1080P / 游戏预设中档画质。',
     url: 'https://www.5vip.top/tier',
     keywords: 'CPU天梯图,CPU游戏性能排行,CPU排行,硬件天梯,实测数据,同架构推算,全网独家',
     creator: { '@type': 'Person', name: '奇魂', url: 'https://www.5vip.top' },
@@ -1459,13 +1661,19 @@ const injectDatasetSchema = () => {
     isBasedOn: {
       '@type': 'CreativeWork',
       name: '测试方法说明',
-      description: '实测：多套统一测试平台，1080P/游戏预设中档画质，帧数取平均值。数据为热门游戏平均表现，不同游戏差距较大。详见B站测试视频。推算：基于同架构性能比例推算（同Die/同核心型号按基准规则换算），误差通常在 ±5% 以内。',
-      url: 'https://www.5vip.top/about#test-methodology'
+      description:
+        '实测：多套统一测试平台，1080P/游戏预设中档画质，帧数取平均值。数据为热门游戏平均表现，不同游戏差距较大。详见B站测试视频。推算：基于同架构性能比例推算（同Die/同核心型号按基准规则换算），误差通常在 ±5% 以内。',
+      url: 'https://www.5vip.top/about#test-methodology',
     },
     variableMeasured: [
-      { '@type': 'PropertyValue', name: '游戏性能分数', description: '以i5-12490F=100%为基准。数据为热门游戏平均表现，不同游戏差距较大。详见B站测试视频。' },
-      { '@type': 'PropertyValue', name: '数据类型', description: '实测（实心圆）或推算（空心圆）' }
-    ]
+      {
+        '@type': 'PropertyValue',
+        name: '游戏性能分数',
+        description:
+          '以i5-12490F=100%为基准。数据为热门游戏平均表现，不同游戏差距较大。详见B站测试视频。',
+      },
+      { '@type': 'PropertyValue', name: '数据类型', description: '实测（实心圆）或推算（空心圆）' },
+    ],
   }
   const script = document.createElement('script')
   script.type = 'application/ld+json'
@@ -1642,7 +1850,6 @@ onUnmounted(() => {
   font-weight: 700;
 }
 
-
 /* 搜索栏 + 对比栏（同行，各占50%） */
 .tier-content .top-bar {
   display: flex;
@@ -1692,7 +1899,9 @@ onUnmounted(() => {
   background: var(--accent);
   color: #000;
 }
-.add-compare-btn:hover { opacity: 0.85; }
+.add-compare-btn:hover {
+  opacity: 0.85;
+}
 .add-compare-btn.disabled {
   opacity: 0.35;
   cursor: not-allowed;
@@ -1702,7 +1911,9 @@ onUnmounted(() => {
   color: #ef4444;
   border: 1px solid rgba(239, 68, 68, 0.3);
 }
-.clear-btn:hover { background: rgba(239, 68, 68, 0.25); }
+.clear-btn:hover {
+  background: rgba(239, 68, 68, 0.25);
+}
 
 /* 无选中时的提示文字 */
 .search-hint {
@@ -1736,11 +1947,17 @@ onUnmounted(() => {
   color: var(--text-primary);
 }
 .search-dropdown-item:hover {
-  background: rgba(255,215,0,0.08);
+  background: rgba(255, 215, 0, 0.08);
 }
-.dropdown-brand.intel { color: #4A90D9; }
-.dropdown-brand.amd { color: #E04040; }
-.dropdown-name { flex: 1; }
+.dropdown-brand.intel {
+  color: #4a90d9;
+}
+.dropdown-brand.amd {
+  color: #e04040;
+}
+.dropdown-name {
+  flex: 1;
+}
 
 /* 同行对比栏（占50%宽度） */
 .compare-inline {
@@ -1794,8 +2011,12 @@ onUnmounted(() => {
   font-size: 0.65rem;
 }
 
-.chip-brand.intel { color: #3b82f6; }
-.chip-brand.amd { color: #ef4444; }
+.chip-brand.intel {
+  color: #3b82f6;
+}
+.chip-brand.amd {
+  color: #ef4444;
+}
 
 .chip-name {
   color: var(--text-primary);
@@ -1810,8 +2031,12 @@ onUnmounted(() => {
   font-size: 0.75rem;
 }
 
-.chip-percent.intel { color: #3b82f6; }
-.chip-percent.amd { color: #ef4444; }
+.chip-percent.intel {
+  color: #3b82f6;
+}
+.chip-percent.amd {
+  color: #ef4444;
+}
 
 .chip-btn {
   background: none;
@@ -1842,7 +2067,9 @@ onUnmounted(() => {
   min-width: 16px;
   min-height: 16px;
   border-radius: 50%;
-  transition: color 0.15s, background 0.15s;
+  transition:
+    color 0.15s,
+    background 0.15s;
 }
 .chip-remove:hover {
   color: #ef4444;
@@ -1931,10 +2158,10 @@ onUnmounted(() => {
   color: #fff;
 }
 .intel-header {
-  background: #4A90D9;
+  background: #4a90d9;
 }
 .amd-header {
-  background: #E04040;
+  background: #e04040;
 }
 
 .scatter-plot {
@@ -1980,12 +2207,14 @@ onUnmounted(() => {
   position: absolute;
   width: 8px;
   height: 8px;
-  background: #FFD700;
+  background: #ffd700;
   border-radius: 50%;
   transform: translate(-50%, -50%);
   cursor: pointer;
   box-shadow: 0 0 4px rgba(255, 215, 0, 0.8);
-  transition: transform 0.15s, box-shadow 0.15s;
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s;
   z-index: 10;
 }
 
@@ -2007,16 +2236,16 @@ onUnmounted(() => {
 }
 
 .cpu-dot.intel {
-  background: #FFD700;
+  background: #ffd700;
 }
 
 .cpu-dot.amd {
-  background: #FFD700;
+  background: #ffd700;
 }
 
 .cpu-dot.hollow {
   background: transparent;
-  border: 1.5px solid #FFD700;
+  border: 1.5px solid #ffd700;
   width: 8px;
   height: 8px;
   box-shadow: 0 0 4px rgba(255, 215, 0, 0.6);
@@ -2048,11 +2277,13 @@ onUnmounted(() => {
   white-space: nowrap;
   pointer-events: none;
   line-height: 1;
-  text-shadow: 0 0 4px rgba(0,0,0,0.8), 0 1px 2px rgba(0,0,0,0.6);
+  text-shadow:
+    0 0 4px rgba(0, 0, 0, 0.8),
+    0 1px 2px rgba(0, 0, 0, 0.6);
 }
 
 .cpu-dot:hover .dot-label {
-  color: #FFD700;
+  color: #ffd700;
   font-weight: 600;
 }
 
@@ -2231,7 +2462,7 @@ onUnmounted(() => {
 
 .tooltip-title {
   font-weight: 600;
-  color: #FFD700;
+  color: #ffd700;
   font-size: 0.8rem;
   margin-bottom: 0.25rem;
 }
@@ -2283,7 +2514,9 @@ onUnmounted(() => {
   overflow: hidden;
   max-width: 420px;
   width: 100%;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(74, 144, 217, 0.08);
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(74, 144, 217, 0.08);
 }
 
 .modal-header {
@@ -2313,7 +2546,7 @@ onUnmounted(() => {
 }
 .tag-tested {
   background: rgba(255, 215, 0, 0.18);
-  color: #FFD700;
+  color: #ffd700;
 }
 .tag-estimated {
   background: rgba(100, 100, 100, 0.2);
@@ -2327,8 +2560,12 @@ onUnmounted(() => {
   color: #fff;
   flex: 1;
 }
-.modal-title.intel { color: #6EB0FF; }
-.modal-title.amd { color: #FF6B6B; }
+.modal-title.intel {
+  color: #6eb0ff;
+}
+.modal-title.amd {
+  color: #ff6b6b;
+}
 
 .modal-close {
   background: rgba(255, 255, 255, 0.08);
@@ -2393,7 +2630,7 @@ onUnmounted(() => {
 .modal-btn.bench-toggle {
   background: rgba(255, 215, 0, 0.1);
   border-color: rgba(255, 215, 0, 0.25);
-  color: #FFD700;
+  color: #ffd700;
 }
 
 .modal-btn.bench-toggle.active {
@@ -2417,7 +2654,7 @@ onUnmounted(() => {
     padding: 0.6rem;
     padding-bottom: 320px;
   }
-  
+
   .scatter-container {
     /* 移动端不隐藏，显示散点图（含空心圆） */
     overflow-x: auto;
@@ -2433,7 +2670,7 @@ onUnmounted(() => {
 .search-add-btn {
   margin-left: 0.5rem;
   padding: 0.15rem 0.5rem;
-  background: #FFD700;
+  background: #ffd700;
   color: #000;
   border: none;
   border-radius: 4px;
@@ -2444,7 +2681,7 @@ onUnmounted(() => {
   min-height: 28px;
 }
 .search-add-btn:hover {
-  background: #FFC000;
+  background: #ffc000;
 }
 
 /* ========== 弹窗 ========== */
@@ -2481,9 +2718,15 @@ onUnmounted(() => {
   min-width: 90px;
   border-radius: 6px;
 }
-.cpu-col:hover { background: rgba(255, 255, 255, 0.04); }
-.cpu-col.intel { color: #6EB0FF; }
-.cpu-col.amd { color: #FF6B6B; }
+.cpu-col:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+.cpu-col.intel {
+  color: #6eb0ff;
+}
+.cpu-col.amd {
+  color: #ff6b6b;
+}
 /* 基准CPU整列高亮 */
 .cpu-col.is-benchmark,
 td.is-benchmark {
@@ -2508,8 +2751,14 @@ td.is-benchmark {
   color: rgba(255, 255, 255, 0.8);
   font-weight: 600;
 }
-.value-cell.intel { color: #6EB0FF; font-weight: 600; }
-.value-cell.amd { color: #FF6B6B; font-weight: 600; }
+.value-cell.intel {
+  color: #6eb0ff;
+  font-weight: 600;
+}
+.value-cell.amd {
+  color: #ff6b6b;
+  font-weight: 600;
+}
 .highlight-row .value-cell {
   font-size: 1rem;
   font-weight: 700;
@@ -2563,7 +2812,7 @@ td.is-benchmark {
   background: rgba(255, 215, 0, 0.15);
   border: 1px solid rgba(255, 215, 0, 0.4);
   border-radius: 4px;
-  color: #FFD700;
+  color: #ffd700;
   cursor: pointer;
   font-size: 0.75rem;
   font-weight: 600;
@@ -2586,7 +2835,7 @@ td.is-benchmark {
 .tooltip-game-pct {
   font-size: 1rem;
   font-weight: 700;
-  color: #FFD700;
+  color: #ffd700;
   margin: 0.15rem 0;
 }
 .tooltip-bench {
@@ -2602,16 +2851,16 @@ td.is-benchmark {
     align-items: stretch;
     gap: 0.5rem;
   }
-  
+
   .top-bar-spacer {
     display: none;
   }
-  
+
   .tabs {
     width: 100%;
     justify-content: center;
   }
-  
+
   .tab-btn {
     font-size: 0.85rem;
     padding: 0.4rem 0.6rem;
@@ -2619,18 +2868,18 @@ td.is-benchmark {
     flex: 1;
     text-align: center;
   }
-  
+
   .top-carousel {
     max-width: 100%;
     height: 38px;
     min-height: 38px;
   }
-  
+
   .dot-btn {
     width: 6px;
     height: 6px;
   }
-  
+
   /* 内容区顶栏：搜索栏和对比栏各自单独成行，弹性布局 */
   .tier-content .top-bar {
     flex-direction: column;
@@ -2699,8 +2948,8 @@ td.is-benchmark {
 .unique-legend {
   margin-top: 1.5rem;
   padding: 1.25rem 1.5rem;
-  background: rgba(255,215,0,0.05);
-  border: 1px solid rgba(255,215,0,0.15);
+  background: rgba(255, 215, 0, 0.05);
+  border: 1px solid rgba(255, 215, 0, 0.15);
   border-radius: 10px;
 }
 .unique-title-row {
@@ -2710,18 +2959,20 @@ td.is-benchmark {
   margin-bottom: 1rem;
   flex-wrap: wrap;
 }
-.unique-icon { font-size: 1.2rem; }
+.unique-icon {
+  font-size: 1.2rem;
+}
 .unique-title-row strong {
-  color: #FFD700;
+  color: #ffd700;
   font-size: 0.95rem;
 }
 .unique-badge {
   font-size: 0.7rem;
   padding: 2px 8px;
-  background: rgba(255,215,0,0.12);
-  color: rgba(255,215,0,0.7);
+  background: rgba(255, 215, 0, 0.12);
+  color: rgba(255, 215, 0, 0.7);
   border-radius: 8px;
-  border: 1px solid rgba(255,215,0,0.2);
+  border: 1px solid rgba(255, 215, 0, 0.2);
 }
 .legend-items {
   display: flex;
@@ -2743,37 +2994,38 @@ td.is-benchmark {
   flex-shrink: 0;
 }
 .dot-legend.filled {
-  background: #FFD700;
-  box-shadow: 0 0 6px rgba(255,215,0,0.5);
+  background: #ffd700;
+  box-shadow: 0 0 6px rgba(255, 215, 0, 0.5);
 }
 .dot-legend.hollow {
   background: transparent;
-  border: 2px solid rgba(255,255,255,0.35);
+  border: 2px solid rgba(255, 255, 255, 0.35);
 }
 .dot-legend.bench {
-  background: rgba(255,255,255,0.15);
-  border: 1px dashed rgba(255,255,255,0.4);
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px dashed rgba(255, 255, 255, 0.4);
 }
 .legend-item div strong {
-  color: rgba(255,255,255,0.85);
+  color: rgba(255, 255, 255, 0.85);
   font-size: 0.82rem;
   display: block;
 }
 .legend-item div p {
-  color: rgba(255,255,255,0.45);
+  color: rgba(255, 255, 255, 0.45);
   font-size: 0.75rem;
   margin: 2px 0 0;
   line-height: 1.4;
 }
 .unique-disclaimer {
   font-size: 0.75rem;
-  color: rgba(255,255,255,0.35);
+  color: rgba(255, 255, 255, 0.35);
   margin: 0;
 }
 .unique-disclaimer a {
-  color: rgba(255,215,0,0.6);
+  color: rgba(255, 215, 0, 0.6);
   text-decoration: none;
 }
-.unique-disclaimer a:hover { text-decoration: underline; }
-
+.unique-disclaimer a:hover {
+  text-decoration: underline;
+}
 </style>
