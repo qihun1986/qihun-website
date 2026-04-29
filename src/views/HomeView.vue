@@ -41,45 +41,82 @@
     <div class="filter-drawer desktop-only">
       <!-- 收起时的摘要条 -->
       <div class="filter-summary" @click="openCpuFilter">
-        <span class="filter-summary-text">💰 价格: {{ cpuPriceLabel }}</span>
+        <span class="filter-summary-text">💰 {{ cpuPriceLabel }} {{ cpuSocketLabel }} {{ cpuMemoryLabel }}</span>
         <button class="filter-toggle-btn" :class="{ open: filterExpanded }">筛选 <span class="toggle-arrow">▼</span></button>
       </div>
       <!-- 展开面板 -->
       <Transition name="drawer">
         <div v-if="filterExpanded" class="filter-panel">
           <div class="filter-panel-inner">
-            <div class="price-inputs">
-              <input
-                v-model="priceMinDraft"
-                type="number"
-                placeholder="最低"
-                min="0"
-                class="price-input"
-                inputmode="numeric"
-              />
-              <span class="price-sep">—</span>
-              <input
-                v-model="priceMaxDraft"
-                type="number"
-                placeholder="最高"
-                min="0"
-                class="price-input"
-                inputmode="numeric"
-              />
-              <button v-if="priceMinDraft !== '' || priceMaxDraft !== ''" class="clear-btn" @click.stop="clearCpuPriceDraft">✕ 清空</button>
+            <!-- 第1行：价格 + 快捷档位 -->
+            <div class="filter-row">
+              <div class="filter-price-row">
+                <span class="price-label">价格</span>
+                <div class="price-inputs">
+                  <input
+                    v-model="priceMinDraft"
+                    type="number"
+                    placeholder="最低"
+                    min="0"
+                    class="price-input"
+                    inputmode="numeric"
+                  />
+                  <span class="price-sep">—</span>
+                  <input
+                    v-model="priceMaxDraft"
+                    type="number"
+                    placeholder="最高"
+                    min="0"
+                    class="price-input"
+                    inputmode="numeric"
+                  />
+                </div>
+              </div>
+              <div class="price-presets">
+                <button
+                  v-for="preset in pricePresets"
+                  :key="preset.label"
+                  :class="{ active: priceMinDraft === preset.min && (preset.max === Infinity ? priceMaxDraft === '' : priceMaxDraft === preset.max) }"
+                  class="preset-btn"
+                  @click="applyCpuPresetDraft(preset)"
+                >{{ preset.label }}</button>
+              </div>
             </div>
-            <div class="price-presets">
-              <button
-                v-for="preset in pricePresets"
-                :key="preset.label"
-                :class="{ active: priceMinDraft === preset.min && (preset.max === Infinity ? priceMaxDraft === '' : priceMaxDraft === preset.max) }"
-                class="preset-btn"
-                @click="applyCpuPresetDraft(preset)"
-              >{{ preset.label }}</button>
+            <!-- 第2行：插槽 + 内存类型 -->
+            <div class="filter-row">
+              <div class="filter-section">
+                <div class="section-title">插槽</div>
+                <div class="section-btns">
+                  <button
+                    v-for="opt in cpuSocketOptionsNoAll"
+                    :key="opt.value"
+                    :class="{ active: cpuSocketDraft === opt.value }"
+                    class="preset-btn"
+                    @click="toggleSocketDraft(opt.value)"
+                  >{{ opt.label }}</button>
+                </div>
+              </div>
+              <div class="filter-section">
+                <div class="section-title">内存类型</div>
+                <div class="section-btns">
+                  <button
+                    v-for="opt in cpuMemoryOptionsNoAll"
+                    :key="opt.value"
+                    :class="{ active: cpuMemoryDraft === opt.value }"
+                    class="preset-btn"
+                    @click="toggleMemoryDraft(opt.value)"
+                  >{{ opt.label }}</button>
+                </div>
+              </div>
+            </div>
+            <!-- 不兼容提示（基于草稿） -->
+            <div v-if="incompatibleComboDraft" class="filter-warning">
+              ⚠️ {{ incompatibleComboDraft }}
             </div>
           </div>
+          <!-- 第3行：重置 + 确认按钮 -->
           <div class="filter-actions">
-            <button class="reset-btn" @click="clearCpuPriceDraft">重置全部</button>
+            <button class="reset-btn" @click="resetAllDraft">重置全部</button>
             <button class="confirm-btn" @click="confirmCpuFilter">确认</button>
           </div>
           <button class="filter-close-btn" @click="openCpuFilter">✕</button>
@@ -337,11 +374,24 @@ import { supabase } from '@/lib/supabase'
 import {
   priceMin, priceMax, pricePresets, activePreset,
   priceInRange, clearCpuPrice, cpuPriceLabel,
+  cpuSocket, cpuMemory, cpuSocketOptions, cpuMemoryOptions,
+  incompatibleCombo,
+  // Draft 状态
+  priceMinDraft, priceMaxDraft,
+  cpuSocketDraft, cpuMemoryDraft,
+  incompatibleComboDraft,
+  // Draft 同步/应用函数
+  syncPriceDraftFromApplied, applyPriceDraft,
+  syncCpuFilterDraftFromApplied, applyCpuFilterDraft,
 } from '@/components/useFilterBar'
 import MobileFilterSheet from '@/components/MobileFilterSheet.vue'
 import { carouselItems, AUTO_PLAY_INTERVAL, getDefaultCarouselIndex } from '@/data/carousel'
 
 echarts.use([LineChart, TitleComponent, TooltipComponent, GridComponent, LegendComponent, CanvasRenderer])
+
+// 去掉"全部"选项的 socket/memory 列表（用于筛选按钮）
+const cpuSocketOptionsNoAll = computed(() => cpuSocketOptions.filter(o => o.value !== ''))
+const cpuMemoryOptionsNoAll = computed(() => cpuMemoryOptions.filter(o => o.value !== ''))
 
 interface Cpu {
   id: number
@@ -355,6 +405,8 @@ interface Cpu {
   base_freq: number
   boost_freq: number
   tdp: number
+  socket: string
+  memory: string
 }
 
 interface PriceHistory {
@@ -379,7 +431,7 @@ const error = ref('')
 const showMode = ref<'hot' | 'all'>('hot')
 const priceType = ref<'new' | 'used'>('new')
 const valueMode = ref<'game' | 'multi'>('game')
-const sortKey = ref<string>('game')
+const sortKey = ref<string>('value')
 const sortOrder = ref<'asc' | 'desc'>('desc')
 
 // 排序专用状态（只在点击表头时更新，完全独立于显示状态）
@@ -446,16 +498,12 @@ const getRelativeMultiPerf = (cpu: Cpu | null): string => {
 // ─── 价格筛选 ───
 const filterExpanded = ref(false)
 
-// Draft 状态（桌面抽屉编辑中）
-const priceMinDraft = ref<number | ''>('')
-const priceMaxDraft = ref<number | ''>('')
-
-// 打开抽屉时同步 draft
+// 打开抽屉时同步所有 draft（价格 + 插槽 + 内存）
 const openCpuFilter = () => {
   filterExpanded.value = !filterExpanded.value
   if (filterExpanded.value) {
-    priceMinDraft.value = priceMin.value
-    priceMaxDraft.value = priceMax.value
+    syncPriceDraftFromApplied()
+    syncCpuFilterDraftFromApplied()
   }
 }
 
@@ -464,17 +512,24 @@ const applyCpuPresetDraft = (preset: typeof pricePresets[0]) => {
   priceMaxDraft.value = preset.max === Infinity ? '' : preset.max
 }
 
-const clearCpuPriceDraft = () => {
+const toggleSocketDraft = (val: string) => {
+  cpuSocketDraft.value = cpuSocketDraft.value === val ? '' : val
+}
+
+const toggleMemoryDraft = (val: string) => {
+  cpuMemoryDraft.value = cpuMemoryDraft.value === val ? '' : val
+}
+
+const resetAllDraft = () => {
   priceMinDraft.value = ''
   priceMaxDraft.value = ''
-  // 立即生效，无需点击确认
-  priceMin.value = ''
-  priceMax.value = ''
+  cpuSocketDraft.value = ''
+  cpuMemoryDraft.value = ''
 }
 
 const confirmCpuFilter = () => {
-  priceMin.value = priceMinDraft.value
-  priceMax.value = priceMaxDraft.value
+  applyPriceDraft()
+  applyCpuFilterDraft()
   filterExpanded.value = false
 }
 
@@ -487,6 +542,26 @@ const priceInRangeCpu = (cpu: Cpu): boolean => {
 }
 
 // 筛选CPU
+const toggleSocket = (val: string) => {
+  cpuSocket.value = cpuSocket.value === val ? '' : val
+}
+
+const toggleMemory = (val: string) => {
+  cpuMemory.value = cpuMemory.value === val ? '' : val
+}
+
+const cpuSocketLabel = computed(() => {
+  if (!cpuSocket.value) return ''
+  const opt = cpuSocketOptions.find((o: any) => o.value === cpuSocket.value)
+  return opt?.label || ''
+})
+
+const cpuMemoryLabel = computed(() => {
+  if (!cpuMemory.value) return ''
+  const opt = cpuMemoryOptions.find((o: any) => o.value === cpuMemory.value)
+  return opt?.label || ''
+})
+
 const filteredCpus = computed(() => {
   let list = showMode.value === 'hot'
     ? cpus.value.filter(cpu => hotModels.value.has(cpu.model))
@@ -495,6 +570,16 @@ const filteredCpus = computed(() => {
   // 价格筛选
   if (priceMin.value !== '' || priceMax.value !== '') {
     list = list.filter(priceInRangeCpu)
+  }
+
+  // 插槽筛选
+  if (cpuSocket.value !== '') {
+    list = list.filter(cpu => cpu.socket === cpuSocket.value)
+  }
+
+  // 内存类型筛选
+  if (cpuMemory.value !== '') {
+    list = list.filter(cpu => cpu.memory.includes(cpuMemory.value))
   }
 
   return list
@@ -1065,7 +1150,13 @@ onUnmounted(() => {
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
 }
-.filter-panel-inner { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.filter-panel-inner { display: flex; flex-direction: column; gap: 0.5rem; }
+.filter-row { display: flex; justify-content: center; align-items: center; gap: 0.5rem; width: 100%; flex-wrap: wrap; }
+.filter-price-row { display: flex; align-items: center; gap: 0.5rem; }
+.price-label { font-size: 0.8rem; color: rgba(255, 255, 255, 0.5); white-space: nowrap; }
+.filter-section { display: flex; align-items: center; gap: 0.4rem; }
+.section-title { font-size: 0.72rem; color: rgba(255, 255, 255, 0.45); white-space: nowrap; }
+.section-btns { display: flex; flex-wrap: wrap; gap: 0.25rem; }
 .price-inputs { display: flex; align-items: center; gap: 0.3rem; }
 .price-input {
   width: 68px; padding: 0.25rem 0.4rem;
@@ -1109,6 +1200,30 @@ onUnmounted(() => {
 .preset-btn.active {
   background: rgba(255, 215, 0, 0.15);
   border-color: rgba(255, 215, 0, 0.6); color: #FFD700; font-weight: 600;
+}
+
+.filter-section-label {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.45);
+  margin-top: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.filter-btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
+}
+
+.filter-warning {
+  font-size: 0.72rem;
+  color: #ffcc00;
+  background: rgba(255, 204, 0, 0.08);
+  border: 1px solid rgba(255, 204, 0, 0.3);
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  margin-top: 0.4rem;
 }
 .clear-btn {
   padding: 0.2rem 0.5rem; background: transparent;
