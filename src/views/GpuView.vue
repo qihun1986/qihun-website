@@ -25,9 +25,9 @@
             :key="idx"
             :class="{ active: idx === currentIndex }"
             @click.prevent="goToSlide(idx)"
-            class="dot-btn numbered"
+            class="dot-btn"
             :aria-label="`切换到第${idx + 1}张`"
-          >{{ idx + 1 }}</button>
+          />
         </div>
       </a>
     </div>
