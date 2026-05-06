@@ -221,10 +221,17 @@
     <!-- 详情弹窗 -->
     <div v-if="detailModal.show" class="modal-overlay" @click="closeDetailModal">
       <div class="modal-content detail-modal" @click.stop>
-        <div class="modal-header" :class="getBrand(detailModal.gpu).toLowerCase() + '-header'">
+        <div class="modal-header" :class="getBrand(detailModal.gpu).toLowerCase() + '-gradient'">
           <span class="modal-title">
             {{ detailModal.mergedGpus.length > 1 ? getDisplayLabel(detailModal.mergedGpus) : formatGpuName(detailModal.gpu?.model || '') }}
             <span class="modal-bench-inline">（基准：{{ gpuState.benchmarkGpu ? formatGpuName(gpuState.benchmarkGpu.model) : 'RTX 4060' }}）</span>
+            <span
+              v-if="detailModal.gpu"
+              class="data-source-tag"
+              :class="isEstimated(detailModal.gpu) ? 'tag-estimated' : 'tag-tested'"
+            >
+              {{ isEstimated(detailModal.gpu) ? '推算数据' : '实测数据' }}
+            </span>
           </span>
           <button class="modal-close" @click="closeDetailModal">✕</button>
         </div>
@@ -284,8 +291,8 @@
     <!-- 比较弹窗 -->
     <div v-if="benchModal.show" class="modal-overlay" @click="closeBenchModal">
       <div class="modal-content bench-modal" @click.stop>
-        <div class="modal-header">
-          <span class="modal-title">比较（基准：{{ gpuState.benchmarkGpu ? formatGpuName(gpuState.benchmarkGpu.model) : 'RTX 4060' }}）</span>
+        <div class="modal-header header-gold">
+          <span class="modal-title">📊 比较（基准：{{ gpuState.benchmarkGpu ? formatGpuName(gpuState.benchmarkGpu.model) : 'RTX 4060' }}）</span>
           <button class="modal-close" @click="closeBenchModal">✕</button>
         </div>
         <div class="modal-body">
@@ -1458,6 +1465,7 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  padding: 1rem;
 }
 .modal-content {
   background: linear-gradient(145deg, #1a1a2e, #16213e);
@@ -1467,16 +1475,52 @@ onUnmounted(() => {
   width: auto;
   max-height: 80vh;
   overflow: auto;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.6), 0 0 40px rgba(74,144,217,0.08);
 }
+.bench-modal { max-width: 680px; }
+.detail-modal { max-width: 480px; }
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  gap: 0.5rem;
 }
-.modal-title { color: #e2e8f0; font-size: 1rem; }
-.modal-bench-inline { font-size: 0.8rem; color: var(--text-secondary); }
+/* 品牌渐变header */
+.modal-header.nvidia-gradient {
+  background: linear-gradient(135deg, rgba(118,185,0,0.25), rgba(118,185,0,0.08));
+}
+.modal-header.amd-gradient {
+  background: linear-gradient(135deg, rgba(237,28,36,0.25), rgba(237,28,36,0.08));
+}
+.modal-header.intel-gradient {
+  background: linear-gradient(135deg, rgba(0,113,197,0.25), rgba(0,113,197,0.08));
+}
+.modal-header.header-gold {
+  background: linear-gradient(135deg, rgba(255,215,0,0.2), rgba(255,215,0,0.05));
+}
+.modal-title { color: #fff; font-size: 1.05rem; font-weight: 700; flex: 1; }
+.modal-bench-inline { font-size: 0.75rem; font-weight: 400; color: rgba(255,255,255,0.45); margin-left: 0.3rem; }
+/* 数据来源标签 */
+.data-source-tag {
+  display: inline-block;
+  font-size: 0.65rem;
+  padding: 2px 7px;
+  border-radius: 10px;
+  margin-left: 8px;
+  vertical-align: middle;
+  font-weight: 600;
+}
+.tag-tested {
+  background: rgba(255,215,0,0.18);
+  color: #FFD700;
+}
+.tag-estimated {
+  background: rgba(100,100,100,0.2);
+  color: rgba(200,200,200,0.7);
+  border: 1px solid rgba(200,200,200,0.2);
+}
 .modal-close {
   background: rgba(255,255,255,0.08);
   border: none;
@@ -1484,69 +1528,116 @@ onUnmounted(() => {
   width: 32px;
   height: 32px;
   cursor: pointer;
-  color: var(--text-secondary);
-  font-size: 1rem;
+  color: rgba(255,255,255,0.5);
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
 }
-.modal-body { padding: 1rem; }
+.modal-close:hover {
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+}
+.modal-body { padding: 0; }
 .compare-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
 }
-.compare-table th, .compare-table td {
-  padding: 0.5rem 0.6rem;
+.compare-table thead th {
+  padding: 0.65rem 0.6rem;
+  font-weight: 700;
   text-align: center;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  white-space: nowrap;
+  color: rgba(255,255,255,0.6);
 }
-.label-cell { text-align: left; color: var(--text-secondary); }
-.value-cell { font-weight: 500; color: #e2e8f0; }
-.striped { background: rgba(255,255,255,0.02); }
-.gpu-col { color: #e2e8f0; }
+.compare-table thead th:first-child {
+  width: 100px;
+  text-align: left;
+  font-weight: 500;
+  color: rgba(255,255,255,0.4);
+}
+.compare-table tbody td {
+  padding: 0.55rem 0.6rem;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  color: rgba(255,255,255,0.75);
+}
+.compare-table tbody tr.striped {
+  background: rgba(255,255,255,0.015);
+}
+.label-cell { text-align: left !important; color: rgba(255,255,255,0.45); font-weight: 500; font-size: 0.8rem; }
+.value-cell { font-weight: 600; color: rgba(255,255,255,0.75); }
+.value-cell.nvidia { color: #76B900; }
+.value-cell.amd { color: #ED1C24; }
+.value-cell.intel { color: #0071C5; }
+.gpu-col { cursor: pointer; transition: all 0.2s; min-width: 90px; border-radius: 6px; }
+.gpu-col:hover { background: rgba(255,255,255,0.04); }
 .gpu-col.nvidia { color: #76B900; }
 .gpu-col.amd { color: #ED1C24; }
 .gpu-col.intel { color: #0071C5; }
-.gpu-col.is-benchmark { background: rgba(255,215,0,0.07); }
-.gpu-col.clickable { cursor: pointer; }
-.bench-hint-icon { color: rgba(255,215,0,0.5); margin-left: 4px; }
+.gpu-col.is-benchmark { background: rgba(255,215,0,0.08); }
+.gpu-col.clickable { cursor: pointer; background: rgba(255,215,0,0.07); transition: background 0.2s; }
+.gpu-col.clickable:hover { background: rgba(255,215,0,0.15); }
+.bench-hint-icon { color: rgba(255,215,0,0.55); margin-left: 4px; font-size: 0.85em; vertical-align: middle; cursor: help; }
 .value-cell.is-benchmark { background: rgba(255,215,0,0.05); }
 .modal-footer {
   display: flex;
   gap: 0.5rem;
-  padding: 0.75rem 1rem;
-  border-top: 1px solid rgba(255,255,255,0.1);
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid rgba(255,255,255,0.06);
 }
 .modal-btn {
   flex: 1;
-  padding: 0.6rem;
+  padding: 0.65rem;
   background: rgba(255,255,255,0.08);
   border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
-  color: #e2e8f0;
+  color: rgba(255,255,255,0.8);
   font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+.modal-btn:hover {
+  background: rgba(255,255,255,0.14);
+  color: #fff;
+}
+.modal-btn.secondary {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.06);
+}
+.modal-btn.bench-toggle {
+  background: rgba(255,215,0,0.1);
+  border-color: rgba(255,215,0,0.25);
+  color: #FFD700;
 }
 .modal-btn.bench-toggle.active {
   background: rgba(255,215,0,0.2);
   border-color: rgba(255,215,0,0.5);
-  color: #FFD700;
+  box-shadow: 0 0 12px rgba(255,215,0,0.15);
 }
-.modal-btn.disabled { opacity: 0.4; cursor: not-allowed; }
+.modal-btn.disabled { opacity: 0.35; cursor: not-allowed; }
 .nvidia-header { background: #76B900 !important; }
 .amd-header { background: #ED1C24 !important; }
 .intel-header { background: #0071C5 !important; }
 /* 悬浮提示 */
 .gpu-tooltip {
   position: fixed;
-  background: rgba(26,26,46,0.95);
+  background: var(--bg-secondary);
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 0.5rem 0.75rem;
   z-index: 2000;
   pointer-events: none;
   min-width: 120px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
 }
-.tooltip-title { font-size: 0.85rem; font-weight: 600; color: #e2e8f0; }
-.tooltip-game-pct { font-size: 1.2rem; font-weight: 700; color: #FFD700; }
+.tooltip-title { font-size: 0.8rem; font-weight: 600; color: #FFD700; margin-bottom: 0.15rem; }
+.tooltip-game-pct { font-size: 1rem; font-weight: 700; color: #FFD700; margin: 0.15rem 0; }
 .tooltip-bench { font-size: 0.7rem; color: var(--text-secondary); }
 /* 响应式 */
 @media (max-width: 768px) {
