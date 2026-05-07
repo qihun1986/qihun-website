@@ -1095,11 +1095,16 @@ const loadData = async () => {
     lastPriceMap.value = tmpLast
     minPriceMap.value = tmpMin
 
-    // 计算热门型号：所有有全新价的GPU都显示
+    // 计算热门型号：只显示最新一次更新全新价的型号
+    const latestDateWithNew = historyData
+      ?.filter(h => h.new_price !== null)
+      .map(h => h.recorded_at)
+      .sort()
+      .pop()
     const hot = new Set(
-      gpus.value
-        .filter(gpu => gpu.new_price !== null)
-        .map(gpu => gpu.model)
+      (historyData || [])
+        .filter(h => h.recorded_at === latestDateWithNew && h.new_price !== null)
+        .map(h => h.model)
     )
     hotModels.value = hot
 
