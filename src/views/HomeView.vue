@@ -1024,16 +1024,15 @@ const loadData = async () => {
     lastPriceMap.value = tmpLast
     minPriceMap.value = tmpMin
 
-    // 计算热门型号：只显示最新一次更新全新价的型号
-    const latestDateWithNew = historyData
-      ?.filter(h => h.new_price !== null)
-      .map(h => h.recorded_at)
+    const latestDateWithNew = allHistoryData
+      ?.filter((h: any) => h.new_price !== null)
+      .map((h: any) => h.recorded_at)
       .sort()
       .pop()
     const hot = new Set(
-      (historyData || [])
-        .filter(h => h.recorded_at === latestDateWithNew && h.new_price !== null)
-        .map(h => h.model)
+      allHistoryData
+        .filter((h: any) => h.recorded_at === latestDateWithNew && h.new_price !== null)
+        .map((h: any) => h.model)
     )
     hotModels.value = hot
 
