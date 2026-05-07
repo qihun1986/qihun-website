@@ -1198,7 +1198,7 @@ onUnmounted(() => {
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   color: rgba(255, 255, 255, 0.55);
-  font-size: 0.78rem; cursor: pointer; transition: all 0.15s;
+  font-size: 14px; cursor: pointer; transition: all 0.15s;
 }
 .preset-btn:hover { border-color: rgba(255, 215, 0, 0.4); color: rgba(255, 215, 0, 0.8); }
 .preset-btn.active {
@@ -1264,7 +1264,7 @@ onUnmounted(() => {
   border: 1px solid var(--border);
   border-radius: 8px;
   color: var(--text-secondary);
-  font-size: 0.95rem;
+  font-size: 15px;
   cursor: pointer;
   transition: all 0.2s;
   min-height: 44px;
@@ -1443,7 +1443,7 @@ onUnmounted(() => {
   color: #C0C0D0;
   white-space: nowrap;
   position: relative;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .cpu-table th.sortable {
@@ -2046,7 +2046,7 @@ onUnmounted(() => {
   }
 
   .th-label {
-    font-size: 0.7rem;
+    font-size: 0.85rem;
   }
 
   .tab-btn {
