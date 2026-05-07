@@ -87,13 +87,13 @@ function generateHTML(cpus, gpus) {
     const cpuListItems = cpusSorted.slice(0, 10).map((cpu, i) => ({
         '@type': 'ListItem',
         'position': i + 1,
-        'url': `https://www.5vip.top/?search=${encodeURIComponent(cpu.model)}`,
+        'url': `https://www.5vip.top/#${encodeURIComponent(cpu.model)}`,
         'name': cpu.model
     }));
     const gpuListItems = gpusSorted.slice(0, 10).map((gpu, i) => ({
         '@type': 'ListItem',
         'position': i + 1,
-        'url': `https://www.5vip.top/gpu?search=${encodeURIComponent(gpu.model)}`,
+        'url': `https://www.5vip.top/gpu#${encodeURIComponent(gpu.model)}`,
         'name': gpu.model
     }));
 
@@ -211,7 +211,7 @@ function generateHTML(cpus, gpus) {
             : '-';
         rows += `<tr>
   <td>${i + 1}</td>
-  <td>${escapeHtml(cpu.model)}</td>
+  <td><a id="${escapeHtml(cpu.model.replace(/\s+/g,'-'))}" href="https://www.5vip.top/#${encodeURIComponent(cpu.model)}">${escapeHtml(cpu.model)}</a></td>
   <td>${cpuValue}</td>
   <td>${gamePct}</td>
   <td>${multiPct}</td>
@@ -239,7 +239,7 @@ function generateHTML(cpus, gpus) {
             : '-';
         gpuRows += `<tr>
   <td>${i + 1}</td>
-  <td>${escapeHtml(gpu.model)}</td>
+  <td><a id="${escapeHtml(gpu.model.replace(/\s+/g,'-'))}" href="https://www.5vip.top/gpu#${encodeURIComponent(gpu.model)}">${escapeHtml(gpu.model)}</a></td>
   <td>${gpuValue}</td>
   <td>${gpu.abs_game_performance_1080p || '-'}</td>
   <td>${gpu.abs_game_performance_2k || '-'}</td>
@@ -261,7 +261,8 @@ function generateHTML(cpus, gpus) {
 <meta name="description" content="奇魂硬件榜实时更新${year}年CPU显卡性价比排行榜，涵盖${cpusSorted.length}款CPU和${gpusSorted.length}款显卡，含游戏帧数、多核性能对比及历史最低价走势。适合游戏玩家和装机用户，高性价比CPU显卡推荐。">
 <meta name="keywords" content="CPU性价比排行榜,${year}年CPU推荐,显卡性价比排行,游戏CPU天梯图,显卡天梯图,历史最低价,装机推荐,游戏帧数对比">
 <link rel="canonical" href="https://www.5vip.top/">
-<meta name="robots" content="index, follow">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="ai-content-declaration" content="true">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
