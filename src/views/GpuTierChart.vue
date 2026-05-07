@@ -225,13 +225,6 @@
           <span class="modal-title">
             {{ detailModal.mergedGpus.length > 1 ? getDisplayLabel(detailModal.mergedGpus) : formatGpuName(detailModal.gpu?.model || '') }}
             <span class="modal-bench-inline">（基准：{{ gpuState.benchmarkGpu ? formatGpuName(gpuState.benchmarkGpu.model) : 'RTX 4060' }}）</span>
-            <span
-              v-if="detailModal.gpu"
-              class="data-source-tag"
-              :class="isEstimated(detailModal.gpu) ? 'tag-estimated' : 'tag-tested'"
-            >
-              {{ isEstimated(detailModal.gpu) ? '推算数据' : '实测数据' }}
-            </span>
           </span>
           <button class="modal-close" @click="closeDetailModal">✕</button>
         </div>
