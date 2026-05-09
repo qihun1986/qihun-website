@@ -492,7 +492,7 @@ const error = ref('')
 const showMode = ref<'hot' | 'all'>('hot')
 const priceType = ref<'new' | 'used'>('new')
 const valueMode = ref<'perf1080' | 'perf2k' | 'perf4k' | 'render'>('perf2k')
-const sortKey = ref<string>('perf2k')
+const sortKey = ref<string>('value')
 const sortOrder = ref<'asc' | 'desc'>('desc')
 
 // 排序专用状态（与显示状态隔离）
