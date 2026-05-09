@@ -441,7 +441,19 @@ async function main() {
     try {
         const data = await fetchJSON('/rest/v1/site_config?key=eq.update_log&select=value');
         if (data && data[0] && data[0].value) {
-            existingLog = JSON.parse(data[0].value);
+            try {
+                existingLog = JSON.parse(data[0].value);
+                if (!Array.isArray(existingLog)) existingLog = [];
+            } catch {
+                // 旧格式：纯文本，逐行解析 "YYYY.MM.DD - 内容"
+                const lines = (data[0].value || '').split('\n').filter(l => l.trim());
+                for (const line of lines) {
+                    const m = line.match(/^(\d{4}\.\d{2}\.\d{2})\s*[-─]\s*(.+)/);
+                    if (m) {
+                        existingLog.push({ date: m[1], text: m[2], type: 'manual' });
+                    }
+                }
+            }
         }
     } catch(e) {}
 

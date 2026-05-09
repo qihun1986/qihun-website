@@ -123,12 +123,36 @@ onMounted(async () => {
       .single()
 
     if (data && data.value) {
-      const all = typeof data.value === 'string' ? JSON.parse(data.value) : data.value
-      allLogs.value = all
-      updateLog.value = all.slice(0, 3)
-      injectJsonLd(all)
+      // value 可能是 JSON 数组 [{date, text}]，也可能是纯文本字符串
+      let parsed: { date: string; text: string }[] = []
+      try {
+        const raw = typeof data.value === 'string' ? data.value : JSON.stringify(data.value)
+        const parsedRaw = JSON.parse(raw)
+        if (Array.isArray(parsedRaw)) {
+          parsed = parsedRaw
+        } else {
+          throw new Error('not array')
+        }
+      } catch {
+        // 纯文本格式：逐行解析，"YYYY.MM.DD - 内容"
+        const raw = typeof data.value === 'string' ? data.value : String(data.value)
+        const lines = raw.split('\n').filter(l => l.trim())
+        for (const line of lines) {
+          const m = line.match(/^(\d{4}\.\d{2}\.\d{2})\s*[-─\s]\s*(.+)/)
+          if (m) {
+            parsed.push({ date: m[1], text: m[2].replace(/^-\s*/, '') })
+          } else if (parsed.length > 0) {
+            parsed[parsed.length - 1].text += '\n' + line
+          }
+        }
+      }
+      allLogs.value = parsed
+      updateLog.value = parsed.slice(0, 3)
+      injectJsonLd(parsed)
     }
-  } catch {}
+  } catch (err) {
+    console.error('update_log load failed:', err)
+  }
 
   document.addEventListener('click', handleClickOutside)
 })
