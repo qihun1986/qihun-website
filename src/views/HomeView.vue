@@ -1048,16 +1048,27 @@ const injectJsonLd = () => {
   const oldScript = document.querySelector('script[data-jsonld="cpu-list"]')
   if (oldScript) oldScript.remove()
 
-  const items = sortedCpus.value.slice(0, 20).map((cpu, idx) => ({
-    "@type": "Product",
-    "name": cpu.model,
-    "position": idx + 1,
-    "offers": {
-      "@type": "Offer",
-      "price": cpu.new_price || cpu.used_price || 0,
-      "priceCurrency": "CNY"
+  const items = sortedCpus.value.slice(0, 20).map((cpu, idx) => {
+    // 品牌判断：用 socket 字段，比 model 名更可靠
+    const socket = cpu.socket || ''
+    let brandName = 'Unknown'
+    if (socket.startsWith('AM')) brandName = 'AMD'
+    else if (socket.startsWith('LGA')) brandName = 'Intel'
+
+    return {
+      "@type": "Product",
+      "name": cpu.model,
+      "position": idx + 1,
+      "brand": { "@type": "Brand", "name": brandName },
+      "offers": {
+        "@type": "Offer",
+        "price": cpu.new_price || cpu.used_price || 0,
+        "priceCurrency": "CNY",
+        "availability": cpu.new_price ? "https://schema.org/InStock" : "https://schema.org/LimitedAvailability"
+      },
+      "dateModified": new Date().toISOString()
     }
-  }))
+  })
 
   const jsonLd = JSON.stringify({
     "@context": "https://schema.org",
@@ -1065,7 +1076,8 @@ const injectJsonLd = () => {
     "name": "CPU性价比排行榜",
     "description": "基于实测数据的CPU性价比排行，每月更新",
     "numberOfItems": items.length,
-    "itemListElement": items
+    "itemListElement": items,
+    "dateModified": new Date().toISOString()
   })
 
   const script = document.createElement('script')

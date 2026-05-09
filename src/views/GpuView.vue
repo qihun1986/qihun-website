@@ -1120,16 +1120,28 @@ const injectJsonLd = () => {
   const oldScript = document.querySelector('script[data-jsonld="gpu-list"]')
   if (oldScript) oldScript.remove()
 
-  const items = sortedGpus.value.slice(0, 20).map((gpu, idx) => ({
-    "@type": "Product",
-    "name": gpu.model,
-    "position": idx + 1,
-    "offers": {
-      "@type": "Offer",
-      "price": gpu.new_price || gpu.used_price || 0,
-      "priceCurrency": "CNY"
+  const items = sortedGpus.value.slice(0, 20).map((gpu, idx) => {
+    // 品牌判断：显卡型号名含品牌前缀
+    const model = (gpu.model || '').toUpperCase()
+    let brandName = 'Unknown'
+    if (model.includes('NVIDIA') || model.includes('RTX') || model.includes('GTX') || model.includes('GEFORCE')) brandName = 'NVIDIA'
+    else if (model.includes('AMD') || model.includes('RADEON') || model.includes('RX ')) brandName = 'AMD'
+    else if (model.includes('INTEL') || model.includes('ARC')) brandName = 'Intel'
+
+    return {
+      "@type": "Product",
+      "name": gpu.model,
+      "position": idx + 1,
+      "brand": { "@type": "Brand", "name": brandName },
+      "offers": {
+        "@type": "Offer",
+        "price": gpu.new_price || gpu.used_price || 0,
+        "priceCurrency": "CNY",
+        "availability": gpu.new_price ? "https://schema.org/InStock" : "https://schema.org/LimitedAvailability"
+      },
+      "dateModified": new Date().toISOString()
     }
-  }))
+  })
 
   const jsonLd = JSON.stringify({
     "@context": "https://schema.org",
@@ -1137,7 +1149,8 @@ const injectJsonLd = () => {
     "name": "显卡性价比排行榜",
     "description": "基于实测数据的显卡性价比排行，每月更新",
     "numberOfItems": items.length,
-    "itemListElement": items
+    "itemListElement": items,
+    "dateModified": new Date().toISOString()
   })
 
   const script = document.createElement('script')
