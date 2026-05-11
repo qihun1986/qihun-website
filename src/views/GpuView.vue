@@ -1041,7 +1041,7 @@ const loadData = async () => {
 
     const { data: gpuData, error: gpuError } = await supabase
       .from('gpu_current')
-      .select('*')
+      .select('id,model,abs_game_performance_1080p,abs_game_performance_2k,abs_game_performance_4k,render_performance,tdp,game_freq,new_price,used_price')
       .order('abs_game_performance_2k', { ascending: false })
 
     if (gpuError) throw gpuError
@@ -1056,7 +1056,7 @@ const loadData = async () => {
 
     const { data: historyData, error: historyError } = await supabase
       .from('gpu_price_history')
-      .select('*')
+      .select('model,recorded_at,new_price,used_price')
       .order('recorded_at', { ascending: true })
 
     if (historyError) throw historyError

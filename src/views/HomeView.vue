@@ -937,7 +937,7 @@ const loadData = async () => {
 
     const { data: cpuData, error: cpuError } = await supabase
       .from('cpu_current')
-      .select('*')
+      .select('id,model,abs_game_performance,abs_multi_performance,new_price,used_price,socket,memory,cores,threads,base_freq,boost_freq,tdp')
       .order('abs_game_performance', { ascending: false })
 
     if (cpuError) throw cpuError
@@ -968,7 +968,7 @@ const loadData = async () => {
     while (hasMore) {
       const { data, error: historyError } = await supabase
         .from('cpu_price_history')
-        .select('*')
+        .select('model,recorded_at,new_price,used_price')
         .order('recorded_at', { ascending: true })
         .range(pageOffset, pageOffset + PAGE_SIZE - 1)
 
