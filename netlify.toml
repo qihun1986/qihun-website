@@ -1,0 +1,34 @@
+# Netlify 配置文件
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# 图片缓存（30天）
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000, immutable"
+
+# 构建后的静态资源（1年）
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# 也可以保留旧的 /assets/ 路径映射（如果有的话）
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# HTML 页面（2小时，必须验证更新）
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=7200, must-revalidate"
+
+# JSON 数据（2小时）
+[[headers]]
+  for = "/*.json"
+  [headers.values]
+    Cache-Control = "public, max-age=7200, must-revalidate"

@@ -1,0 +1,106 @@
+---
+// src/components/InfoCarousel.astro
+// 通用轮播卡片：标题 + 左右箭头切换内容
+interface Props {
+  title: string;
+  items: { text: string; link?: string }[];
+}
+const { title, items } = Astro.props;
+const hasItems = items && items.length > 0;
+---
+
+{hasItems ? (
+  <div class="info-carousel">
+    <div class="carousel-header">
+      <span class="carousel-title">{title}</span>
+      <div class="carousel-nav">
+        <button class="carousel-btn prev" aria-label="上一条">‹</button>
+        <button class="carousel-btn next" aria-label="下一条">›</button>
+      </div>
+    </div>
+    <div class="carousel-track">
+      {items.map((item, idx) => (
+        <div class="carousel-item" data-index={idx} style={idx === 0 ? '' : 'display:none'}>
+          {item.link ? (
+            <a href={item.link} target="_blank" rel="noopener" class="carousel-link">{item.text}</a>
+          ) : (
+            <span class="carousel-text">{item.text}</span>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+) : null}
+
+<style>
+  .info-carousel {
+    background: var(--bg-secondary);
+    border: 1px solid var(--table-border-gold);
+    outline: 1.5px solid var(--table-outline-blue);
+    outline-offset: 2px;
+    border-radius: 12px;
+    padding: 0.8rem 1rem;
+    box-shadow: var(--shadow-card);   /* ★ 修复：原 --card-shadow 不存在，改为全局阴影 */
+    height: 100%;
+  }
+  .carousel-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 0.5rem;
+  }
+  .carousel-title { font-size: 0.9rem; color: var(--accent); font-weight: 600; }
+  .carousel-nav { display: flex; gap: 0.3rem; }
+  .carousel-btn {
+    background: var(--highlight-bg);   /* ★ 修复：原 --overlay-white-06 不存在 */
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-size: 1rem; cursor: pointer;
+    width: 28px; height: 28px; display: flex; align-items: center; justify-content: center;
+    border-radius: 6px; transition: all 0.15s ease;
+  }
+  .carousel-btn:hover {
+    background: var(--highlight-bg);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .carousel-btn:active { transform: scale(0.9); }
+
+  .carousel-track { position: relative; min-height: 2rem; }
+  .carousel-link {
+    color: var(--text-primary); text-decoration: none; font-size: 0.85rem;
+    line-height: 1.5; display: block;
+  }
+  .carousel-link:hover { color: var(--accent); text-decoration: underline; }
+  .carousel-text {
+    color: var(--text-secondary); font-size: 0.85rem; line-height: 1.5;
+  }
+</style>
+
+<script>
+  function initCarousels() {
+    document.querySelectorAll('.info-carousel').forEach(card => {
+      const items = card.querySelectorAll('.carousel-item');
+      const prevBtn = card.querySelector('.prev');
+      const nextBtn = card.querySelector('.next');
+      if (!items.length || !prevBtn || !nextBtn) return;
+
+      let current = 0;
+      function show(index) {
+        items.forEach((item, i) => {
+          item.style.display = i === index ? 'block' : 'none';
+        });
+      }
+
+      prevBtn.addEventListener('click', () => {
+        current = (current - 1 + items.length) % items.length;
+        show(current);
+      });
+      nextBtn.addEventListener('click', () => {
+        current = (current + 1) % items.length;
+        show(current);
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', initCarousels);
+  document.addEventListener('astro:page-load', initCarousels);
+</script>

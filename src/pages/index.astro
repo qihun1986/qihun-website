@@ -1,17 +1,450 @@
 ---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getData } from '../lib/getData.ts'
+import VideoPlayer from '../components/VideoPlayer.vue'
 
+// ── 1. 特价卡片数据（最新一条特价的第一行） ──
+const { data: historyDeals } = await getData(
+  'special_deals_history',
+  'content',
+  { order: ['created_at', false], limit: 1 }
+)
+
+let dealTitle = '点击查看最新好价'
+if (historyDeals && historyDeals.length > 0) {
+  const raw = (historyDeals[0].content || '').replace(/\r/g, '')
+  const firstLine = raw.split('\n').filter(line => line.trim() !== '')[0] || ''
+  if (firstLine.trim()) dealTitle = firstLine.trim().substring(0, 30)
+}
+
+// ── 2. 视频卡片数据（最新一条视频） ──
+const { data: carouselData } = await getData(
+  'site_carousel',
+  'title, link',
+  { order: ['created_at', false], limit: 1 }
+)
+
+const carouselTitle = carouselData?.[0]?.title || '加载中...'
+const carouselLink = carouselData?.[0]?.link || '#'
+
+// ── 3. CPU 热门快照 TOP5 ──
+const { data: cpuHot } = await getData(
+  'site_config',
+  'value',
+  { eq: ['key', 'cpu_hot_models'], single: true }
+)
+
+let cpuList: any[] = []
+if (cpuHot?.value) {
+  const models = JSON.parse(cpuHot.value)
+  const { data: cpuData } = await getData(
+    'cpu_current',
+    'model, model_short, new_price, price_change, price_change_direction, value_score_game',
+    { in: ['model', models] }
+  )
+  if (cpuData) {
+    cpuList = cpuData
+      .filter(c => c.price_change != null)
+      .sort((a, b) => Math.abs(b.price_change || 0) - Math.abs(a.price_change || 0))
+      .slice(0, 5)
+  }
+}
+
+// ── 4. 显卡热门快照 TOP5 ──
+const { data: gpuHot } = await getData(
+  'site_config',
+  'value',
+  { eq: ['key', 'gpu_hot_models'], single: true }
+)
+
+let gpuList: any[] = []
+if (gpuHot?.value) {
+  const models = JSON.parse(gpuHot.value)
+  const { data: gpuData } = await getData(
+    'gpu_current',
+    'model, model_short, new_price, price_change, price_change_direction, value_score_2k',
+    { in: ['model', models] }
+  )
+  if (gpuData) {
+    gpuList = gpuData
+      .filter(g => g.price_change != null)
+      .sort((a, b) => Math.abs(b.price_change || 0) - Math.abs(a.price_change || 0))
+      .slice(0, 5)
+  }
+}
+
+// ── 5. 配件行情 TOP5 ──
+const { data: rawParts } = await getData(
+  'build_parts_prices',
+  'part_type, model, model_short, brand, price_new, price_new_change, price_new_direction, retention_pct',
+  { notNull: 'price_new_change' }
+)
+let partsList: any[] = []
+if (rawParts) {
+  partsList = rawParts
+    .sort((a, b) => Math.abs(b.price_new_change || 0) - Math.abs(a.price_new_change || 0))
+    .slice(0, 5)
+}
+
+// ── 6. 天梯缩略数据 (CPU) ──
+const BENCHMARK_CPU_SCORE = 5673
+const { data: tierCpuData } = await getData(
+  'cpu_current',
+  'model, model_short, abs_game_performance',
+  { eq: ['hide_in_ranking', false], order: ['abs_game_performance', false], limit: 20 }
+)
+
+// ── 7. 天梯缩略数据 (显卡) ──
+const BENCHMARK_GPU_2K_SCORE = 5838.2
+const { data: tierGpuData } = await getData(
+  'gpu_current',
+  'model, model_short, abs_game_performance_2k',
+  { order: ['abs_game_performance_2k', false], limit: 20 }
+)
+
+// ── 8. 视频数据（从 site_carousel 取前3条，用于视频播放器） ──
+const { data: videoData } = await getData(
+  'site_carousel',
+  'title, link',
+  { order: ['created_at', false], limit: 3 }
+)
+
+// ═══════════════ 工具函数 ═══════════════
+function formatPrice(price: number | null): string {
+  if (price == null) return '-'
+  return '¥' + price.toLocaleString('zh-CN')
+}
+
+function priceChangeText(item: any): string {
+  if (!item.price_change_direction || item.price_change_direction === 'flat' || item.price_change === 0) return '—'
+  return (item.price_change_direction === 'up' ? '↑' : '↓') + Math.abs(item.price_change || 0)
+}
+
+function partTypeLabel(t: string): string {
+  const m: Record<string, string> = { memory: '内存', ssd: '硬盘', motherboard: '主板' }
+  return m[t] || t
+}
+
+function valueLevel(score: number, max: number): string {
+  const ratio = score / max
+  if (ratio >= 0.8) return 'legendary'
+  if (ratio >= 0.6) return 'normal'
+  return 'bad'
+}
+
+function getBrandClass(model: string): string {
+  const u = model.toUpperCase()
+  if (u.includes('INTEL')) return 'intel'
+  if (u.includes('AMD') || u.includes('RYZEN')) return 'amd'
+  if (u.includes('NVIDIA') || u.includes('RTX') || u.includes('GTX')) return 'nvidia'
+  return 'intel'
+}
+
+// ── 天梯图渲染辅助函数 ──
+function buildCpuTierRows(cpus: any[], benchmark: number) {
+  const grouped: Record<string, { left: any[]; right: any[] }> = {}
+  cpus.forEach(c => {
+    const pct = Math.round((c.abs_game_performance / benchmark) * 100)
+    const key = String(pct)
+    if (!grouped[key]) grouped[key] = { left: [], right: [] }
+    const side = c.model.toUpperCase().includes('INTEL') ? 'left' : 'right'
+    grouped[key][side].push(c)
+  })
+  return Object.entries(grouped)
+    .sort((a, b) => Number(b[0]) - Number(a[0]))
+    .slice(0, 10)
+    .map(([pct, sides]) => ({
+      pct: Number(pct),
+      left: sides.left[0] ? { model: sides.left[0].model_short, fullModel: sides.left[0].model.replace(/^INTEL /i, '').replace(/^AMD /i, '').trim() } : null,
+      right: sides.right[0] ? { model: sides.right[0].model_short, fullModel: sides.right[0].model.replace(/^INTEL /i, '').replace(/^AMD /i, '').trim() } : null
+    }))
+}
+
+function buildGpuTierRows(gpus: any[], benchmark: number) {
+  const grouped: Record<string, { left: any[]; right: any[] }> = {}
+  gpus.forEach(g => {
+    const pct = Math.round((g.abs_game_performance_2k / benchmark) * 100)
+    const key = String(pct)
+    if (!grouped[key]) grouped[key] = { left: [], right: [] }
+    const side = g.model.toUpperCase().includes('NVIDIA') || g.model.toUpperCase().includes('RTX') || g.model.toUpperCase().includes('GTX') ? 'left' : 'right'
+    grouped[key][side].push(g)
+  })
+  return Object.entries(grouped)
+    .sort((a, b) => Number(b[0]) - Number(a[0]))
+    .slice(0, 10)
+    .map(([pct, sides]) => ({
+      pct: Number(pct),
+      left: sides.left[0] ? { model: sides.left[0].model_short, fullModel: sides.left[0].model.replace(/^NVIDIA /i, '').replace(/^AMD /i, '').trim() } : null,
+      right: sides.right[0] ? { model: sides.right[0].model_short, fullModel: sides.right[0].model.replace(/^NVIDIA /i, '').replace(/^AMD /i, '').trim() } : null
+    }))
+}
+
+const cpuTierRows = tierCpuData ? buildCpuTierRows(tierCpuData, BENCHMARK_CPU_SCORE) : []
+const gpuTierRows = tierGpuData ? buildGpuTierRows(tierGpuData, BENCHMARK_GPU_2K_SCORE) : []
+
+// ── 视频播放器数据 ──
+const videos = videoData?.slice(1, 3) || []
+const video1 = videos[0] || null
+const video2 = videos[1] || null
 ---
+<BaseLayout>
+  <main class="dashboard">
+    <!-- 品牌标语 -->
+    <div class="hero">
+      <h1 class="hero-title">🏆全网独一份 · 实测游戏性能天梯图 · 不云评，不恰饭，数据说话</h1>
+      <p class="hero-sub">130+款CPU · 110+款显卡 · 10+款热门游戏实测 · 每周更新</p>
+    </div>
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+    <!-- 热点卡片 -->
+    <div class="hot-cards">
+      <div class="hot-card" id="deal-card">
+        <span class="hot-card-icon icon-deal">⚡</span>
+        <div>
+          <div class="hot-card-label">特价清单</div>
+          <div class="hot-card-desc">{dealTitle}</div>
+        </div>
+      </div>
+      <a href={carouselLink} target="_blank" class="hot-card">
+        <span class="hot-card-icon icon-news">📌</span>
+        <div>
+          <div class="hot-card-label">最新推荐</div>
+          <div class="hot-card-desc">{carouselTitle}</div>
+        </div>
+      </a>
+      <a href="https://space.bilibili.com/3546785037420940" target="_blank" class="hot-card">
+        <span class="hot-card-icon icon-bili">▶</span>
+        <div>
+          <div class="hot-card-label">B站主页</div>
+          <div class="hot-card-desc">更多评测 · 点击观看</div>
+        </div>
+      </a>
+    </div>
+
+    <!-- CPU榜 + 显卡榜 -->
+    <div class="two-col">
+      <!-- CPU榜 -->
+      <div class="mini-table-box">
+        <div class="mini-table-header">
+          <h3>🖥️ CPU行情TOP5</h3>
+          <a href="/cpu" class="view-all-link">查看完整 →</a>
+        </div>
+        <table class="mini-table">
+          <thead>
+            <tr>
+              <th style="width:12%">排名</th>
+              <th style="width:42%;text-align:left">型号</th>
+              <th colspan="2" style="width:26%">价格</th>
+              <th style="width:20%">性价比</th>
+            </tr>
+          </thead>
+          <tbody>
+            {cpuList?.map((cpu, idx) => (
+              <tr>
+                <td class="rank-cell">{idx + 1}</td>
+                <td class={`model-cell ${getBrandClass(cpu.model)}`}>
+                  <span class="desktop-only">{cpu.model}</span>
+                  <span class="mobile-only">{cpu.model_short}</span>
+                </td>
+                <td class="price-num">{formatPrice(cpu.new_price)}</td>
+                <td class="price-arrow">
+                  <span class={cpu.price_change_direction === 'up' ? 'price-up' : cpu.price_change_direction === 'down' ? 'price-down' : ''}>
+                    {priceChangeText(cpu)}
+                  </span>
+                </td>
+                <td class="value-cell">
+                  <span class={`value-bar ${valueLevel(cpu.value_score_game || 0, 105)}`}>
+                    {Math.round(cpu.value_score_game || 0)}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 显卡榜 -->
+      <div class="mini-table-box">
+        <div class="mini-table-header">
+          <h3>🎮 显卡行情TOP5</h3>
+          <a href="/gpu" class="view-all-link">查看完整 →</a>
+        </div>
+        <table class="mini-table">
+          <thead>
+            <tr>
+              <th style="width:12%">排名</th>
+              <th style="width:42%;text-align:left">型号</th>
+              <th colspan="2" style="width:26%">价格</th>
+              <th style="width:20%">性价比</th>
+            </tr>
+          </thead>
+          <tbody>
+            {gpuList?.map((gpu, idx) => (
+              <tr>
+                <td class="rank-cell">{idx + 1}</td>
+                <td class={`model-cell ${getBrandClass(gpu.model)}`}>
+                  <span class="desktop-only">{gpu.model}</span>
+                  <span class="mobile-only">{gpu.model_short}</span>
+                </td>
+                <td class="price-num">{formatPrice(gpu.new_price)}</td>
+                <td class="price-arrow">
+                  <span class={gpu.price_change_direction === 'up' ? 'price-up' : gpu.price_change_direction === 'down' ? 'price-down' : ''}>
+                    {priceChangeText(gpu)}
+                  </span>
+                </td>
+                <td class="value-cell">
+                  <span class={`value-bar ${valueLevel(gpu.value_score_2k || 0, 90)}`}>
+                    {Math.round(gpu.value_score_2k || 0)}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 配件行情 TOP5 -->
+    <div class="mini-table-box">
+      <div class="mini-table-header">
+        <h3>🔧 配件行情 TOP5</h3>
+        <a href="/hardware" class="view-all-link">查看完整 →</a>
+      </div>
+      <table class="mini-table">
+        <thead>
+          <tr>
+            <th class="hide-mobile" style="width:8%">序号</th>
+            <th style="width:12%;text-align:left">品类</th>
+            <th class="hide-mobile" style="width:12%;text-align:left">品牌</th>
+            <th style="width:32%;text-align:left">型号</th>
+            <th colspan="2" style="width:26%">价格</th>
+            <th style="width:10%">回血率</th>
+          </tr>
+        </thead>
+        <tbody>
+          {partsList?.map((p, idx) => (
+            <tr>
+              <td class="rank-cell hide-mobile">{idx + 1}</td>
+              <td class="model-cell"><span class={`type-badge type-badge-${p.part_type}`}>{partTypeLabel(p.part_type)}</span></td>
+              <td class="model-cell hide-mobile">{p.brand}</td>
+              <td class="model-cell">
+                <span class="desktop-only">{p.model}</span>
+                <span class="mobile-only">{p.model_short}</span>
+              </td>
+              <td class="price-num">{formatPrice(p.price_new)}</td>
+              <td class="price-arrow">
+                <span class={p.price_new_direction === 'up' ? 'price-up' : 'price-down'}>
+                  {p.price_new_direction === 'up' ? '↑' : '↓'}{Math.abs(p.price_new_change || 0)}
+                </span>
+              </td>
+              <td class="value-cell">
+                <span class={`value-bar ${valueLevel(p.retention_pct || 0, 100)}`}>
+                  {p.retention_pct ? Math.round(p.retention_pct) + '%' : '-'}
+                </span>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- CPU天梯 + 显卡天梯 -->
+    <div class="two-col">
+      <!-- CPU天梯 -->
+      <div class="mini-table-box tier-mini">
+        <div class="mini-table-header">
+          <h3>🏆 CPU游戏天梯 TOP10</h3>
+          <a href="/tier" class="view-all-link">查看完整 →</a>
+        </div>
+        <div class="tier-2col">
+          <div class="tier-col">
+            <div class="tier-brand intel">INTEL</div>
+            {cpuTierRows.map(item => (
+              item.left ? (
+                <div class="tier-item">
+                  <span class="tier-pct">{item.pct}%</span>
+                  <span class="tier-model intel desktop-only">{item.left.fullModel}</span>
+                  <span class="tier-model intel mobile-only">{item.left.model}</span>
+                </div>
+              ) : <div class="tier-item"></div>
+            ))}
+          </div>
+          <div class="tier-divider"></div>
+          <div class="tier-col">
+            <div class="tier-brand amd">AMD</div>
+            {cpuTierRows.map(item => (
+              item.right ? (
+                <div class="tier-item">
+                  <span class="tier-model amd desktop-only">{item.right.fullModel}</span>
+                  <span class="tier-model amd mobile-only">{item.right.model}</span>
+                  <span class="tier-pct">{item.pct}%</span>
+                </div>
+              ) : <div class="tier-item"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- 显卡天梯 -->
+      <div class="mini-table-box tier-mini">
+        <div class="mini-table-header">
+          <h3>🎯 显卡游戏天梯 TOP10（2K）</h3>
+          <a href="/gpu-tier" class="view-all-link">查看完整 →</a>
+        </div>
+        <div class="tier-2col">
+          <div class="tier-col">
+            <div class="tier-brand nvidia">NVIDIA</div>
+            {gpuTierRows.map(item => (
+              item.left ? (
+                <div class="tier-item">
+                  <span class="tier-pct">{item.pct}%</span>
+                  <span class="tier-model nvidia desktop-only">{item.left.fullModel}</span>
+                  <span class="tier-model nvidia mobile-only">{item.left.model}</span>
+                </div>
+              ) : <div class="tier-item"></div>
+            ))}
+          </div>
+          <div class="tier-divider"></div>
+          <div class="tier-col">
+            <div class="tier-brand amd">AMD</div>
+            {gpuTierRows.map(item => (
+              item.right ? (
+                <div class="tier-item">
+                  <span class="tier-model amd desktop-only">{item.right.fullModel}</span>
+                  <span class="tier-model amd mobile-only">{item.right.model}</span>
+                  <span class="tier-pct">{item.pct}%</span>
+                </div>
+              ) : <div class="tier-item"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 视频模块 -->
+    <div class="two-col">
+      <VideoPlayer
+        title="📺 最新视频"
+        link={video1?.link || ''}
+        videoTitle={video1?.title || ''}
+        client:load
+      />
+      <VideoPlayer
+        title="📺 推荐视频"
+        link={video2?.link || ''}
+        videoTitle={video2?.title || ''}
+        client:load
+      />
+    </div>
+
+    <!-- 底部 -->
+    <footer class="dashboard-footer">
+      <p>📊 数据每周更新 · 价格来源各大购物平台/闲鱼均价</p>
+      <p>📧 联系：qh20241230 · <a href="https://space.bilibili.com/3546785037420940" target="_blank">B站主页</a></p>
+    </footer>
+  </main>
+  <script>
+    document.getElementById('deal-card')?.addEventListener('click', () => {
+      window.__showDealModal?.()
+    })
+  </script>
+</BaseLayout>

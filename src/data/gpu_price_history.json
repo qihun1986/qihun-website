@@ -1,0 +1,3502 @@
+[
+  {
+    "id": 2290,
+    "model": "NVIDIA RTX 5090DV2",
+    "new_price": 15889,
+    "used_price": null,
+    "recorded_at": "2026-01-06"
+  },
+  {
+    "id": 2291,
+    "model": "NVIDIA RTX 5090DV2",
+    "new_price": 17599,
+    "used_price": null,
+    "recorded_at": "2026-01-18"
+  },
+  {
+    "id": 2292,
+    "model": "NVIDIA RTX 5090DV2",
+    "new_price": 17899,
+    "used_price": null,
+    "recorded_at": "2026-01-25"
+  },
+  {
+    "id": 2293,
+    "model": "NVIDIA RTX 5090DV2",
+    "new_price": 17560,
+    "used_price": null,
+    "recorded_at": "2026-02-01"
+  },
+  {
+    "id": 2294,
+    "model": "NVIDIA RTX 5090DV2",
+    "new_price": 17236,
+    "used_price": null,
+    "recorded_at": "2026-02-08"
+  },
+  {
+    "id": 2295,
+    "model": "NVIDIA RTX 5090DV2",
+    "new_price": 17099,
+    "used_price": null,
+    "recorded_at": "2026-02-15"
+  },
+  {
+    "id": 2296,
+    "model": "NVIDIA RTX 5090DV2",
+    "new_price": 17197,
+    "used_price": null,
+    "recorded_at": "2026-02-22"
+  },
+  {
+    "id": 2297,
+    "model": "NVIDIA RTX 5090DV2",
+    "new_price": 17149,
+    "used_price": null,
+    "recorded_at": "2026-03-01"
+  },
+  {
+    "id": 2298,
+    "model": "NVIDIA RTX 5090DV2",
+    "new_price": 17129,
+    "used_price": null,
+    "recorded_at": "2026-03-07"
+  },
+  {
+    "id": 2299,
+    "model": "NVIDIA RTX 5090DV2",
+    "new_price": 17104,
+    "used_price": null,
+    "recorded_at": "2026-03-14"
+  },
+  {
+    "id": 2300,
+    "model": "NVIDIA RTX 5090DV2",
+    "new_price": 17119,
+    "used_price": null,
+    "recorded_at": "2026-03-21"
+  },
+  {
+    "id": 2301,
+    "model": "NVIDIA RTX 5090DV2",
+    "new_price": 17118,
+    "used_price": null,
+    "recorded_at": "2026-03-29"
+  },
+  {
+    "id": 2302,
+    "model": "NVIDIA RTX 5090DV2",
+    "new_price": 17118,
+    "used_price": null,
+    "recorded_at": "2026-04-04"
+  },
+  {
+    "id": 2303,
+    "model": "NVIDIA RTX 5090D",
+    "new_price": 23999,
+    "used_price": null,
+    "recorded_at": "2026-01-06"
+  },
+  {
+    "id": 2304,
+    "model": "NVIDIA RTX 5090D",
+    "new_price": 26981,
+    "used_price": null,
+    "recorded_at": "2026-01-18"
+  },
+  {
+    "id": 2305,
+    "model": "NVIDIA RTX 5090D",
+    "new_price": 23988,
+    "used_price": null,
+    "recorded_at": "2026-01-25"
+  },
+  {
+    "id": 2306,
+    "model": "NVIDIA RTX 5090D",
+    "new_price": 23988,
+    "used_price": null,
+    "recorded_at": "2026-02-01"
+  },
+  {
+    "id": 2307,
+    "model": "NVIDIA RTX 5090D",
+    "new_price": 23985,
+    "used_price": null,
+    "recorded_at": "2026-02-08"
+  },
+  {
+    "id": 2308,
+    "model": "NVIDIA RTX 5090D",
+    "new_price": 23888,
+    "used_price": null,
+    "recorded_at": "2026-02-15"
+  },
+  {
+    "id": 2309,
+    "model": "NVIDIA RTX 5090D",
+    "new_price": 23888,
+    "used_price": null,
+    "recorded_at": "2026-02-22"
+  },
+  {
+    "id": 2310,
+    "model": "NVIDIA RTX 5090D",
+    "new_price": 23888,
+    "used_price": null,
+    "recorded_at": "2026-03-01"
+  },
+  {
+    "id": 2311,
+    "model": "NVIDIA RTX 5090D",
+    "new_price": 23888,
+    "used_price": null,
+    "recorded_at": "2026-03-07"
+  },
+  {
+    "id": 2312,
+    "model": "NVIDIA RTX 5090D",
+    "new_price": 24894,
+    "used_price": null,
+    "recorded_at": "2026-03-14"
+  },
+  {
+    "id": 2313,
+    "model": "NVIDIA RTX 5090D",
+    "new_price": 24983,
+    "used_price": null,
+    "recorded_at": "2026-03-21"
+  },
+  {
+    "id": 2314,
+    "model": "NVIDIA RTX 5090D",
+    "new_price": 25489,
+    "used_price": null,
+    "recorded_at": "2026-03-29"
+  },
+  {
+    "id": 2315,
+    "model": "NVIDIA RTX 5090D",
+    "new_price": 24994,
+    "used_price": null,
+    "recorded_at": "2026-04-04"
+  },
+  {
+    "id": 2316,
+    "model": "NVIDIA RTX 5080",
+    "new_price": 8244,
+    "used_price": null,
+    "recorded_at": "2026-01-06"
+  },
+  {
+    "id": 2317,
+    "model": "NVIDIA RTX 5080",
+    "new_price": 8999,
+    "used_price": null,
+    "recorded_at": "2026-01-18"
+  },
+  {
+    "id": 2318,
+    "model": "NVIDIA RTX 5080",
+    "new_price": 9199,
+    "used_price": null,
+    "recorded_at": "2026-01-25"
+  },
+  {
+    "id": 2319,
+    "model": "NVIDIA RTX 5080",
+    "new_price": 8999,
+    "used_price": null,
+    "recorded_at": "2026-02-01"
+  },
+  {
+    "id": 2320,
+    "model": "NVIDIA RTX 5080",
+    "new_price": 9046,
+    "used_price": null,
+    "recorded_at": "2026-02-08"
+  },
+  {
+    "id": 2321,
+    "model": "NVIDIA RTX 5080",
+    "new_price": 8988,
+    "used_price": null,
+    "recorded_at": "2026-02-15"
+  },
+  {
+    "id": 2322,
+    "model": "NVIDIA RTX 5080",
+    "new_price": 8898,
+    "used_price": null,
+    "recorded_at": "2026-02-22"
+  },
+  {
+    "id": 2323,
+    "model": "NVIDIA RTX 5080",
+    "new_price": 8808,
+    "used_price": null,
+    "recorded_at": "2026-03-01"
+  },
+  {
+    "id": 2324,
+    "model": "NVIDIA RTX 5080",
+    "new_price": 8764,
+    "used_price": null,
+    "recorded_at": "2026-03-07"
+  },
+  {
+    "id": 2325,
+    "model": "NVIDIA RTX 5080",
+    "new_price": 8694,
+    "used_price": null,
+    "recorded_at": "2026-03-14"
+  },
+  {
+    "id": 2326,
+    "model": "NVIDIA RTX 5080",
+    "new_price": 8783,
+    "used_price": null,
+    "recorded_at": "2026-03-21"
+  },
+  {
+    "id": 2327,
+    "model": "NVIDIA RTX 5080",
+    "new_price": 8739,
+    "used_price": null,
+    "recorded_at": "2026-03-29"
+  },
+  {
+    "id": 2328,
+    "model": "NVIDIA RTX 5080",
+    "new_price": 8744,
+    "used_price": null,
+    "recorded_at": "2026-04-04"
+  },
+  {
+    "id": 2329,
+    "model": "NVIDIA RTX 5070 Ti",
+    "new_price": 6399,
+    "used_price": null,
+    "recorded_at": "2026-01-06"
+  },
+  {
+    "id": 2330,
+    "model": "NVIDIA RTX 5070 Ti",
+    "new_price": 6488,
+    "used_price": null,
+    "recorded_at": "2026-01-18"
+  },
+  {
+    "id": 2331,
+    "model": "NVIDIA RTX 5070 Ti",
+    "new_price": 6791,
+    "used_price": null,
+    "recorded_at": "2026-01-25"
+  },
+  {
+    "id": 2332,
+    "model": "NVIDIA RTX 5070 Ti",
+    "new_price": 6739,
+    "used_price": null,
+    "recorded_at": "2026-02-01"
+  },
+  {
+    "id": 2333,
+    "model": "NVIDIA RTX 5070 Ti",
+    "new_price": 6732,
+    "used_price": null,
+    "recorded_at": "2026-02-08"
+  },
+  {
+    "id": 2334,
+    "model": "NVIDIA RTX 5070 Ti",
+    "new_price": 6738,
+    "used_price": null,
+    "recorded_at": "2026-02-15"
+  },
+  {
+    "id": 2335,
+    "model": "NVIDIA RTX 5070 Ti",
+    "new_price": 6789,
+    "used_price": null,
+    "recorded_at": "2026-02-22"
+  },
+  {
+    "id": 2336,
+    "model": "NVIDIA RTX 5070 Ti",
+    "new_price": 6699,
+    "used_price": null,
+    "recorded_at": "2026-03-01"
+  },
+  {
+    "id": 2337,
+    "model": "NVIDIA RTX 5070 Ti",
+    "new_price": 6698,
+    "used_price": null,
+    "recorded_at": "2026-03-07"
+  },
+  {
+    "id": 2338,
+    "model": "NVIDIA RTX 5070 Ti",
+    "new_price": 6694,
+    "used_price": null,
+    "recorded_at": "2026-03-14"
+  },
+  {
+    "id": 2339,
+    "model": "NVIDIA RTX 5070 Ti",
+    "new_price": 6689,
+    "used_price": null,
+    "recorded_at": "2026-03-21"
+  },
+  {
+    "id": 2340,
+    "model": "NVIDIA RTX 5070 Ti",
+    "new_price": 6689,
+    "used_price": null,
+    "recorded_at": "2026-03-29"
+  },
+  {
+    "id": 2341,
+    "model": "NVIDIA RTX 5070 Ti",
+    "new_price": 6688,
+    "used_price": null,
+    "recorded_at": "2026-04-04"
+  },
+  {
+    "id": 2342,
+    "model": "NVIDIA RTX 5070",
+    "new_price": 4599,
+    "used_price": null,
+    "recorded_at": "2026-01-06"
+  },
+  {
+    "id": 2343,
+    "model": "NVIDIA RTX 5070",
+    "new_price": 4668,
+    "used_price": null,
+    "recorded_at": "2026-01-18"
+  },
+  {
+    "id": 2344,
+    "model": "NVIDIA RTX 5070",
+    "new_price": 4999,
+    "used_price": null,
+    "recorded_at": "2026-01-25"
+  },
+  {
+    "id": 2345,
+    "model": "NVIDIA RTX 5070",
+    "new_price": 4850,
+    "used_price": null,
+    "recorded_at": "2026-02-01"
+  },
+  {
+    "id": 2346,
+    "model": "NVIDIA RTX 5070",
+    "new_price": 4885,
+    "used_price": null,
+    "recorded_at": "2026-02-08"
+  },
+  {
+    "id": 2347,
+    "model": "NVIDIA RTX 5070",
+    "new_price": 4789,
+    "used_price": null,
+    "recorded_at": "2026-02-15"
+  },
+  {
+    "id": 2348,
+    "model": "NVIDIA RTX 5070",
+    "new_price": 4759,
+    "used_price": null,
+    "recorded_at": "2026-02-22"
+  },
+  {
+    "id": 2349,
+    "model": "NVIDIA RTX 5070",
+    "new_price": 4779,
+    "used_price": null,
+    "recorded_at": "2026-03-01"
+  },
+  {
+    "id": 2350,
+    "model": "NVIDIA RTX 5070",
+    "new_price": 4730,
+    "used_price": null,
+    "recorded_at": "2026-03-07"
+  },
+  {
+    "id": 2351,
+    "model": "NVIDIA RTX 5070",
+    "new_price": 4685,
+    "used_price": null,
+    "recorded_at": "2026-03-14"
+  },
+  {
+    "id": 2352,
+    "model": "NVIDIA RTX 5070",
+    "new_price": 4543,
+    "used_price": null,
+    "recorded_at": "2026-03-21"
+  },
+  {
+    "id": 2353,
+    "model": "NVIDIA RTX 5070",
+    "new_price": 4593,
+    "used_price": null,
+    "recorded_at": "2026-03-29"
+  },
+  {
+    "id": 2354,
+    "model": "NVIDIA RTX 5070",
+    "new_price": 4477,
+    "used_price": null,
+    "recorded_at": "2026-04-04"
+  },
+  {
+    "id": 2355,
+    "model": "NVIDIA RTX 5060 Ti 8GB",
+    "new_price": 2939,
+    "used_price": null,
+    "recorded_at": "2026-01-06"
+  },
+  {
+    "id": 2356,
+    "model": "NVIDIA RTX 5060 Ti 8GB",
+    "new_price": 2923,
+    "used_price": null,
+    "recorded_at": "2026-01-18"
+  },
+  {
+    "id": 2357,
+    "model": "NVIDIA RTX 5060 Ti 8GB",
+    "new_price": 3089,
+    "used_price": null,
+    "recorded_at": "2026-01-25"
+  },
+  {
+    "id": 2358,
+    "model": "NVIDIA RTX 5060 Ti 8GB",
+    "new_price": 2943,
+    "used_price": null,
+    "recorded_at": "2026-02-01"
+  },
+  {
+    "id": 2359,
+    "model": "NVIDIA RTX 5060 Ti 8GB",
+    "new_price": 2896,
+    "used_price": null,
+    "recorded_at": "2026-02-08"
+  },
+  {
+    "id": 2360,
+    "model": "NVIDIA RTX 5060 Ti 8GB",
+    "new_price": 2955,
+    "used_price": null,
+    "recorded_at": "2026-02-15"
+  },
+  {
+    "id": 2361,
+    "model": "NVIDIA RTX 5060 Ti 8GB",
+    "new_price": 2929,
+    "used_price": null,
+    "recorded_at": "2026-02-22"
+  },
+  {
+    "id": 2362,
+    "model": "NVIDIA RTX 5060 Ti 8GB",
+    "new_price": 2928,
+    "used_price": null,
+    "recorded_at": "2026-03-01"
+  },
+  {
+    "id": 2363,
+    "model": "NVIDIA RTX 5060 Ti 8GB",
+    "new_price": 2868,
+    "used_price": null,
+    "recorded_at": "2026-03-07"
+  },
+  {
+    "id": 2364,
+    "model": "NVIDIA RTX 5060 Ti 8GB",
+    "new_price": 2776,
+    "used_price": null,
+    "recorded_at": "2026-03-14"
+  },
+  {
+    "id": 2365,
+    "model": "NVIDIA RTX 5060 Ti 8GB",
+    "new_price": 2689,
+    "used_price": null,
+    "recorded_at": "2026-03-21"
+  },
+  {
+    "id": 2366,
+    "model": "NVIDIA RTX 5060 Ti 8GB",
+    "new_price": 2709,
+    "used_price": null,
+    "recorded_at": "2026-03-29"
+  },
+  {
+    "id": 2367,
+    "model": "NVIDIA RTX 5060 Ti 8GB",
+    "new_price": 2633,
+    "used_price": null,
+    "recorded_at": "2026-04-04"
+  },
+  {
+    "id": 2368,
+    "model": "NVIDIA RTX 5060 Ti 16GB",
+    "new_price": 3599,
+    "used_price": null,
+    "recorded_at": "2026-01-06"
+  },
+  {
+    "id": 2369,
+    "model": "NVIDIA RTX 5060 Ti 16GB",
+    "new_price": 3599,
+    "used_price": null,
+    "recorded_at": "2026-01-18"
+  },
+  {
+    "id": 2370,
+    "model": "NVIDIA RTX 5060 Ti 16GB",
+    "new_price": 3899,
+    "used_price": null,
+    "recorded_at": "2026-01-25"
+  },
+  {
+    "id": 2371,
+    "model": "NVIDIA RTX 5060 Ti 16GB",
+    "new_price": 3877,
+    "used_price": null,
+    "recorded_at": "2026-02-01"
+  },
+  {
+    "id": 2372,
+    "model": "NVIDIA RTX 5060 Ti 16GB",
+    "new_price": 3767,
+    "used_price": null,
+    "recorded_at": "2026-02-08"
+  },
+  {
+    "id": 2373,
+    "model": "NVIDIA RTX 5060 Ti 16GB",
+    "new_price": 3699,
+    "used_price": null,
+    "recorded_at": "2026-02-15"
+  },
+  {
+    "id": 2374,
+    "model": "NVIDIA RTX 5060 Ti 16GB",
+    "new_price": 3799,
+    "used_price": null,
+    "recorded_at": "2026-02-22"
+  },
+  {
+    "id": 2375,
+    "model": "NVIDIA RTX 5060 Ti 16GB",
+    "new_price": 3799,
+    "used_price": null,
+    "recorded_at": "2026-03-01"
+  },
+  {
+    "id": 2376,
+    "model": "NVIDIA RTX 5060 Ti 16GB",
+    "new_price": 3599,
+    "used_price": null,
+    "recorded_at": "2026-03-07"
+  },
+  {
+    "id": 2377,
+    "model": "NVIDIA RTX 5060 Ti 16GB",
+    "new_price": 3734,
+    "used_price": null,
+    "recorded_at": "2026-03-14"
+  },
+  {
+    "id": 2378,
+    "model": "NVIDIA RTX 5060 Ti 16GB",
+    "new_price": 3738,
+    "used_price": null,
+    "recorded_at": "2026-03-21"
+  },
+  {
+    "id": 2379,
+    "model": "NVIDIA RTX 5060 Ti 16GB",
+    "new_price": 3695,
+    "used_price": null,
+    "recorded_at": "2026-03-29"
+  },
+  {
+    "id": 2380,
+    "model": "NVIDIA RTX 5060 Ti 16GB",
+    "new_price": 3734,
+    "used_price": null,
+    "recorded_at": "2026-04-04"
+  },
+  {
+    "id": 2381,
+    "model": "NVIDIA RTX 5060",
+    "new_price": 2309,
+    "used_price": null,
+    "recorded_at": "2026-01-06"
+  },
+  {
+    "id": 2382,
+    "model": "NVIDIA RTX 5060",
+    "new_price": 2438,
+    "used_price": null,
+    "recorded_at": "2026-01-18"
+  },
+  {
+    "id": 2383,
+    "model": "NVIDIA RTX 5060",
+    "new_price": 2598,
+    "used_price": null,
+    "recorded_at": "2026-01-25"
+  },
+  {
+    "id": 2384,
+    "model": "NVIDIA RTX 5060",
+    "new_price": 2569,
+    "used_price": null,
+    "recorded_at": "2026-02-01"
+  },
+  {
+    "id": 2385,
+    "model": "NVIDIA RTX 5060",
+    "new_price": 2517,
+    "used_price": null,
+    "recorded_at": "2026-02-08"
+  },
+  {
+    "id": 2386,
+    "model": "NVIDIA RTX 5060",
+    "new_price": 2543,
+    "used_price": null,
+    "recorded_at": "2026-02-15"
+  },
+  {
+    "id": 2387,
+    "model": "NVIDIA RTX 5060",
+    "new_price": 2575,
+    "used_price": null,
+    "recorded_at": "2026-02-22"
+  },
+  {
+    "id": 2388,
+    "model": "NVIDIA RTX 5060",
+    "new_price": 2535,
+    "used_price": null,
+    "recorded_at": "2026-03-01"
+  },
+  {
+    "id": 2389,
+    "model": "NVIDIA RTX 5060",
+    "new_price": 2529,
+    "used_price": null,
+    "recorded_at": "2026-03-07"
+  },
+  {
+    "id": 2390,
+    "model": "NVIDIA RTX 5060",
+    "new_price": 2514,
+    "used_price": null,
+    "recorded_at": "2026-03-14"
+  },
+  {
+    "id": 2391,
+    "model": "NVIDIA RTX 5060",
+    "new_price": 2482,
+    "used_price": null,
+    "recorded_at": "2026-03-21"
+  },
+  {
+    "id": 2392,
+    "model": "NVIDIA RTX 5060",
+    "new_price": 2470,
+    "used_price": null,
+    "recorded_at": "2026-03-29"
+  },
+  {
+    "id": 2393,
+    "model": "NVIDIA RTX 5060",
+    "new_price": 2344,
+    "used_price": null,
+    "recorded_at": "2026-04-04"
+  },
+  {
+    "id": 2394,
+    "model": "NVIDIA RTX 5050",
+    "new_price": 1778,
+    "used_price": null,
+    "recorded_at": "2026-01-06"
+  },
+  {
+    "id": 2395,
+    "model": "NVIDIA RTX 5050",
+    "new_price": 1777,
+    "used_price": null,
+    "recorded_at": "2026-01-18"
+  },
+  {
+    "id": 2396,
+    "model": "NVIDIA RTX 5050",
+    "new_price": 1954,
+    "used_price": null,
+    "recorded_at": "2026-01-25"
+  },
+  {
+    "id": 2397,
+    "model": "NVIDIA RTX 5050",
+    "new_price": 1950,
+    "used_price": null,
+    "recorded_at": "2026-02-01"
+  },
+  {
+    "id": 2398,
+    "model": "NVIDIA RTX 5050",
+    "new_price": 1975,
+    "used_price": null,
+    "recorded_at": "2026-02-08"
+  },
+  {
+    "id": 2399,
+    "model": "NVIDIA RTX 5050",
+    "new_price": 1969,
+    "used_price": null,
+    "recorded_at": "2026-02-15"
+  },
+  {
+    "id": 2400,
+    "model": "NVIDIA RTX 5050",
+    "new_price": 1984,
+    "used_price": null,
+    "recorded_at": "2026-02-22"
+  },
+  {
+    "id": 2401,
+    "model": "NVIDIA RTX 5050",
+    "new_price": 1979,
+    "used_price": null,
+    "recorded_at": "2026-03-01"
+  },
+  {
+    "id": 2402,
+    "model": "NVIDIA RTX 5050",
+    "new_price": 1979,
+    "used_price": null,
+    "recorded_at": "2026-03-07"
+  },
+  {
+    "id": 2403,
+    "model": "NVIDIA RTX 5050",
+    "new_price": 1968,
+    "used_price": null,
+    "recorded_at": "2026-03-14"
+  },
+  {
+    "id": 2404,
+    "model": "NVIDIA RTX 5050",
+    "new_price": 1964,
+    "used_price": null,
+    "recorded_at": "2026-03-21"
+  },
+  {
+    "id": 2405,
+    "model": "NVIDIA RTX 5050",
+    "new_price": 1944,
+    "used_price": null,
+    "recorded_at": "2026-03-29"
+  },
+  {
+    "id": 2406,
+    "model": "NVIDIA RTX 5050",
+    "new_price": 1962,
+    "used_price": null,
+    "recorded_at": "2026-04-04"
+  },
+  {
+    "id": 2407,
+    "model": "NVIDIA RTX 3050 6GB",
+    "new_price": 1158,
+    "used_price": null,
+    "recorded_at": "2026-01-06"
+  },
+  {
+    "id": 2408,
+    "model": "NVIDIA RTX 3050 6GB",
+    "new_price": 1149,
+    "used_price": null,
+    "recorded_at": "2026-01-18"
+  },
+  {
+    "id": 2409,
+    "model": "NVIDIA RTX 3050 6GB",
+    "new_price": 1275,
+    "used_price": null,
+    "recorded_at": "2026-01-25"
+  },
+  {
+    "id": 2410,
+    "model": "NVIDIA RTX 3050 6GB",
+    "new_price": 1288,
+    "used_price": null,
+    "recorded_at": "2026-02-01"
+  },
+  {
+    "id": 2411,
+    "model": "NVIDIA RTX 3050 6GB",
+    "new_price": 1285,
+    "used_price": null,
+    "recorded_at": "2026-02-08"
+  },
+  {
+    "id": 2412,
+    "model": "NVIDIA RTX 3050 6GB",
+    "new_price": 1289,
+    "used_price": null,
+    "recorded_at": "2026-02-15"
+  },
+  {
+    "id": 2413,
+    "model": "NVIDIA RTX 3050 6GB",
+    "new_price": 1289,
+    "used_price": null,
+    "recorded_at": "2026-02-22"
+  },
+  {
+    "id": 2414,
+    "model": "NVIDIA RTX 3050 6GB",
+    "new_price": 1298,
+    "used_price": null,
+    "recorded_at": "2026-03-01"
+  },
+  {
+    "id": 2415,
+    "model": "NVIDIA RTX 3050 6GB",
+    "new_price": 1299,
+    "used_price": null,
+    "recorded_at": "2026-03-07"
+  },
+  {
+    "id": 2416,
+    "model": "NVIDIA RTX 3050 6GB",
+    "new_price": 1245,
+    "used_price": null,
+    "recorded_at": "2026-03-14"
+  },
+  {
+    "id": 2417,
+    "model": "NVIDIA RTX 3050 6GB",
+    "new_price": 1245,
+    "used_price": null,
+    "recorded_at": "2026-03-21"
+  },
+  {
+    "id": 2418,
+    "model": "NVIDIA RTX 3050 6GB",
+    "new_price": 1245,
+    "used_price": null,
+    "recorded_at": "2026-03-29"
+  },
+  {
+    "id": 2419,
+    "model": "NVIDIA RTX 3050 6GB",
+    "new_price": 1245,
+    "used_price": null,
+    "recorded_at": "2026-04-04"
+  },
+  {
+    "id": 2420,
+    "model": "INTEL Arc B580",
+    "new_price": 1679,
+    "used_price": null,
+    "recorded_at": "2026-01-06"
+  },
+  {
+    "id": 2421,
+    "model": "INTEL Arc B580",
+    "new_price": 1727,
+    "used_price": null,
+    "recorded_at": "2026-01-18"
+  },
+  {
+    "id": 2422,
+    "model": "INTEL Arc B580",
+    "new_price": 1727,
+    "used_price": null,
+    "recorded_at": "2026-01-25"
+  },
+  {
+    "id": 2423,
+    "model": "INTEL Arc B580",
+    "new_price": 1799,
+    "used_price": null,
+    "recorded_at": "2026-02-01"
+  },
+  {
+    "id": 2424,
+    "model": "INTEL Arc B580",
+    "new_price": 1796,
+    "used_price": null,
+    "recorded_at": "2026-02-08"
+  },
+  {
+    "id": 2425,
+    "model": "INTEL Arc B580",
+    "new_price": 1849,
+    "used_price": null,
+    "recorded_at": "2026-02-15"
+  },
+  {
+    "id": 2426,
+    "model": "INTEL Arc B580",
+    "new_price": 1838,
+    "used_price": null,
+    "recorded_at": "2026-02-22"
+  },
+  {
+    "id": 2427,
+    "model": "INTEL Arc B580",
+    "new_price": 1799,
+    "used_price": null,
+    "recorded_at": "2026-03-01"
+  },
+  {
+    "id": 2428,
+    "model": "INTEL Arc B580",
+    "new_price": 1799,
+    "used_price": null,
+    "recorded_at": "2026-03-07"
+  },
+  {
+    "id": 2429,
+    "model": "INTEL Arc B580",
+    "new_price": 1868,
+    "used_price": null,
+    "recorded_at": "2026-03-14"
+  },
+  {
+    "id": 2430,
+    "model": "INTEL Arc B580",
+    "new_price": 1814,
+    "used_price": null,
+    "recorded_at": "2026-03-21"
+  },
+  {
+    "id": 2431,
+    "model": "INTEL Arc B580",
+    "new_price": 1844,
+    "used_price": null,
+    "recorded_at": "2026-03-29"
+  },
+  {
+    "id": 2432,
+    "model": "INTEL Arc B580",
+    "new_price": 1864,
+    "used_price": null,
+    "recorded_at": "2026-04-04"
+  },
+  {
+    "id": 2433,
+    "model": "INTEL Arc B570",
+    "new_price": 1365,
+    "used_price": null,
+    "recorded_at": "2026-01-06"
+  },
+  {
+    "id": 2434,
+    "model": "INTEL Arc B570",
+    "new_price": 1359,
+    "used_price": null,
+    "recorded_at": "2026-01-18"
+  },
+  {
+    "id": 2435,
+    "model": "INTEL Arc B570",
+    "new_price": 1399,
+    "used_price": null,
+    "recorded_at": "2026-01-25"
+  },
+  {
+    "id": 2436,
+    "model": "INTEL Arc B570",
+    "new_price": 1399,
+    "used_price": null,
+    "recorded_at": "2026-02-01"
+  },
+  {
+    "id": 2437,
+    "model": "INTEL Arc B570",
+    "new_price": 1395,
+    "used_price": null,
+    "recorded_at": "2026-02-08"
+  },
+  {
+    "id": 2438,
+    "model": "INTEL Arc B570",
+    "new_price": 1398,
+    "used_price": null,
+    "recorded_at": "2026-02-15"
+  },
+  {
+    "id": 2439,
+    "model": "INTEL Arc B570",
+    "new_price": 1398,
+    "used_price": null,
+    "recorded_at": "2026-02-22"
+  },
+  {
+    "id": 2440,
+    "model": "INTEL Arc B570",
+    "new_price": 1473,
+    "used_price": null,
+    "recorded_at": "2026-03-01"
+  },
+  {
+    "id": 2441,
+    "model": "INTEL Arc B570",
+    "new_price": 1549,
+    "used_price": null,
+    "recorded_at": "2026-03-07"
+  },
+  {
+    "id": 2442,
+    "model": "INTEL Arc B570",
+    "new_price": 1544,
+    "used_price": null,
+    "recorded_at": "2026-03-14"
+  },
+  {
+    "id": 2443,
+    "model": "INTEL Arc B570",
+    "new_price": 1523,
+    "used_price": null,
+    "recorded_at": "2026-03-21"
+  },
+  {
+    "id": 2444,
+    "model": "INTEL Arc B570",
+    "new_price": 1494,
+    "used_price": null,
+    "recorded_at": "2026-03-29"
+  },
+  {
+    "id": 2445,
+    "model": "INTEL Arc B570",
+    "new_price": 1593,
+    "used_price": null,
+    "recorded_at": "2026-04-04"
+  },
+  {
+    "id": 2446,
+    "model": "AMD RX 9070 XT",
+    "new_price": 4540,
+    "used_price": null,
+    "recorded_at": "2026-01-06"
+  },
+  {
+    "id": 2447,
+    "model": "AMD RX 9070 XT",
+    "new_price": 4532,
+    "used_price": null,
+    "recorded_at": "2026-01-18"
+  },
+  {
+    "id": 2448,
+    "model": "AMD RX 9070 XT",
+    "new_price": 4799,
+    "used_price": null,
+    "recorded_at": "2026-01-25"
+  },
+  {
+    "id": 2449,
+    "model": "AMD RX 9070 XT",
+    "new_price": 4648,
+    "used_price": null,
+    "recorded_at": "2026-02-01"
+  },
+  {
+    "id": 2450,
+    "model": "AMD RX 9070 XT",
+    "new_price": 4849,
+    "used_price": null,
+    "recorded_at": "2026-02-08"
+  },
+  {
+    "id": 2451,
+    "model": "AMD RX 9070 XT",
+    "new_price": 4699,
+    "used_price": null,
+    "recorded_at": "2026-02-15"
+  },
+  {
+    "id": 2452,
+    "model": "AMD RX 9070 XT",
+    "new_price": 4669,
+    "used_price": null,
+    "recorded_at": "2026-02-22"
+  },
+  {
+    "id": 2453,
+    "model": "AMD RX 9070 XT",
+    "new_price": 4689,
+    "used_price": null,
+    "recorded_at": "2026-03-01"
+  },
+  {
+    "id": 2454,
+    "model": "AMD RX 9070 XT",
+    "new_price": 4650,
+    "used_price": null,
+    "recorded_at": "2026-03-07"
+  },
+  {
+    "id": 2455,
+    "model": "AMD RX 9070 XT",
+    "new_price": 4724,
+    "used_price": null,
+    "recorded_at": "2026-03-14"
+  },
+  {
+    "id": 2456,
+    "model": "AMD RX 9070 XT",
+    "new_price": 4540,
+    "used_price": null,
+    "recorded_at": "2026-03-21"
+  },
+  {
+    "id": 2457,
+    "model": "AMD RX 9070 XT",
+    "new_price": 4544,
+    "used_price": null,
+    "recorded_at": "2026-03-29"
+  },
+  {
+    "id": 2458,
+    "model": "AMD RX 9070 XT",
+    "new_price": 4554,
+    "used_price": null,
+    "recorded_at": "2026-04-04"
+  },
+  {
+    "id": 2459,
+    "model": "AMD RX 9070 GRE",
+    "new_price": 3149,
+    "used_price": null,
+    "recorded_at": "2026-01-06"
+  },
+  {
+    "id": 2460,
+    "model": "AMD RX 9070 GRE",
+    "new_price": 3458,
+    "used_price": null,
+    "recorded_at": "2026-01-18"
+  },
+  {
+    "id": 2461,
+    "model": "AMD RX 9070 GRE",
+    "new_price": 3479,
+    "used_price": null,
+    "recorded_at": "2026-01-25"
+  },
+  {
+    "id": 2462,
+    "model": "AMD RX 9070 GRE",
+    "new_price": 3283,
+    "used_price": null,
+    "recorded_at": "2026-02-01"
+  },
+  {
+    "id": 2463,
+    "model": "AMD RX 9070 GRE",
+    "new_price": 3430,
+    "used_price": null,
+    "recorded_at": "2026-02-08"
+  },
+  {
+    "id": 2464,
+    "model": "AMD RX 9070 GRE",
+    "new_price": 3428,
+    "used_price": null,
+    "recorded_at": "2026-02-15"
+  },
+  {
+    "id": 2465,
+    "model": "AMD RX 9070 GRE",
+    "new_price": 3439,
+    "used_price": null,
+    "recorded_at": "2026-02-22"
+  },
+  {
+    "id": 2466,
+    "model": "AMD RX 9070 GRE",
+    "new_price": 3385,
+    "used_price": null,
+    "recorded_at": "2026-03-01"
+  },
+  {
+    "id": 2467,
+    "model": "AMD RX 9070 GRE",
+    "new_price": 3389,
+    "used_price": null,
+    "recorded_at": "2026-03-07"
+  },
+  {
+    "id": 2468,
+    "model": "AMD RX 9070 GRE",
+    "new_price": 3489,
+    "used_price": null,
+    "recorded_at": "2026-03-14"
+  },
+  {
+    "id": 2469,
+    "model": "AMD RX 9070 GRE",
+    "new_price": 3451,
+    "used_price": null,
+    "recorded_at": "2026-03-21"
+  },
+  {
+    "id": 2470,
+    "model": "AMD RX 9070 GRE",
+    "new_price": 3451,
+    "used_price": null,
+    "recorded_at": "2026-03-29"
+  },
+  {
+    "id": 2471,
+    "model": "AMD RX 9070 GRE",
+    "new_price": 3447,
+    "used_price": null,
+    "recorded_at": "2026-04-04"
+  },
+  {
+    "id": 2472,
+    "model": "AMD RX 9070",
+    "new_price": 4150,
+    "used_price": null,
+    "recorded_at": "2026-01-06"
+  },
+  {
+    "id": 2473,
+    "model": "AMD RX 9070",
+    "new_price": 4118,
+    "used_price": null,
+    "recorded_at": "2026-01-18"
+  },
+  {
+    "id": 2474,
+    "model": "AMD RX 9070",
+    "new_price": 4467,
+    "used_price": null,
+    "recorded_at": "2026-01-25"
+  },
+  {
+    "id": 2475,
+    "model": "AMD RX 9070",
+    "new_price": 4372,
+    "used_price": null,
+    "recorded_at": "2026-02-01"
+  },
+  {
+    "id": 2476,
+    "model": "AMD RX 9070",
+    "new_price": 4341,
+    "used_price": null,
+    "recorded_at": "2026-02-08"
+  },
+  {
+    "id": 2477,
+    "model": "AMD RX 9070",
+    "new_price": 4544,
+    "used_price": null,
+    "recorded_at": "2026-02-15"
+  },
+  {
+    "id": 2478,
+    "model": "AMD RX 9070",
+    "new_price": 4544,
+    "used_price": null,
+    "recorded_at": "2026-02-22"
+  },
+  {
+    "id": 2479,
+    "model": "AMD RX 9070",
+    "new_price": 4399,
+    "used_price": null,
+    "recorded_at": "2026-03-01"
+  },
+  {
+    "id": 2480,
+    "model": "AMD RX 9070",
+    "new_price": 4394,
+    "used_price": null,
+    "recorded_at": "2026-03-07"
+  },
+  {
+    "id": 2481,
+    "model": "AMD RX 9070",
+    "new_price": 4339,
+    "used_price": null,
+    "recorded_at": "2026-03-14"
+  },
+  {
+    "id": 2482,
+    "model": "AMD RX 9070",
+    "new_price": 4335,
+    "used_price": null,
+    "recorded_at": "2026-03-21"
+  },
+  {
+    "id": 2483,
+    "model": "AMD RX 9070",
+    "new_price": 4320,
+    "used_price": null,
+    "recorded_at": "2026-03-29"
+  },
+  {
+    "id": 2484,
+    "model": "AMD RX 9070",
+    "new_price": 4320,
+    "used_price": null,
+    "recorded_at": "2026-04-04"
+  },
+  {
+    "id": 2485,
+    "model": "AMD RX 9060 XT 8GB",
+    "new_price": 2089,
+    "used_price": null,
+    "recorded_at": "2026-01-06"
+  },
+  {
+    "id": 2486,
+    "model": "AMD RX 9060 XT 8GB",
+    "new_price": 2119,
+    "used_price": null,
+    "recorded_at": "2026-01-18"
+  },
+  {
+    "id": 2487,
+    "model": "AMD RX 9060 XT 8GB",
+    "new_price": 2176,
+    "used_price": null,
+    "recorded_at": "2026-01-25"
+  },
+  {
+    "id": 2488,
+    "model": "AMD RX 9060 XT 8GB",
+    "new_price": 2149,
+    "used_price": null,
+    "recorded_at": "2026-02-01"
+  },
+  {
+    "id": 2489,
+    "model": "AMD RX 9060 XT 8GB",
+    "new_price": 2197,
+    "used_price": null,
+    "recorded_at": "2026-02-08"
+  },
+  {
+    "id": 2490,
+    "model": "AMD RX 9060 XT 8GB",
+    "new_price": 2199,
+    "used_price": null,
+    "recorded_at": "2026-02-15"
+  },
+  {
+    "id": 2491,
+    "model": "AMD RX 9060 XT 8GB",
+    "new_price": 2198,
+    "used_price": null,
+    "recorded_at": "2026-02-22"
+  },
+  {
+    "id": 2492,
+    "model": "AMD RX 9060 XT 8GB",
+    "new_price": 2199,
+    "used_price": null,
+    "recorded_at": "2026-03-01"
+  },
+  {
+    "id": 2493,
+    "model": "AMD RX 9060 XT 8GB",
+    "new_price": 2199,
+    "used_price": null,
+    "recorded_at": "2026-03-07"
+  },
+  {
+    "id": 2494,
+    "model": "AMD RX 9060 XT 8GB",
+    "new_price": 2124,
+    "used_price": null,
+    "recorded_at": "2026-03-14"
+  },
+  {
+    "id": 2495,
+    "model": "AMD RX 9060 XT 8GB",
+    "new_price": 2190,
+    "used_price": null,
+    "recorded_at": "2026-03-21"
+  },
+  {
+    "id": 2496,
+    "model": "AMD RX 9060 XT 8GB",
+    "new_price": 2183,
+    "used_price": null,
+    "recorded_at": "2026-03-29"
+  },
+  {
+    "id": 2497,
+    "model": "AMD RX 9060 XT 8GB",
+    "new_price": 2183,
+    "used_price": null,
+    "recorded_at": "2026-04-04"
+  },
+  {
+    "id": 2498,
+    "model": "AMD RX 9060 XT 16GB",
+    "new_price": 2559,
+    "used_price": null,
+    "recorded_at": "2026-01-06"
+  },
+  {
+    "id": 2499,
+    "model": "AMD RX 9060 XT 16GB",
+    "new_price": 2569,
+    "used_price": null,
+    "recorded_at": "2026-01-18"
+  },
+  {
+    "id": 2500,
+    "model": "AMD RX 9060 XT 16GB",
+    "new_price": 2699,
+    "used_price": null,
+    "recorded_at": "2026-01-25"
+  },
+  {
+    "id": 2501,
+    "model": "AMD RX 9060 XT 16GB",
+    "new_price": 2899,
+    "used_price": null,
+    "recorded_at": "2026-02-01"
+  },
+  {
+    "id": 2502,
+    "model": "AMD RX 9060 XT 16GB",
+    "new_price": 2596,
+    "used_price": null,
+    "recorded_at": "2026-02-08"
+  },
+  {
+    "id": 2503,
+    "model": "AMD RX 9060 XT 16GB",
+    "new_price": 2699,
+    "used_price": null,
+    "recorded_at": "2026-02-15"
+  },
+  {
+    "id": 2504,
+    "model": "AMD RX 9060 XT 16GB",
+    "new_price": 2699,
+    "used_price": null,
+    "recorded_at": "2026-02-22"
+  },
+  {
+    "id": 2505,
+    "model": "AMD RX 9060 XT 16GB",
+    "new_price": 2689,
+    "used_price": null,
+    "recorded_at": "2026-03-01"
+  },
+  {
+    "id": 2506,
+    "model": "AMD RX 9060 XT 16GB",
+    "new_price": 2688,
+    "used_price": null,
+    "recorded_at": "2026-03-07"
+  },
+  {
+    "id": 2507,
+    "model": "AMD RX 9060 XT 16GB",
+    "new_price": 2673,
+    "used_price": null,
+    "recorded_at": "2026-03-14"
+  },
+  {
+    "id": 2508,
+    "model": "AMD RX 9060 XT 16GB",
+    "new_price": 2655,
+    "used_price": null,
+    "recorded_at": "2026-03-21"
+  },
+  {
+    "id": 2509,
+    "model": "AMD RX 9060 XT 16GB",
+    "new_price": 2709,
+    "used_price": null,
+    "recorded_at": "2026-03-29"
+  },
+  {
+    "id": 2510,
+    "model": "AMD RX 9060 XT 16GB",
+    "new_price": 2667,
+    "used_price": null,
+    "recorded_at": "2026-04-04"
+  },
+  {
+    "id": 2511,
+    "model": "AMD RX 7900 XT",
+    "new_price": 3949,
+    "used_price": null,
+    "recorded_at": "2026-01-06"
+  },
+  {
+    "id": 2512,
+    "model": "AMD RX 7900 XT",
+    "new_price": 3949,
+    "used_price": null,
+    "recorded_at": "2026-01-18"
+  },
+  {
+    "id": 2513,
+    "model": "AMD RX 7900 XT",
+    "new_price": 3949,
+    "used_price": null,
+    "recorded_at": "2026-01-25"
+  },
+  {
+    "id": 2514,
+    "model": "AMD RX 7900 XT",
+    "new_price": 3949,
+    "used_price": null,
+    "recorded_at": "2026-02-01"
+  },
+  {
+    "id": 2515,
+    "model": "AMD RX 7900 XT",
+    "new_price": 3946,
+    "used_price": null,
+    "recorded_at": "2026-02-08"
+  },
+  {
+    "id": 2516,
+    "model": "AMD RX 7900 XT",
+    "new_price": 3949,
+    "used_price": null,
+    "recorded_at": "2026-02-15"
+  },
+  {
+    "id": 2517,
+    "model": "AMD RX 7900 XT",
+    "new_price": 3949,
+    "used_price": null,
+    "recorded_at": "2026-02-22"
+  },
+  {
+    "id": 2518,
+    "model": "AMD RX 7900 XT",
+    "new_price": 3999,
+    "used_price": null,
+    "recorded_at": "2026-03-01"
+  },
+  {
+    "id": 2519,
+    "model": "AMD RX 7900 XT",
+    "new_price": 4248,
+    "used_price": null,
+    "recorded_at": "2026-03-07"
+  },
+  {
+    "id": 2520,
+    "model": "AMD RX 7900 XT",
+    "new_price": 3994,
+    "used_price": null,
+    "recorded_at": "2026-03-14"
+  },
+  {
+    "id": 2521,
+    "model": "AMD RX 7900 XT",
+    "new_price": 4250,
+    "used_price": null,
+    "recorded_at": "2026-03-21"
+  },
+  {
+    "id": 2522,
+    "model": "AMD RX 7900 XT",
+    "new_price": 4306,
+    "used_price": null,
+    "recorded_at": "2026-03-29"
+  },
+  {
+    "id": 2523,
+    "model": "AMD RX 7900 XT",
+    "new_price": 4794,
+    "used_price": null,
+    "recorded_at": "2026-04-04"
+  },
+  {
+    "id": 2524,
+    "model": "AMD RX 7800 XT",
+    "new_price": 3099,
+    "used_price": null,
+    "recorded_at": "2026-01-06"
+  },
+  {
+    "id": 2525,
+    "model": "AMD RX 7800 XT",
+    "new_price": 2783,
+    "used_price": null,
+    "recorded_at": "2026-01-18"
+  },
+  {
+    "id": 2526,
+    "model": "AMD RX 7800 XT",
+    "new_price": 2999,
+    "used_price": null,
+    "recorded_at": "2026-01-25"
+  },
+  {
+    "id": 2527,
+    "model": "AMD RX 7800 XT",
+    "new_price": 2999,
+    "used_price": null,
+    "recorded_at": "2026-02-01"
+  },
+  {
+    "id": 2528,
+    "model": "AMD RX 7800 XT",
+    "new_price": 3586,
+    "used_price": null,
+    "recorded_at": "2026-02-08"
+  },
+  {
+    "id": 2529,
+    "model": "AMD RX 7800 XT",
+    "new_price": 3587,
+    "used_price": null,
+    "recorded_at": "2026-02-15"
+  },
+  {
+    "id": 2530,
+    "model": "AMD RX 7800 XT",
+    "new_price": 3587,
+    "used_price": null,
+    "recorded_at": "2026-02-22"
+  },
+  {
+    "id": 2531,
+    "model": "AMD RX 7800 XT",
+    "new_price": 3018,
+    "used_price": null,
+    "recorded_at": "2026-03-01"
+  },
+  {
+    "id": 2532,
+    "model": "AMD RX 7800 XT",
+    "new_price": 3599,
+    "used_price": null,
+    "recorded_at": "2026-03-07"
+  },
+  {
+    "id": 2533,
+    "model": "AMD RX 7800 XT",
+    "new_price": 3594,
+    "used_price": null,
+    "recorded_at": "2026-03-14"
+  },
+  {
+    "id": 2534,
+    "model": "AMD RX 7800 XT",
+    "new_price": 3311,
+    "used_price": null,
+    "recorded_at": "2026-03-21"
+  },
+  {
+    "id": 2535,
+    "model": "AMD RX 7800 XT",
+    "new_price": 3594,
+    "used_price": null,
+    "recorded_at": "2026-03-29"
+  },
+  {
+    "id": 2536,
+    "model": "AMD RX 7800 XT",
+    "new_price": 3594,
+    "used_price": null,
+    "recorded_at": "2026-04-04"
+  },
+  {
+    "id": 2537,
+    "model": "AMD RX 7700 XT",
+    "new_price": 2344,
+    "used_price": null,
+    "recorded_at": "2026-01-06"
+  },
+  {
+    "id": 2538,
+    "model": "AMD RX 7700 XT",
+    "new_price": 2299,
+    "used_price": null,
+    "recorded_at": "2026-01-18"
+  },
+  {
+    "id": 2539,
+    "model": "AMD RX 7700 XT",
+    "new_price": 2399,
+    "used_price": null,
+    "recorded_at": "2026-01-25"
+  },
+  {
+    "id": 2540,
+    "model": "AMD RX 7700 XT",
+    "new_price": 2494,
+    "used_price": null,
+    "recorded_at": "2026-02-01"
+  },
+  {
+    "id": 2541,
+    "model": "AMD RX 7700 XT",
+    "new_price": 2491,
+    "used_price": null,
+    "recorded_at": "2026-02-08"
+  },
+  {
+    "id": 2542,
+    "model": "AMD RX 7700 XT",
+    "new_price": 2399,
+    "used_price": null,
+    "recorded_at": "2026-02-15"
+  },
+  {
+    "id": 2543,
+    "model": "AMD RX 7700 XT",
+    "new_price": 2469,
+    "used_price": null,
+    "recorded_at": "2026-02-22"
+  },
+  {
+    "id": 2544,
+    "model": "AMD RX 7700 XT",
+    "new_price": 2469,
+    "used_price": null,
+    "recorded_at": "2026-03-01"
+  },
+  {
+    "id": 2545,
+    "model": "AMD RX 7700 XT",
+    "new_price": 2469,
+    "used_price": null,
+    "recorded_at": "2026-03-07"
+  },
+  {
+    "id": 2546,
+    "model": "AMD RX 7700 XT",
+    "new_price": 2464,
+    "used_price": null,
+    "recorded_at": "2026-03-14"
+  },
+  {
+    "id": 2547,
+    "model": "AMD RX 7700 XT",
+    "new_price": 2444,
+    "used_price": null,
+    "recorded_at": "2026-03-21"
+  },
+  {
+    "id": 2548,
+    "model": "AMD RX 7700 XT",
+    "new_price": 2430,
+    "used_price": null,
+    "recorded_at": "2026-03-29"
+  },
+  {
+    "id": 2549,
+    "model": "AMD RX 7700 XT",
+    "new_price": 2344,
+    "used_price": null,
+    "recorded_at": "2026-04-04"
+  },
+  {
+    "id": 2550,
+    "model": "AMD RX 7650 GRE",
+    "new_price": 1659,
+    "used_price": null,
+    "recorded_at": "2026-01-06"
+  },
+  {
+    "id": 2551,
+    "model": "AMD RX 7650 GRE",
+    "new_price": 1595,
+    "used_price": null,
+    "recorded_at": "2026-01-18"
+  },
+  {
+    "id": 2552,
+    "model": "AMD RX 7650 GRE",
+    "new_price": 1595,
+    "used_price": null,
+    "recorded_at": "2026-01-25"
+  },
+  {
+    "id": 2553,
+    "model": "AMD RX 7650 GRE",
+    "new_price": 1718,
+    "used_price": null,
+    "recorded_at": "2026-02-01"
+  },
+  {
+    "id": 2554,
+    "model": "AMD RX 7650 GRE",
+    "new_price": 1761,
+    "used_price": null,
+    "recorded_at": "2026-02-08"
+  },
+  {
+    "id": 2555,
+    "model": "AMD RX 7650 GRE",
+    "new_price": 1758,
+    "used_price": null,
+    "recorded_at": "2026-02-15"
+  },
+  {
+    "id": 2556,
+    "model": "AMD RX 7650 GRE",
+    "new_price": 1758,
+    "used_price": null,
+    "recorded_at": "2026-02-22"
+  },
+  {
+    "id": 2557,
+    "model": "AMD RX 7650 GRE",
+    "new_price": 1769,
+    "used_price": null,
+    "recorded_at": "2026-03-01"
+  },
+  {
+    "id": 2558,
+    "model": "AMD RX 7650 GRE",
+    "new_price": 1699,
+    "used_price": null,
+    "recorded_at": "2026-03-07"
+  },
+  {
+    "id": 2559,
+    "model": "AMD RX 7650 GRE",
+    "new_price": 1694,
+    "used_price": null,
+    "recorded_at": "2026-03-14"
+  },
+  {
+    "id": 2560,
+    "model": "AMD RX 7650 GRE",
+    "new_price": 1744,
+    "used_price": null,
+    "recorded_at": "2026-03-21"
+  },
+  {
+    "id": 2561,
+    "model": "AMD RX 7650 GRE",
+    "new_price": 1696,
+    "used_price": null,
+    "recorded_at": "2026-03-29"
+  },
+  {
+    "id": 2562,
+    "model": "AMD RX 7650 GRE",
+    "new_price": 1694,
+    "used_price": null,
+    "recorded_at": "2026-04-04"
+  },
+  {
+    "id": 2563,
+    "model": "AMD RX 6500 XT",
+    "new_price": 919,
+    "used_price": null,
+    "recorded_at": "2026-01-06"
+  },
+  {
+    "id": 2564,
+    "model": "AMD RX 6500 XT",
+    "new_price": 949,
+    "used_price": null,
+    "recorded_at": "2026-01-18"
+  },
+  {
+    "id": 2565,
+    "model": "AMD RX 6500 XT",
+    "new_price": 998,
+    "used_price": null,
+    "recorded_at": "2026-01-25"
+  },
+  {
+    "id": 2566,
+    "model": "AMD RX 6500 XT",
+    "new_price": 998,
+    "used_price": null,
+    "recorded_at": "2026-02-01"
+  },
+  {
+    "id": 2567,
+    "model": "AMD RX 6500 XT",
+    "new_price": 995,
+    "used_price": null,
+    "recorded_at": "2026-02-08"
+  },
+  {
+    "id": 2568,
+    "model": "AMD RX 6500 XT",
+    "new_price": 998,
+    "used_price": null,
+    "recorded_at": "2026-02-15"
+  },
+  {
+    "id": 2569,
+    "model": "AMD RX 6500 XT",
+    "new_price": 998,
+    "used_price": null,
+    "recorded_at": "2026-02-22"
+  },
+  {
+    "id": 2570,
+    "model": "AMD RX 6500 XT",
+    "new_price": 998,
+    "used_price": null,
+    "recorded_at": "2026-03-01"
+  },
+  {
+    "id": 2571,
+    "model": "AMD RX 6500 XT",
+    "new_price": 998,
+    "used_price": null,
+    "recorded_at": "2026-03-07"
+  },
+  {
+    "id": 2572,
+    "model": "AMD RX 6500 XT",
+    "new_price": 993,
+    "used_price": null,
+    "recorded_at": "2026-03-14"
+  },
+  {
+    "id": 2573,
+    "model": "AMD RX 6500 XT",
+    "new_price": 883,
+    "used_price": null,
+    "recorded_at": "2026-03-21"
+  },
+  {
+    "id": 2574,
+    "model": "AMD RX 6500 XT",
+    "new_price": 893,
+    "used_price": null,
+    "recorded_at": "2026-03-29"
+  },
+  {
+    "id": 2575,
+    "model": "AMD RX 6500 XT",
+    "new_price": 891,
+    "used_price": null,
+    "recorded_at": "2026-04-04"
+  },
+  {
+    "id": 2576,
+    "model": "AMD RX 6400",
+    "new_price": 880,
+    "used_price": null,
+    "recorded_at": "2026-01-06"
+  },
+  {
+    "id": 2577,
+    "model": "AMD RX 6400",
+    "new_price": 899,
+    "used_price": null,
+    "recorded_at": "2026-01-18"
+  },
+  {
+    "id": 2578,
+    "model": "AMD RX 6400",
+    "new_price": 869,
+    "used_price": null,
+    "recorded_at": "2026-01-25"
+  },
+  {
+    "id": 2579,
+    "model": "AMD RX 6400",
+    "new_price": 869,
+    "used_price": null,
+    "recorded_at": "2026-02-01"
+  },
+  {
+    "id": 2580,
+    "model": "AMD RX 6400",
+    "new_price": 896,
+    "used_price": null,
+    "recorded_at": "2026-02-08"
+  },
+  {
+    "id": 2581,
+    "model": "AMD RX 6400",
+    "new_price": 894,
+    "used_price": null,
+    "recorded_at": "2026-02-15"
+  },
+  {
+    "id": 2582,
+    "model": "AMD RX 6400",
+    "new_price": 894,
+    "used_price": null,
+    "recorded_at": "2026-02-22"
+  },
+  {
+    "id": 2583,
+    "model": "AMD RX 6400",
+    "new_price": 894,
+    "used_price": null,
+    "recorded_at": "2026-03-01"
+  },
+  {
+    "id": 2584,
+    "model": "AMD RX 6400",
+    "new_price": 894,
+    "used_price": null,
+    "recorded_at": "2026-03-07"
+  },
+  {
+    "id": 2585,
+    "model": "AMD RX 6400",
+    "new_price": 884,
+    "used_price": null,
+    "recorded_at": "2026-03-14"
+  },
+  {
+    "id": 2586,
+    "model": "AMD RX 6400",
+    "new_price": 884,
+    "used_price": null,
+    "recorded_at": "2026-03-21"
+  },
+  {
+    "id": 2587,
+    "model": "AMD RX 6400",
+    "new_price": 884,
+    "used_price": null,
+    "recorded_at": "2026-03-29"
+  },
+  {
+    "id": 2588,
+    "model": "AMD RX 6400",
+    "new_price": 889,
+    "used_price": null,
+    "recorded_at": "2026-04-04"
+  },
+  {
+    "id": 2589,
+    "model": "NVIDIA RTX 5090DV2",
+    "new_price": null,
+    "used_price": 14660,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2590,
+    "model": "NVIDIA RTX 5090DV2",
+    "new_price": null,
+    "used_price": 15999,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2591,
+    "model": "NVIDIA RTX 5090DV2",
+    "new_price": null,
+    "used_price": 17000,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2592,
+    "model": "NVIDIA RTX 5090DV2",
+    "new_price": null,
+    "used_price": 16699,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2593,
+    "model": "NVIDIA RTX 5090D",
+    "new_price": null,
+    "used_price": 17959,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2594,
+    "model": "NVIDIA RTX 5090D",
+    "new_price": null,
+    "used_price": 20000,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2595,
+    "model": "NVIDIA RTX 5090D",
+    "new_price": null,
+    "used_price": 20633,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2596,
+    "model": "NVIDIA RTX 5090D",
+    "new_price": null,
+    "used_price": 21900,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2597,
+    "model": "NVIDIA RTX 5090",
+    "new_price": null,
+    "used_price": 17959,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2598,
+    "model": "NVIDIA RTX 5090",
+    "new_price": null,
+    "used_price": 21949,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2599,
+    "model": "NVIDIA RTX 5090",
+    "new_price": null,
+    "used_price": 23888,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2600,
+    "model": "NVIDIA RTX 5090",
+    "new_price": null,
+    "used_price": 25999,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2601,
+    "model": "NVIDIA RTX 5080",
+    "new_price": null,
+    "used_price": 7798,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2602,
+    "model": "NVIDIA RTX 5080",
+    "new_price": null,
+    "used_price": 8300,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2603,
+    "model": "NVIDIA RTX 5080",
+    "new_price": null,
+    "used_price": 8625,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2604,
+    "model": "NVIDIA RTX 5080",
+    "new_price": null,
+    "used_price": 8769,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2605,
+    "model": "NVIDIA RTX 5070 Ti",
+    "new_price": null,
+    "used_price": 5850,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2606,
+    "model": "NVIDIA RTX 5070 Ti",
+    "new_price": null,
+    "used_price": 6080,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2607,
+    "model": "NVIDIA RTX 5070 Ti",
+    "new_price": null,
+    "used_price": 6400,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2608,
+    "model": "NVIDIA RTX 5070 Ti",
+    "new_price": null,
+    "used_price": 6693,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2609,
+    "model": "NVIDIA RTX 5070",
+    "new_price": null,
+    "used_price": 4188,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2610,
+    "model": "NVIDIA RTX 5070",
+    "new_price": null,
+    "used_price": 4284,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2611,
+    "model": "NVIDIA RTX 5070",
+    "new_price": null,
+    "used_price": 4500,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2612,
+    "model": "NVIDIA RTX 5070",
+    "new_price": null,
+    "used_price": 4594,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2613,
+    "model": "NVIDIA RTX 5060 Ti 8GB",
+    "new_price": null,
+    "used_price": 2750,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2614,
+    "model": "NVIDIA RTX 5060 Ti 8GB",
+    "new_price": null,
+    "used_price": 2780,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2615,
+    "model": "NVIDIA RTX 5060 Ti 8GB",
+    "new_price": null,
+    "used_price": 2850,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2616,
+    "model": "NVIDIA RTX 5060 Ti 8GB",
+    "new_price": null,
+    "used_price": 2779,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2617,
+    "model": "NVIDIA RTX 5060 Ti 16GB",
+    "new_price": null,
+    "used_price": 3100,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2618,
+    "model": "NVIDIA RTX 5060 Ti 16GB",
+    "new_price": null,
+    "used_price": 3169,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2619,
+    "model": "NVIDIA RTX 5060 Ti 16GB",
+    "new_price": null,
+    "used_price": 3450,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2620,
+    "model": "NVIDIA RTX 5060 Ti 16GB",
+    "new_price": null,
+    "used_price": 3500,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2621,
+    "model": "NVIDIA RTX 5060",
+    "new_price": null,
+    "used_price": 2250,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2622,
+    "model": "NVIDIA RTX 5060",
+    "new_price": null,
+    "used_price": 2265,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2623,
+    "model": "NVIDIA RTX 5060",
+    "new_price": null,
+    "used_price": 2400,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2624,
+    "model": "NVIDIA RTX 5060",
+    "new_price": null,
+    "used_price": 2450,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2625,
+    "model": "NVIDIA RTX 5050",
+    "new_price": null,
+    "used_price": 1659,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2626,
+    "model": "NVIDIA RTX 5050",
+    "new_price": null,
+    "used_price": 1650,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2627,
+    "model": "NVIDIA RTX 5050",
+    "new_price": null,
+    "used_price": 1750,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2628,
+    "model": "NVIDIA RTX 5050",
+    "new_price": null,
+    "used_price": 1818,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2629,
+    "model": "NVIDIA RTX 4090D",
+    "new_price": null,
+    "used_price": 15012,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2630,
+    "model": "NVIDIA RTX 4090D",
+    "new_price": null,
+    "used_price": 19000,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2631,
+    "model": "NVIDIA RTX 4090D",
+    "new_price": null,
+    "used_price": 16700,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2632,
+    "model": "NVIDIA RTX 4090D",
+    "new_price": null,
+    "used_price": 17000,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2633,
+    "model": "NVIDIA RTX 4090",
+    "new_price": null,
+    "used_price": 18600,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2634,
+    "model": "NVIDIA RTX 4090",
+    "new_price": null,
+    "used_price": 18500,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2635,
+    "model": "NVIDIA RTX 4090",
+    "new_price": null,
+    "used_price": 18875,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2636,
+    "model": "NVIDIA RTX 4090",
+    "new_price": null,
+    "used_price": 18900,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2637,
+    "model": "NVIDIA RTX 4080 S",
+    "new_price": null,
+    "used_price": 6299,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2638,
+    "model": "NVIDIA RTX 4080 S",
+    "new_price": null,
+    "used_price": 6374,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2639,
+    "model": "NVIDIA RTX 4080 S",
+    "new_price": null,
+    "used_price": 6500,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2640,
+    "model": "NVIDIA RTX 4080 S",
+    "new_price": null,
+    "used_price": 6700,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2641,
+    "model": "NVIDIA RTX 4080",
+    "new_price": null,
+    "used_price": 5900,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2642,
+    "model": "NVIDIA RTX 4080",
+    "new_price": null,
+    "used_price": 6099,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2643,
+    "model": "NVIDIA RTX 4080",
+    "new_price": null,
+    "used_price": 6240,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2644,
+    "model": "NVIDIA RTX 4080",
+    "new_price": null,
+    "used_price": 6249,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2645,
+    "model": "NVIDIA RTX 4070 Ti S",
+    "new_price": null,
+    "used_price": 4399,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2646,
+    "model": "NVIDIA RTX 4070 Ti S",
+    "new_price": null,
+    "used_price": 4600,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2647,
+    "model": "NVIDIA RTX 4070 Ti S",
+    "new_price": null,
+    "used_price": 4688,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2648,
+    "model": "NVIDIA RTX 4070 Ti S",
+    "new_price": null,
+    "used_price": 4765,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2649,
+    "model": "NVIDIA RTX 4070 Ti",
+    "new_price": null,
+    "used_price": 3610,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2650,
+    "model": "NVIDIA RTX 4070 Ti",
+    "new_price": null,
+    "used_price": 3600,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2651,
+    "model": "NVIDIA RTX 4070 Ti",
+    "new_price": null,
+    "used_price": 3800,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2652,
+    "model": "NVIDIA RTX 4070 Ti",
+    "new_price": null,
+    "used_price": 3950,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2653,
+    "model": "NVIDIA RTX 4070 S",
+    "new_price": null,
+    "used_price": 3347,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2654,
+    "model": "NVIDIA RTX 4070 S",
+    "new_price": null,
+    "used_price": 3329,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2655,
+    "model": "NVIDIA RTX 4070 S",
+    "new_price": null,
+    "used_price": 3500,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2656,
+    "model": "NVIDIA RTX 4070 S",
+    "new_price": null,
+    "used_price": 3650,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2657,
+    "model": "NVIDIA RTX 4070",
+    "new_price": null,
+    "used_price": 3100,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2658,
+    "model": "NVIDIA RTX 4070",
+    "new_price": null,
+    "used_price": 2900,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2659,
+    "model": "NVIDIA RTX 4070",
+    "new_price": null,
+    "used_price": 3050,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2660,
+    "model": "NVIDIA RTX 4070",
+    "new_price": null,
+    "used_price": 3250,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2661,
+    "model": "NVIDIA RTX 4060 Ti 8G",
+    "new_price": null,
+    "used_price": 1925,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2662,
+    "model": "NVIDIA RTX 4060 Ti 8G",
+    "new_price": null,
+    "used_price": 1919,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2663,
+    "model": "NVIDIA RTX 4060 Ti 8G",
+    "new_price": null,
+    "used_price": 2060,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2664,
+    "model": "NVIDIA RTX 4060 Ti 8G",
+    "new_price": null,
+    "used_price": 2126,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2665,
+    "model": "NVIDIA RTX 4060 Ti 16G",
+    "new_price": null,
+    "used_price": 2555,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2666,
+    "model": "NVIDIA RTX 4060 Ti 16G",
+    "new_price": null,
+    "used_price": 2550,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2667,
+    "model": "NVIDIA RTX 4060 Ti 16G",
+    "new_price": null,
+    "used_price": 2688,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2668,
+    "model": "NVIDIA RTX 4060 Ti 16G",
+    "new_price": null,
+    "used_price": 2780,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2669,
+    "model": "NVIDIA RTX 4060",
+    "new_price": null,
+    "used_price": 1800,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2670,
+    "model": "NVIDIA RTX 4060",
+    "new_price": null,
+    "used_price": 1748,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2671,
+    "model": "NVIDIA RTX 4060",
+    "new_price": null,
+    "used_price": 1835,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2672,
+    "model": "NVIDIA RTX 4060",
+    "new_price": null,
+    "used_price": 1950,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2673,
+    "model": "NVIDIA RTX 3090 Ti",
+    "new_price": null,
+    "used_price": 5950,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2674,
+    "model": "NVIDIA RTX 3090 Ti",
+    "new_price": null,
+    "used_price": 5949,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2675,
+    "model": "NVIDIA RTX 3090 Ti",
+    "new_price": null,
+    "used_price": 5924,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2676,
+    "model": "NVIDIA RTX 3090 Ti",
+    "new_price": null,
+    "used_price": 6099,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2677,
+    "model": "NVIDIA RTX 3090",
+    "new_price": null,
+    "used_price": 4865,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2678,
+    "model": "NVIDIA RTX 3090",
+    "new_price": null,
+    "used_price": 4600,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2679,
+    "model": "NVIDIA RTX 3090",
+    "new_price": null,
+    "used_price": 4700,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2680,
+    "model": "NVIDIA RTX 3090",
+    "new_price": null,
+    "used_price": 4950,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2681,
+    "model": "NVIDIA RTX 3080 Ti",
+    "new_price": null,
+    "used_price": 2642,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2682,
+    "model": "NVIDIA RTX 3080 Ti",
+    "new_price": null,
+    "used_price": 2619,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2683,
+    "model": "NVIDIA RTX 3080 Ti",
+    "new_price": null,
+    "used_price": 2600,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2684,
+    "model": "NVIDIA RTX 3080 Ti",
+    "new_price": null,
+    "used_price": 2788,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2685,
+    "model": "NVIDIA RTX 3080 12GB",
+    "new_price": null,
+    "used_price": 2300,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2686,
+    "model": "NVIDIA RTX 3080 12GB",
+    "new_price": null,
+    "used_price": 2364,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2687,
+    "model": "NVIDIA RTX 3080 12GB",
+    "new_price": null,
+    "used_price": 2400,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2688,
+    "model": "NVIDIA RTX 3080 12GB",
+    "new_price": null,
+    "used_price": 2550,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2689,
+    "model": "NVIDIA RTX 3080",
+    "new_price": null,
+    "used_price": 1880,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2690,
+    "model": "NVIDIA RTX 3080",
+    "new_price": null,
+    "used_price": 1880,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2691,
+    "model": "NVIDIA RTX 3080",
+    "new_price": null,
+    "used_price": 1900,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2692,
+    "model": "NVIDIA RTX 3080",
+    "new_price": null,
+    "used_price": 2000,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2693,
+    "model": "NVIDIA RTX 3070 Ti",
+    "new_price": null,
+    "used_price": 1680,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2694,
+    "model": "NVIDIA RTX 3070 Ti",
+    "new_price": null,
+    "used_price": 1620,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2695,
+    "model": "NVIDIA RTX 3070 Ti",
+    "new_price": null,
+    "used_price": 1657,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2696,
+    "model": "NVIDIA RTX 3070 Ti",
+    "new_price": null,
+    "used_price": 1750,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2697,
+    "model": "NVIDIA RTX 3070",
+    "new_price": null,
+    "used_price": 1450,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2698,
+    "model": "NVIDIA RTX 3070",
+    "new_price": null,
+    "used_price": 1419,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2699,
+    "model": "NVIDIA RTX 3070",
+    "new_price": null,
+    "used_price": 1450,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2700,
+    "model": "NVIDIA RTX 3070",
+    "new_price": null,
+    "used_price": 1510,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2701,
+    "model": "NVIDIA RTX 3060 Ti G6X",
+    "new_price": null,
+    "used_price": 1510,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2702,
+    "model": "NVIDIA RTX 3060 Ti G6X",
+    "new_price": null,
+    "used_price": 1450,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2703,
+    "model": "NVIDIA RTX 3060 Ti G6X",
+    "new_price": null,
+    "used_price": 1498,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2704,
+    "model": "NVIDIA RTX 3060 Ti G6X",
+    "new_price": null,
+    "used_price": 1550,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2705,
+    "model": "NVIDIA RTX 3060 Ti",
+    "new_price": null,
+    "used_price": 1388,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2706,
+    "model": "NVIDIA RTX 3060 Ti",
+    "new_price": null,
+    "used_price": 1368,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2707,
+    "model": "NVIDIA RTX 3060 Ti",
+    "new_price": null,
+    "used_price": 1398,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2708,
+    "model": "NVIDIA RTX 3060 Ti",
+    "new_price": null,
+    "used_price": 1485,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2709,
+    "model": "NVIDIA RTX 3060 8GB",
+    "new_price": null,
+    "used_price": 1320,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2710,
+    "model": "NVIDIA RTX 3060 8GB",
+    "new_price": null,
+    "used_price": 1260,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2711,
+    "model": "NVIDIA RTX 3060 8GB",
+    "new_price": null,
+    "used_price": 1360,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2712,
+    "model": "NVIDIA RTX 3060 8GB",
+    "new_price": null,
+    "used_price": 1435,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2713,
+    "model": "NVIDIA RTX 3060 12GB",
+    "new_price": null,
+    "used_price": 1399,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2714,
+    "model": "NVIDIA RTX 3060 12GB",
+    "new_price": null,
+    "used_price": 1360,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2715,
+    "model": "NVIDIA RTX 3060 12GB",
+    "new_price": null,
+    "used_price": 1442,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2716,
+    "model": "NVIDIA RTX 3060 12GB",
+    "new_price": null,
+    "used_price": 1500,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2717,
+    "model": "NVIDIA RTX 3050 8GB",
+    "new_price": null,
+    "used_price": 950,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2718,
+    "model": "NVIDIA RTX 3050 8GB",
+    "new_price": null,
+    "used_price": 950,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2719,
+    "model": "NVIDIA RTX 3050 8GB",
+    "new_price": null,
+    "used_price": 1000,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2720,
+    "model": "NVIDIA RTX 3050 8GB",
+    "new_price": null,
+    "used_price": 1050,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2721,
+    "model": "NVIDIA RTX 3050 6GB",
+    "new_price": null,
+    "used_price": 950,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2722,
+    "model": "NVIDIA RTX 3050 6GB",
+    "new_price": null,
+    "used_price": 942,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2723,
+    "model": "NVIDIA RTX 3050 6GB",
+    "new_price": null,
+    "used_price": 980,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2724,
+    "model": "NVIDIA RTX 3050 6GB",
+    "new_price": null,
+    "used_price": 1004,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2725,
+    "model": "NVIDIA RTX 2080 Ti",
+    "new_price": null,
+    "used_price": 1299,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2726,
+    "model": "NVIDIA RTX 2080 Ti",
+    "new_price": null,
+    "used_price": 1200,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2727,
+    "model": "NVIDIA RTX 2080 Ti",
+    "new_price": null,
+    "used_price": 1330,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2728,
+    "model": "NVIDIA RTX 2080 Ti",
+    "new_price": null,
+    "used_price": 1350,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2729,
+    "model": "NVIDIA RTX 2080 S",
+    "new_price": null,
+    "used_price": 1140,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2730,
+    "model": "NVIDIA RTX 2080 S",
+    "new_price": null,
+    "used_price": 1080,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2731,
+    "model": "NVIDIA RTX 2080 S",
+    "new_price": null,
+    "used_price": 1100,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2732,
+    "model": "NVIDIA RTX 2080 S",
+    "new_price": null,
+    "used_price": 1150,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2733,
+    "model": "NVIDIA RTX 2080",
+    "new_price": null,
+    "used_price": 1050,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2734,
+    "model": "NVIDIA RTX 2080",
+    "new_price": null,
+    "used_price": 1000,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2735,
+    "model": "NVIDIA RTX 2080",
+    "new_price": null,
+    "used_price": 986,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2736,
+    "model": "NVIDIA RTX 2080",
+    "new_price": null,
+    "used_price": 1055,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2737,
+    "model": "NVIDIA RTX 2070 S",
+    "new_price": null,
+    "used_price": 1050,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2738,
+    "model": "NVIDIA RTX 2070 S",
+    "new_price": null,
+    "used_price": 950,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2739,
+    "model": "NVIDIA RTX 2070 S",
+    "new_price": null,
+    "used_price": 999,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2740,
+    "model": "NVIDIA RTX 2070 S",
+    "new_price": null,
+    "used_price": 1049,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2741,
+    "model": "NVIDIA RTX 2070",
+    "new_price": null,
+    "used_price": 910,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2742,
+    "model": "NVIDIA RTX 2070",
+    "new_price": null,
+    "used_price": 900,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2743,
+    "model": "NVIDIA RTX 2070",
+    "new_price": null,
+    "used_price": 892,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2744,
+    "model": "NVIDIA RTX 2070",
+    "new_price": null,
+    "used_price": 920,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2745,
+    "model": "NVIDIA RTX 2060 S",
+    "new_price": null,
+    "used_price": 930,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2746,
+    "model": "NVIDIA RTX 2060 S",
+    "new_price": null,
+    "used_price": 900,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2747,
+    "model": "NVIDIA RTX 2060 S",
+    "new_price": null,
+    "used_price": 910,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2748,
+    "model": "NVIDIA RTX 2060 S",
+    "new_price": null,
+    "used_price": 940,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2749,
+    "model": "NVIDIA RTX 2060 6GB",
+    "new_price": null,
+    "used_price": 810,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2750,
+    "model": "NVIDIA RTX 2060 6GB",
+    "new_price": null,
+    "used_price": 800,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2751,
+    "model": "NVIDIA RTX 2060 6GB",
+    "new_price": null,
+    "used_price": 820,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2752,
+    "model": "NVIDIA RTX 2060 6GB",
+    "new_price": null,
+    "used_price": 830,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2753,
+    "model": "NVIDIA RTX 2060 12GB",
+    "new_price": null,
+    "used_price": 1000,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2754,
+    "model": "NVIDIA RTX 2060 12GB",
+    "new_price": null,
+    "used_price": 999,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2755,
+    "model": "NVIDIA RTX 2060 12GB",
+    "new_price": null,
+    "used_price": 1000,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2756,
+    "model": "NVIDIA RTX 2060 12GB",
+    "new_price": null,
+    "used_price": 1081,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2757,
+    "model": "NVIDIA GTX 980 Ti",
+    "new_price": null,
+    "used_price": 460,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2758,
+    "model": "NVIDIA GTX 980 Ti",
+    "new_price": null,
+    "used_price": 450,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2759,
+    "model": "NVIDIA GTX 980 Ti",
+    "new_price": null,
+    "used_price": 455,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2760,
+    "model": "NVIDIA GTX 980 Ti",
+    "new_price": null,
+    "used_price": 499,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2761,
+    "model": "NVIDIA GTX 980",
+    "new_price": null,
+    "used_price": 362,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2762,
+    "model": "NVIDIA GTX 980",
+    "new_price": null,
+    "used_price": 360,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2763,
+    "model": "NVIDIA GTX 980",
+    "new_price": null,
+    "used_price": 360,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2764,
+    "model": "NVIDIA GTX 980",
+    "new_price": null,
+    "used_price": 380,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2765,
+    "model": "NVIDIA GTX 970",
+    "new_price": null,
+    "used_price": 310,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2766,
+    "model": "NVIDIA GTX 970",
+    "new_price": null,
+    "used_price": 305,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2767,
+    "model": "NVIDIA GTX 970",
+    "new_price": null,
+    "used_price": 300,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2768,
+    "model": "NVIDIA GTX 970",
+    "new_price": null,
+    "used_price": 337,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2769,
+    "model": "NVIDIA GTX 960",
+    "new_price": null,
+    "used_price": 235,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2770,
+    "model": "NVIDIA GTX 960",
+    "new_price": null,
+    "used_price": 230,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2771,
+    "model": "NVIDIA GTX 960",
+    "new_price": null,
+    "used_price": 220,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2772,
+    "model": "NVIDIA GTX 960",
+    "new_price": null,
+    "used_price": 248,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2773,
+    "model": "NVIDIA GTX 950",
+    "new_price": null,
+    "used_price": 210,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2774,
+    "model": "NVIDIA GTX 950",
+    "new_price": null,
+    "used_price": 210,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2775,
+    "model": "NVIDIA GTX 950",
+    "new_price": null,
+    "used_price": 206,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2776,
+    "model": "NVIDIA GTX 950",
+    "new_price": null,
+    "used_price": 190,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2777,
+    "model": "NVIDIA GTX 780",
+    "new_price": null,
+    "used_price": 155,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2778,
+    "model": "NVIDIA GTX 780",
+    "new_price": null,
+    "used_price": 183,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2779,
+    "model": "NVIDIA GTX 780",
+    "new_price": null,
+    "used_price": 200,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2780,
+    "model": "NVIDIA GTX 780",
+    "new_price": null,
+    "used_price": 208,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2781,
+    "model": "NVIDIA GTX 770",
+    "new_price": null,
+    "used_price": 160,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2782,
+    "model": "NVIDIA GTX 770",
+    "new_price": null,
+    "used_price": 150,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2783,
+    "model": "NVIDIA GTX 770",
+    "new_price": null,
+    "used_price": 147,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2784,
+    "model": "NVIDIA GTX 770",
+    "new_price": null,
+    "used_price": 170,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2785,
+    "model": "NVIDIA GTX 760",
+    "new_price": null,
+    "used_price": 130,
+    "recorded_at": "2025-12-04"
+  },
+  {
+    "id": 2786,
+    "model": "NVIDIA GTX 760",
+    "new_price": null,
+    "used_price": 129,
+    "recorded_at": "2026-01-10"
+  },
+  {
+    "id": 2787,
+    "model": "NVIDIA GTX 760",
+    "new_price": null,
+    "used_price": 143,
+    "recorded_at": "2026-02-05"
+  },
+  {
+    "id": 2788,
+    "model": "NVIDIA GTX 760",
+    "new_price": null,
+    "used_price": 133,
+    "recorded_at": "2026-03-12"
+  },
+  {
+    "id": 2789,
+    "model": "NVIDIA GTX 750 Ti",
+    "new_price": null,
+    "used_price": 200,
+    "recorded_at": "2025-12-04"
+  }
+]

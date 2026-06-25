@@ -1,0 +1,488 @@
+---
+// 全局布局：HTML外壳 + 全局样式 + 导航栏/页脚
+import { getData } from '../lib/getData'
+import NavBar from '../components/NavBar.astro';
+import DealModal from '../components/DealModal.vue'
+export interface Props {
+  title?: string;
+}
+const { title = '奇魂的小窝 - CPU/显卡性价比排行榜' } = Astro.props;
+// 获取特价清单文本（全局弹窗用）
+const { data: dealsData } = await getData(
+  'site_config',
+  'value',
+  { eq: ['key', 'special_deals_text'], single: true }
+)
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN" style="background-color: var(--bg-primary); transition: background-color 0.3s ease;">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Cloudflare Web Analytics -->
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "be4d27a281a64d05b49ef1f631afa9b0"}'></script>
+    <!-- End Cloudflare Web Analytics -->
+    <style is:global>
+      /* ═══════════════ 全局标准（浅色默认，夜间自适应） ═══════════════ */
+      :root {
+    --chart-border: #c0c7d0;
+    --chart-label: #475569;
+    --chart-legend: #1e293b;
+    --chart-split: rgba(0, 0, 0, 0.05);
+    --carousel-dot: rgba(0, 0, 0, 0.25);
+
+    --bg-primary: #f5f6f8;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #ebedf0;
+    --border: #d0d5dd;
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --accent: #b8860b;
+    --accent-hover: #9a6f0a;
+    --price-up: #c0392b;
+    --price-down: #0d8a6e;
+
+    --table-border-gold: rgba(184, 134, 11, 0.35);
+    --table-outline-blue: rgba(0, 91, 181, 0.25);
+    --table-divider: rgba(0, 0, 0, 0.06);
+    --thead-text: #1e293b;
+
+    --shadow-card: 0 1px 4px rgba(0, 0, 0, 0.04), 0 4px 12px rgba(0, 0, 0, 0.04);
+    --shadow-fab: 0 4px 20px rgba(0, 0, 0, 0.12);
+
+    --value-gold-bg: rgba(184, 134, 11, 0.18);
+    --value-gold-text: #7a5c0a;
+    --value-cyan-bg: rgba(13, 138, 110, 0.15);
+    --value-cyan-text: #0b5c4a;
+    --value-red-bg: rgba(192, 57, 43, 0.12);
+    --value-red-text: #8b1a1a;
+
+    --brand-intel: #0053a7;
+    --brand-amd: #b60300;
+    --brand-nvidia: #008307;
+
+    /* ═══════════ 全局弹窗统一风格（白天 - 加深透明渐变） ═══════════ */
+--modal-overlay: rgba(0, 0, 0, 0.5);
+--modal-bg: linear-gradient(180deg, #fafbfc 0%, #f1f5f9 100%);
+--modal-card-bg: #ffffff;
+--shadow-modal: 0 8px 32px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+--modal-divider: rgba(0, 0, 0, 0.06);
+--modal-border: 1px solid rgba(0, 0, 0, 0.04);
+--modal-handle: rgba(0, 0, 0, 0.2);
+
+/* 品牌色标题栏背景渐变（加深起始端透明度） */
+--brand-intel-bg: linear-gradient(135deg, rgba(0, 95, 194, 0.45) 0%, rgba(0, 95, 194, 0.08) 100%);
+--brand-amd-bg: linear-gradient(135deg, rgba(211, 47, 47, 0.45) 0%, rgba(211, 47, 47, 0.08) 100%);
+--brand-nvidia-bg: linear-gradient(135deg, rgba(76, 175, 80, 0.45) 0%, rgba(76, 175, 80, 0.08) 100%);
+/* 中性弹窗标题栏背景 */
+--modal-deal-header-bg: linear-gradient(135deg, rgba(184, 134, 11, 0.25) 0%, rgba(184, 134, 11, 0.05) 100%);
+
+    --chart-text: #1a1f2e;
+    --chart-axis: #d0d5dd;
+    --chart-grid: rgba(0, 0, 0, 0.04);
+    --chart-line-primary: #e67e22;
+    --chart-line-secondary: #2ecc71;
+    --chart-tooltip-bg: #ffffff;
+    --chart-tooltip-border: #d0d5dd;
+
+    --highlight-bg: rgba(184, 134, 11, 0.08);
+    --highlight-border: rgba(184, 134, 11, 0.35);
+    --active-scale: 0.96;
+    --btn-gold: #b8860b;
+    --btn-gold-text: #ffffff;
+
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-full: 20px;
+
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+
+    --anim-fast: 0.15s ease;
+    --anim-normal: 0.25s ease;
+    --anim-slow: 0.3s ease;
+
+    --scrollbar-thumb: #c0c7d0;
+    --scrollbar-track: transparent;
+    --scrollbar-width: 6px;
+    --scrollbar-height: 6px;
+
+    --empty-text: #5f6b7a;
+    --loading-shimmer-bg: linear-gradient(
+      90deg,
+      var(--bg-secondary) 25%,
+      rgba(0, 0, 0, 0.04) 50%,
+      var(--bg-secondary) 75%
+    );
+    --error-bg: rgba(192, 57, 43, 0.06);
+    --error-border: rgba(192, 57, 43, 0.3);
+    --error-text: #a93226;
+}
+
+      /* ═══════════ 夜间模式：跟随系统自动切换 ═══════════ */
+      @media (prefers-color-scheme: dark) {
+    :root {
+        --chart-border: #2a3d5e;
+        --chart-label: #8b949e;
+        --chart-legend: #e0e0e0;
+        --chart-split: rgba(255, 255, 255, 0.05);
+        --carousel-dot: rgba(255, 255, 255, 0.3);
+
+        --bg-primary: #0d1523;
+        --bg-secondary: #151f30;
+        --bg-tertiary: #1c2a40;
+        --border: #2a3d5e;
+        --text-primary: #e2e8f0;
+        --text-secondary: #8b949e;
+        --accent: #e6b422;
+        --accent-hover: #ffc107;
+        --price-up: #ff5252;
+        --price-down: #4caf50;
+        --btn-gold: #e6b422;
+        --btn-gold-text: #1a1a2e;
+
+        --table-border-gold: rgba(230, 180, 34, 0.3);
+        --table-outline-blue: rgba(96, 165, 250, 0.35);
+        --table-divider: rgba(255, 255, 255, 0.04);
+        --thead-text: #b0b0c0;
+
+        --shadow-card: 0 4px 16px rgba(0, 0, 0, 0.3);
+        --shadow-fab: 0 4px 16px rgba(0, 0, 0, 0.4);
+
+        --value-gold-bg: rgba(230, 180, 34, 0.2);
+        --value-gold-text: #e6b422;
+        --value-cyan-bg: rgba(78, 205, 196, 0.2);
+        --value-cyan-text: #4ecdc4;
+        --value-red-bg: rgba(255, 82, 82, 0.2);
+        --value-red-text: #ff5252;
+
+        --brand-intel: #60a5fa;
+        --brand-amd: #f87171;
+        --brand-nvidia: #a3e635;
+
+        /* ═══════════ 全局弹窗统一风格（夜间 - 加深透明渐变） ═══════════ */
+--modal-overlay: rgba(0, 0, 0, 0.85);
+--modal-bg: linear-gradient(180deg, #1a2535 0%, #0f1923 100%);
+--modal-card-bg: #1a2535;
+--shadow-modal: 0 8px 32px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
+--modal-divider: rgba(255, 255, 255, 0.06);
+--modal-border: 1px solid rgba(255, 255, 255, 0.04);
+--modal-handle: rgba(255, 255, 255, 0.25);
+
+--brand-intel-bg: linear-gradient(135deg, rgba(96, 165, 250, 0.4) 0%, rgba(96, 165, 250, 0.06) 100%);
+--brand-amd-bg: linear-gradient(135deg, rgba(248, 113, 113, 0.4) 0%, rgba(248, 113, 113, 0.06) 100%);
+--brand-nvidia-bg: linear-gradient(135deg, rgba(163, 230, 53, 0.4) 0%, rgba(163, 230, 53, 0.06) 100%);
+--modal-deal-header-bg: linear-gradient(135deg, rgba(230, 180, 34, 0.22) 0%, rgba(230, 180, 34, 0.05) 100%);
+
+        --chart-text: #e0e0e0;
+        --chart-axis: #2a3d5e;
+        --chart-grid: rgba(255, 255, 255, 0.05);
+        --chart-line-primary: #f39c12;
+        --chart-line-secondary: #27ae60;
+        --chart-tooltip-bg: #1a1a2e;
+        --chart-tooltip-border: #2a2a4a;
+
+        --highlight-bg: rgba(230, 180, 34, 0.1);
+        --highlight-border: rgba(230, 180, 34, 0.35);
+
+        --empty-text: #8b949e;
+        --loading-shimmer-bg: linear-gradient(
+          90deg,
+          var(--bg-secondary) 25%,
+          rgba(255, 255, 255, 0.05) 50%,
+          var(--bg-secondary) 75%
+        );
+        --error-bg: rgba(255, 82, 82, 0.08);
+        --error-border: rgba(255, 82, 82, 0.3);
+        --error-text: #ff5252;
+
+        --scrollbar-thumb: #3a3a5a;
+        --scrollbar-track: transparent;
+    }
+}
+
+      /* ═══════════ 全局基础样式 ═══════════ */
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html { font-size: 16px; }
+
+      body {
+        font-family: 'Inter', -apple-system, sans-serif;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        font-size: 0.9375rem;
+        line-height: 1.5;
+        font-weight: 500;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      /* ═══════════ 全局滚动条 ═══════════ */
+      ::-webkit-scrollbar { width: var(--scrollbar-width); height: var(--scrollbar-height); }
+      ::-webkit-scrollbar-track { background: var(--scrollbar-track); }
+      ::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb); border-radius: 3px; }
+
+      /* ═══════════ 全局弹窗横杠（底部滑出弹窗的顶部小横条） ═══════════ */
+      .modal-handle {
+        width: 36px;
+        height: 4px;
+        background: rgba(128, 128, 128, 0.3);
+        border-radius: 2px;
+        margin: 8px auto 0;
+      }
+
+      /* ═══════════ 全局空状态 / 加载 / 错误 ═══════════ */
+      .empty-state { text-align: center; padding: var(--space-xl); color: var(--empty-text); font-size: 0.9rem; }
+      .error-box {
+        background: var(--error-bg); border: 1px solid var(--error-border);
+        color: var(--error-text); border-radius: var(--radius-md); padding: var(--space-md); font-size: 0.9rem;
+      }
+      .skeleton-bar {
+        height: 14px; border-radius: var(--radius-sm);
+        background: var(--loading-shimmer-bg); background-size: 200% 100%;
+        animation: shimmer 1.4s ease-in-out infinite; display: block;
+      }
+      @keyframes shimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+      }
+
+      /* ═══════════ 全局表格容器（性价比榜、天梯图通用） ═══════════ */
+      .table-wrapper {
+        background: var(--bg-secondary);
+        border: 1px solid var(--table-border-gold);          /* 内层金色边框 */
+        outline: 1.5px solid var(--table-outline-blue);      /* 外层蓝色描边 */
+        outline-offset: 2px;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-card);
+      }
+      .cpu-table { width: 100%; border-collapse: collapse; }
+      .cpu-table thead { position: sticky; top: 0; z-index: 20; background: var(--bg-tertiary); }
+      .cpu-table th {
+        padding: 0.5rem 0.4rem; font-weight: 600; color: var(--thead-text);
+        font-size: 0.82rem; text-align: center; border-bottom: 1px solid var(--border);
+      }
+      .cpu-table td {
+        padding: 0.65rem 0.4rem; font-size: 0.88rem; color: var(--text-primary);
+        border-bottom: 1px solid var(--table-divider);
+      }
+      .cpu-row:hover { background: var(--highlight-bg); }
+      .cpu-row:active {
+        background: var(--value-gold-bg);
+        transform: scale(var(--active-scale));
+        transition: transform 0.05s;
+      }
+
+      /* ═══════════ 全局布局与组件样式（首页等） ═══════════ */
+      .dashboard { max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
+      .hero { text-align: center; margin-bottom: 2rem; }
+      .hero-title { font-size: 1.5rem; color: var(--accent); font-weight: 700; margin-bottom: 0.5rem; }
+      .hero-sub { font-size: 0.9rem; color: var(--text-secondary); }
+
+      .hot-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
+      .hot-card {
+        background: var(--bg-secondary); border: 1px solid var(--table-border-gold);
+        border-radius: var(--radius-lg); padding: 1rem; display: flex; align-items: center;
+        gap: 0.8rem; cursor: pointer; text-decoration: none;
+        transition: transform 0.1s, background var(--anim-fast);
+      }
+      .hot-card:hover { background: var(--highlight-bg); }
+      .hot-card:active { transform: scale(var(--active-scale)); background: var(--value-gold-bg); }
+      .hot-card-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+      .hot-card-icon.icon-deal { background: var(--value-gold-bg); color: var(--accent); }
+      .hot-card-icon.icon-news { background: var(--table-outline-blue); color: #7ec8f8; }
+      .hot-card-icon.icon-bili { background: rgba(251,114,153,0.25); color: #fda4af; }
+      .hot-card-label { font-size: 0.9rem; color: var(--text-primary); font-weight: 600; }
+      .hot-card-desc { font-size: 0.8rem; color: var(--text-secondary); }
+
+      .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+
+      .mini-table-box {
+        background: var(--bg-secondary); border: 1px solid var(--table-border-gold);
+        outline: 1.5px solid var(--table-outline-blue); outline-offset: 2px;
+        border-radius: var(--radius-lg); padding: 1rem; box-shadow: var(--shadow-card); margin-bottom: 1.5rem;
+      }
+      .mini-table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
+      .mini-table-header h3 { font-size: 1rem; color: var(--text-primary); margin: 0; font-weight: 600; }
+      .view-all-link { font-size: 0.8rem; color: var(--accent); text-decoration: none; padding: 4px 8px; }
+
+      .mini-table { width: 100%; border-collapse: collapse; }
+      .mini-table th {
+        text-align: center; padding: 0.45rem 0.5rem; font-size: 0.85rem; color: var(--text-secondary);
+        font-weight: 500; background: var(--bg-tertiary); border-bottom: 1px solid var(--border);
+      }
+      .mini-table td { padding: 0.55rem 0.5rem; font-size: 0.9rem; color: var(--text-primary); border-bottom: 1px solid var(--table-divider); }
+      .mini-table tbody tr { cursor: pointer; transition: background var(--anim-fast); }
+      .mini-table tbody tr:hover { background: var(--highlight-bg); }
+      .mini-table tbody tr:active { background: var(--value-gold-bg); transform: scale(0.985); }
+
+      .rank-cell { text-align: center; font-weight: 600; font-size: 0.9rem; }
+      .model-cell { text-align: left; font-weight: 500; font-size: 0.9rem; }
+      .value-cell { text-align: center; }
+      .model-cell.intel { color: var(--brand-intel); }
+      .model-cell.amd { color: var(--brand-amd); }
+      .model-cell.nvidia { color: var(--brand-nvidia); }
+
+      .price-num { text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; font-weight: 500; }
+      .price-arrow { text-align: left; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; font-weight: 500; }
+      .price-up { color: var(--price-up); }
+      .price-down { color: var(--price-down); }
+
+      /* ── 性价比胶囊 ── */
+      .value-bar {
+        display: inline-block; padding: 2px 12px; border-radius: var(--radius-full);
+        font-size: 0.85rem; font-weight: 600; min-width: 52px; text-align: center;
+      }
+      .value-bar.legendary { background: var(--value-gold-bg); color: var(--value-gold-text); }
+      .value-bar.normal { background: var(--value-cyan-bg); color: var(--value-cyan-text); }
+      .value-bar.bad { background: var(--value-red-bg); color: var(--value-red-text); }
+
+      /* ── 配件品类标签 ── */
+      .type-badge {
+        display: inline-block; padding: 2px 8px; border-radius: var(--radius-full);
+        font-size: 0.85rem; font-weight: 600; color: #fff;
+      }
+      .type-badge-memory { background: rgba(74, 144, 217, 0.6); }
+      .type-badge-ssd { background: rgba(80, 200, 120, 0.6); }
+      .type-badge-motherboard { background: rgba(255, 140, 0, 0.6); }
+      .type-badge-cpu_cooler { background: rgba(138, 43, 226, 0.6); }
+.type-badge-case { background: rgba(112, 128, 144, 0.6); }
+.type-badge-power { background: rgba(184, 134, 11, 0.6); }
+
+      /* ── 首页天梯缩略图（旧版双列布局） ── */
+      .tier-2col { display: flex; gap: 0; margin-top: 0.5rem; position: relative; }
+      .tier-2col::before {
+        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2.2rem;
+        background: linear-gradient(to right, #005a9e 50%, #b41e0e 50%); border-radius: 4px 4px 0 0;
+      }
+      .tier-col { flex: 1; display: flex; flex-direction: column; }
+      .tier-brand {
+        text-align: center; font-size: 0.85rem; font-weight: 800; letter-spacing: 0.1em;
+        padding: 0.4rem 0; color: #fff !important; position: relative; z-index: 1;
+      }
+      .tier-divider { width: 4px; flex-shrink: 0; background: linear-gradient(to bottom, #76b900, var(--brand-amd)); margin: 2.2rem 0 0 0; }
+      .tier-item { display: flex; align-items: center; padding: 0.2rem 0; min-height: 22px; gap: 0.6rem; }
+      .tier-col:first-child .tier-item { justify-content: flex-end; padding-right: 0.8rem; }
+      .tier-col:last-child .tier-item { justify-content: flex-start; padding-left: 0.8rem; }
+      .tier-model { font-size: 0.85rem; font-weight: 600; color: #fff; }
+      .tier-model.intel { color: var(--brand-intel); }
+      .tier-model.amd { color: var(--brand-amd); }
+      .tier-model.nvidia { color: var(--brand-nvidia); }
+      .tier-pct { font-size: 0.8rem; font-family: 'JetBrains Mono', monospace; color: var(--text-secondary); min-width: 40px; text-align: center; }
+
+      /* ── 视频占位 ── */
+      .video-placeholder {
+        position: relative; padding-bottom: 56.25%; height: 0; background: var(--bg-tertiary);
+        border-radius: var(--radius-md); cursor: pointer; display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 0.5rem;
+      }
+      .play-icon { font-size: 2rem; color: var(--accent); opacity: 0.8; margin-top: 10rem; }
+      .play-text { font-size: 0.95rem; color: var(--text-primary); font-weight: 500; }
+
+      /* ── 桌面/移动端显示控制 ── */
+      .hide-mobile { }
+      .desktop-only { }
+      .mobile-only { display: none; }
+
+      .dashboard-footer { text-align: center; padding: 2rem 0 1rem; color: var(--text-secondary); font-size: 0.8rem; }
+
+      /* ═══════════ 全局弹窗样式 ═══════════ */
+      .modal-overlay {
+        position: fixed; inset: 0; background: var(--modal-overlay);
+        display: flex; align-items: center; justify-content: center;
+        z-index: 1000;
+        opacity: 0; visibility: hidden; pointer-events: none;
+        transition: none;
+      }
+      .mobile-filter-overlay { opacity: 0; visibility: hidden; pointer-events: none; transition: none; }
+      .modal {
+        background: var(--modal-bg);
+        border-radius: var(--radius-xl);
+        padding: 1.5rem;
+        max-width: 600px;
+        width: 90vw;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: var(--shadow-modal);
+        color: var(--text-primary); /* ★ 弹窗内默认文字颜色 */
+      }
+      .modal-header {
+        display: flex; justify-content: space-between; align-items: center;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid var(--modal-divider);   /* ★ 标题栏底部分隔线 */
+      }
+      .modal-header h3 { color: var(--accent); margin: 0; }
+      .modal-close { background: none; border: none; color: var(--text-primary); font-size: 1.5rem; cursor: pointer; min-width: 44px; min-height: 44px; }
+      .deal-footer { color: var(--text-secondary); font-size: 0.72rem; margin-top: 1rem; text-align: center; }
+
+      /* ═══════════ 响应式：仅移动端（≤768px） ═══════════ */
+      @media (max-width: 768px) {
+        .dashboard { padding: 0.75rem; }
+        .hero-title { font-size: 1.2rem; }
+        .hero-sub { font-size: 0.8rem; }
+        .hot-cards { grid-template-columns: 1fr; gap: 0.5rem; }
+        .two-col { grid-template-columns: 1fr; gap: 0.75rem; }
+        .mini-table td { font-size: 0.85rem; padding: 0.45rem 0.3rem; }
+        .mini-table tbody tr:active { background: var(--value-gold-bg); transform: scale(0.96); }
+        .desktop-only { display: none; }
+        .mobile-only { display: inline; }
+        .play-icon { margin-top: 5rem; }
+        .page-main { padding: 1rem !important; }
+        .page-main .hero { margin-bottom: 1.5rem; }
+        .hot-card:nth-child(3) { display: none; }
+      }
+
+      /* ═══════════ 全局加载进度条 ═══════════ */
+      .page-load-bar {
+        position: fixed; top: 0; left: 0; width: 100%; height: 3px;
+        background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        z-index: 9999; pointer-events: none;
+        opacity: 0; transition: opacity 0.3s;
+      }
+      .page-load-bar.loading {
+        opacity: 1;
+        animation: load-slide 1s ease-in-out infinite;
+      }
+      @keyframes load-slide {
+        0% { transform: translateX(-100%); }
+        100% { transform: translateX(100%); }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-load-bar"></div>
+    <NavBar />
+    <slot />
+    <slot name="footer"></slot>
+        <!-- 特价清单弹窗（全局） -->
+    <DealModal dealsText={dealsData?.value || ''} client:load />
+    <script>
+      document.querySelector('.page-load-bar')?.classList.add('loading');
+      window.addEventListener('pageshow', () => {
+        document.querySelector('.page-load-bar')?.classList.remove('loading');
+      });
+    </script>
+    <script>
+      // 防止弹窗在页面加载瞬间闪烁
+      (function() {
+        var style = document.createElement('style');
+        style.textContent = '.modal-overlay, .mobile-filter-overlay { visibility: hidden !important; opacity: 0 !important; transition: none !important; pointer-events: none !important; }';
+        document.head.appendChild(style);
+        window.addEventListener('DOMContentLoaded', function() {
+          setTimeout(function() {
+            if (style.parentNode) style.parentNode.removeChild(style);
+          }, 80);
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,125 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import HardwareDashboard from '../components/HardwareDashboard.vue'
+import { getData } from '../lib/getData.ts'
+
+// 1. 配件数据
+const { data: parts, error } = await getData(
+  'build_parts_prices',
+  '*',
+  { order: ['price_new', true] }
+)
+
+// 2. 历史价格
+const { data: historyData } = await getData(
+  'parts_price_history',
+  '*'
+)
+
+// 3. 计算最低价映射
+const minPriceMap = new Map()
+if (historyData) {
+  for (const record of historyData) {
+    const model = record.model
+    if (!minPriceMap.has(model)) {
+      minPriceMap.set(model, { min_new: record.price_new, min_used: record.price_used })
+    } else {
+      const cur = minPriceMap.get(model)
+      if (record.price_new != null && (cur.min_new == null || record.price_new < cur.min_new)) {
+        cur.min_new = record.price_new
+      }
+      if (record.price_used != null && (cur.min_used == null || record.price_used < cur.min_used)) {
+        cur.min_used = record.price_used
+      }
+    }
+  }
+}
+
+// 4. 特价轮播（取 special_deals_history 最近 3 条，每条取第一行作为摘要）
+let dealItems: { text: string }[] = []
+let dealConfig: { value?: string } | null = null
+
+const { data: historyDeals } = await getData(
+  'special_deals_history',
+  'content',
+  { order: ['created_at', false], limit: 3 }
+)
+
+if (historyDeals && historyDeals.length > 0) {
+  dealItems = historyDeals.map(item => {
+    const raw = (item.content || '').replace(/\r/g, '')
+    const firstLine = raw.split('\n').filter(line => line.trim() !== '')[0] || ''
+    return { text: firstLine.trim() }
+  })
+}
+
+// 如果历史表为空，回退到 site_config 当前文本的前 3 行
+if (dealItems.length === 0) {
+  const { data: fallbackDeal } = await getData(
+    'site_config',
+    'value',
+    { eq: ['key', 'special_deals_text'], single: true }
+  )
+  dealConfig = fallbackDeal
+  if (fallbackDeal?.value) {
+    const raw = fallbackDeal.value.replace(/\r/g, '')
+    const lines = raw.split('\n').filter(line => line.trim() !== '')
+    dealItems = lines.slice(0, 3).map(line => ({ text: line.trim() }))
+  }
+}
+
+// 兜底
+if (dealItems.length === 0) {
+  dealItems = [{ text: '特价清单稍后更新' }]
+}
+
+// 5. 特价清单完整文本（用于弹窗）
+let dealsText = ''
+if (dealConfig?.value) {
+  dealsText = dealConfig.value
+} else {
+  const { data: textConfig } = await getData('site_config', 'value', {
+    eq: ['key', 'special_deals_text'],
+    single: true
+  })
+  dealsText = textConfig?.value || ''
+}
+
+// 6. 视频轮播（取 site_carousel 最近 3 条）
+const { data: rawVideoItems } = await getData(
+  'site_carousel',
+  'title, link',
+  { order: ['created_at', false], limit: 3 }
+)
+const videoItems = (rawVideoItems || []).map(item => ({
+  text: item.title || item.text || '',
+  link: item.link || ''
+}))
+
+// 7. 序列化
+const serializedParts = JSON.stringify(parts || [])
+const serializedHistory = JSON.stringify(historyData || [])
+const serializedMinPriceMap = JSON.stringify([...minPriceMap])
+---
+
+<BaseLayout title="配件行情 - 奇魂的小窝" description="内存/硬盘/主板等配件行情，价格走势与回血率参考。">
+  <div class="hardware-page">
+    <HardwareDashboard
+      client:load
+      initialParts={serializedParts}
+      initialHistory={serializedHistory}
+      initialMinPriceMap={serializedMinPriceMap}
+      initialDealItems={JSON.stringify(dealItems || [])}
+      initialVideoItems={JSON.stringify(videoItems || [])}
+      initialDealsText={JSON.stringify(dealsText)}
+    />
+  </div>
+</BaseLayout>
+
+<style>
+  .hardware-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+</style>

@@ -1,0 +1,156 @@
+---
+// CPU 榜 - Astro 静态生成层
+// 负责：预取全量数据，传递给 Vue 组件，同时生成 SEO 标签
+import BaseLayout from '../layouts/BaseLayout.astro'
+import CpuDashboard from '../components/CpuDashboard.vue'
+import { getData } from '../lib/getData.ts'
+
+// 1. 获取 CPU 主表全量数据
+const { data: cpus, error: cpuError } = await getData(
+  'cpu_current',
+  '*',
+  { eq: ['hide_in_ranking', false], order: ['value_score_game', false] }
+)
+
+if (cpuError) {
+  console.error('预取 CPU 数据失败:', cpuError)
+}
+
+// 2. 获取历史最低价聚合（用于火焰标）
+const { data: priceHistory, error: priceError } = await getData(
+  'cpu_price_history',
+  'model, new_price, used_price'
+)
+
+const minPriceMap = new Map()
+if (!priceError && priceHistory) {
+  for (const item of priceHistory) {
+    if (!minPriceMap.has(item.model)) {
+      minPriceMap.set(item.model, { min_new: null, min_used: null })
+    }
+    const entry = minPriceMap.get(item.model)
+    if (item.new_price !== null && (entry.min_new === null || item.new_price < entry.min_new)) {
+      entry.min_new = item.new_price
+    }
+    if (item.used_price !== null && (entry.min_used === null || item.used_price < entry.min_used)) {
+      entry.min_used = item.used_price
+    }
+  }
+}
+
+// 3. 获取热门型号列表
+const { data: hotConfig } = await getData(
+  'site_config',
+  'value',
+  { eq: ['key', 'cpu_hot_models'], single: true }
+)
+
+let hotSet: Set<string> = new Set()
+if (hotConfig?.value) {
+  try {
+    const arr = JSON.parse(hotConfig.value)
+    if (Array.isArray(arr)) hotSet = new Set(arr)
+  } catch (e) {
+    console.error('解析热门型号失败', e)
+  }
+}
+
+// 4. 获取基准 CPU (12490F) 数据，用于弹窗性能百分比
+const benchmarkModel = 'INTEL Core i5-12490F'
+const { data: benchmarkCpu } = await getData(
+  'cpu_current',
+  '*',
+  { eq: ['model', benchmarkModel], single: true }
+)
+
+// 6. 特价轮播（取 special_deals_history 最近 3 条，每条取第一行作为摘要）
+let dealItems: { text: string }[] = []
+
+const { data: historyDeals } = await getData(
+  'special_deals_history',
+  'content',
+  { order: ['created_at', false], limit: 3 }
+)
+
+if (historyDeals && historyDeals.length > 0) {
+  dealItems = historyDeals.map(item => {
+    const raw = (item.content || '').replace(/\r/g, '')
+    const firstLine = raw.split('\n').filter(line => line.trim() !== '')[0] || ''
+    return { text: firstLine.trim() }
+  })
+}
+
+// 如果历史表为空，回退到 site_config 当前文本的前 3 行
+if (dealItems.length === 0) {
+  const { data: dealConfig } = await getData(
+    'site_config',
+    'value',
+    { eq: ['key', 'special_deals_text'], single: true }
+  )
+  if (dealConfig?.value) {
+    const raw = dealConfig.value.replace(/\r/g, '')
+    const lines = raw.split('\n').filter(line => line.trim() !== '')
+    dealItems = lines.slice(0, 3).map(line => ({ text: line.trim() }))
+  }
+}
+
+// 兜底
+if (dealItems.length === 0) {
+  dealItems = [{ text: '特价清单稍后更新' }]
+}
+
+// 7. 视频轮播（取 site_carousel 最近 3 条，字段映射为 text / link）
+const { data: rawVideoItems } = await getData(
+  'site_carousel',
+  'title, link',
+  { order: ['created_at', false], limit: 3 }
+)
+const videoItems = (rawVideoItems || []).map(item => ({
+  text: item.title || item.text || '',
+  link: item.link || ''
+}))
+
+const serializedDealItems = JSON.stringify(dealItems)
+const serializedVideoItems = JSON.stringify(videoItems || [])
+
+// ★ 生成全量数据 JSON 文件（供“全部”模式按需加载）
+import fs from 'fs'
+import path from 'path'
+const publicDataDir = path.join(process.cwd(), 'public', 'data')
+if (!fs.existsSync(publicDataDir)) {
+  fs.mkdirSync(publicDataDir, { recursive: true })
+}
+fs.writeFileSync(
+  path.join(publicDataDir, 'cpu-all.json'),
+  JSON.stringify(cpus || [])
+)
+
+// 只传热门型号给组件（首屏瘦身）
+const hotCpus = (cpus || []).filter(c => hotSet.has(c.model))
+const serializedCpus = JSON.stringify(hotCpus)
+const serializedMinPriceMap = JSON.stringify(Array.from(minPriceMap.entries()))
+const serializedHotSet = JSON.stringify(Array.from(hotSet))
+const serializedBenchmark = JSON.stringify(benchmarkCpu || null)
+---
+
+<BaseLayout title="CPU性价比排行榜 - 奇魂的小窝" description="CPU性价比排行榜，基于实测数据。涵盖Intel/AMD主流处理器游戏性能、多核性能、价格走势。">
+  <div class="cpu-page">
+    <CpuDashboard
+  client:load
+  initialCpus={serializedCpus}
+  initialMinPriceMap={serializedMinPriceMap}
+  initialHotSet={serializedHotSet}
+  initialBenchmarkCpu={serializedBenchmark}
+  initialDealItems={serializedDealItems}
+  initialVideoItems={serializedVideoItems}
+/>
+  </div>
+</BaseLayout>
+
+<style>
+  .cpu-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+</style>

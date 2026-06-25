@@ -1,0 +1,443 @@
+[
+  {
+    "id": 1,
+    "model": "Hermes冰刃 32G (16G×2) DDR5 6000",
+    "price_new": 3099.0,
+    "price_used": 2600.0,
+    "recorded_at": "2026-05-11 12:17:22.700065+00"
+  },
+  {
+    "id": 2,
+    "model": "Hermes冰刃 48G (24G×2) DDR5 6000",
+    "price_new": 3599.0,
+    "price_used": 3100.0,
+    "recorded_at": "2026-05-11 12:17:22.700065+00"
+  },
+  {
+    "id": 3,
+    "model": "Hermes冰刃 16G (16G×1) DDR5 6000",
+    "price_new": 1699.0,
+    "price_used": 1300.0,
+    "recorded_at": "2026-05-11 12:17:22.700065+00"
+  },
+  {
+    "id": 4,
+    "model": "银爵 32G (16G×2) DDR4 3200",
+    "price_new": 1159.0,
+    "price_used": 910.0,
+    "recorded_at": "2026-05-11 12:17:22.700065+00"
+  },
+  {
+    "id": 5,
+    "model": "银爵 16G (8G×2) DDR4 3200",
+    "price_new": 679.0,
+    "price_used": 500.0,
+    "recorded_at": "2026-05-11 12:17:22.700065+00"
+  },
+  {
+    "id": 6,
+    "model": "GM7 512G",
+    "price_new": 759.0,
+    "price_used": 600.0,
+    "recorded_at": "2026-05-11 12:17:22.700065+00"
+  },
+  {
+    "id": 7,
+    "model": "GM7 1TB",
+    "price_new": 1199.0,
+    "price_used": 815.0,
+    "recorded_at": "2026-05-11 12:17:22.700065+00"
+  },
+  {
+    "id": 8,
+    "model": "GM7 2TB",
+    "price_new": 1949.0,
+    "price_used": 1445.0,
+    "recorded_at": "2026-05-11 12:17:22.700065+00"
+  },
+  {
+    "id": 9,
+    "model": "B550M PRO-VDH WIFI",
+    "price_new": 599.0,
+    "price_used": 320.0,
+    "recorded_at": "2026-05-11 12:17:22.700065+00"
+  },
+  {
+    "id": 10,
+    "model": "MAG B850M MORTAR WIFI7",
+    "price_new": 1299.0,
+    "price_used": 900.0,
+    "recorded_at": "2026-05-11 12:17:22.700065+00"
+  },
+  {
+    "id": 11,
+    "model": "B760M BOMBER DDR4",
+    "price_new": 649.0,
+    "price_used": 350.0,
+    "recorded_at": "2026-05-11 12:17:22.700065+00"
+  },
+  {
+    "id": 12,
+    "model": "MAG B860M MORTAR WIFI7",
+    "price_new": 1199.0,
+    "price_used": 800.0,
+    "recorded_at": "2026-05-11 12:17:22.700065+00"
+  },
+  {
+    "id": 49,
+    "model": "GM7 512G",
+    "price_new": 759.0,
+    "price_used": 600.0,
+    "recorded_at": "2026-05-06 12:00:00+00"
+  },
+  {
+    "id": 50,
+    "model": "GM7 1TB",
+    "price_new": 1189.0,
+    "price_used": 815.0,
+    "recorded_at": "2026-05-06 12:00:00+00"
+  },
+  {
+    "id": 51,
+    "model": "GM7 2TB",
+    "price_new": 1939.0,
+    "price_used": 1445.0,
+    "recorded_at": "2026-05-06 12:00:00+00"
+  },
+  {
+    "id": 52,
+    "model": "银爵 16G (8G×2) DDR4 3200",
+    "price_new": 649.0,
+    "price_used": 500.0,
+    "recorded_at": "2026-05-06 12:00:00+00"
+  },
+  {
+    "id": 53,
+    "model": "银爵 32G (16G×2) DDR4 3200",
+    "price_new": 1158.0,
+    "price_used": 910.0,
+    "recorded_at": "2026-05-06 12:00:00+00"
+  },
+  {
+    "id": 54,
+    "model": "Hermes冰刃 16G (16G×1) DDR5 6000",
+    "price_new": 1699.0,
+    "price_used": 1300.0,
+    "recorded_at": "2026-05-06 12:00:00+00"
+  },
+  {
+    "id": 55,
+    "model": "Hermes冰刃 32G (16G×2) DDR5 6000",
+    "price_new": 3089.0,
+    "price_used": 2600.0,
+    "recorded_at": "2026-05-06 12:00:00+00"
+  },
+  {
+    "id": 56,
+    "model": "Hermes冰刃 48G (24G×2) DDR5 6000",
+    "price_new": 3599.0,
+    "price_used": 3100.0,
+    "recorded_at": "2026-05-06 12:00:00+00"
+  },
+  {
+    "id": 57,
+    "model": "B550M PRO-VDH WIFI",
+    "price_new": 549.0,
+    "price_used": 320.0,
+    "recorded_at": "2026-05-06 12:00:00+00"
+  },
+  {
+    "id": 58,
+    "model": "B760M BOMBER DDR4",
+    "price_new": 649.0,
+    "price_used": 350.0,
+    "recorded_at": "2026-05-06 12:00:00+00"
+  },
+  {
+    "id": 59,
+    "model": "MAG B860M MORTAR WIFI7",
+    "price_new": 1199.0,
+    "price_used": 800.0,
+    "recorded_at": "2026-05-06 12:00:00+00"
+  },
+  {
+    "id": 60,
+    "model": "MAG B850M MORTAR WIFI7",
+    "price_new": 1299.0,
+    "price_used": 900.0,
+    "recorded_at": "2026-05-06 12:00:00+00"
+  },
+  {
+    "id": 68,
+    "model": "Hermes冰刃 32G (16G×2) DDR5 6000",
+    "price_new": 3099.0,
+    "price_used": 2600.0,
+    "recorded_at": "2026-05-13 13:46:04.786963+00"
+  },
+  {
+    "id": 69,
+    "model": "Hermes冰刃 48G (24G×2) DDR5 6000",
+    "price_new": 3599.0,
+    "price_used": 3100.0,
+    "recorded_at": "2026-05-13 13:46:04.786963+00"
+  },
+  {
+    "id": 70,
+    "model": "B550M PRO-VDH WIFI",
+    "price_new": 599.0,
+    "price_used": 320.0,
+    "recorded_at": "2026-05-13 13:46:04.786963+00"
+  },
+  {
+    "id": 71,
+    "model": "MAG B850M MORTAR WIFI7",
+    "price_new": 1299.0,
+    "price_used": 900.0,
+    "recorded_at": "2026-05-13 13:46:04.786963+00"
+  },
+  {
+    "id": 72,
+    "model": "B760M BOMBER DDR4",
+    "price_new": 649.0,
+    "price_used": 350.0,
+    "recorded_at": "2026-05-13 13:46:04.786963+00"
+  },
+  {
+    "id": 73,
+    "model": "MAG B860M MORTAR WIFI7",
+    "price_new": 1199.0,
+    "price_used": 800.0,
+    "recorded_at": "2026-05-13 13:46:04.786963+00"
+  },
+  {
+    "id": 74,
+    "model": "Hermes冰刃 16G (16G×1) DDR5 6000",
+    "price_new": 1699.0,
+    "price_used": 1300.0,
+    "recorded_at": "2026-05-13 13:46:04.786963+00"
+  },
+  {
+    "id": 75,
+    "model": "银爵 32G (16G×2) DDR4 3200",
+    "price_new": 1019.0,
+    "price_used": 910.0,
+    "recorded_at": "2026-05-13 13:46:04.786963+00"
+  },
+  {
+    "id": 76,
+    "model": "银爵 16G (8G×2) DDR4 3200",
+    "price_new": 595.0,
+    "price_used": 500.0,
+    "recorded_at": "2026-05-13 13:46:04.786963+00"
+  },
+  {
+    "id": 77,
+    "model": "GM7 1TB",
+    "price_new": 1099.0,
+    "price_used": 815.0,
+    "recorded_at": "2026-05-13 13:46:04.786963+00"
+  },
+  {
+    "id": 78,
+    "model": "GM7 512G",
+    "price_new": 669.0,
+    "price_used": 600.0,
+    "recorded_at": "2026-05-13 13:46:04.786963+00"
+  },
+  {
+    "id": 79,
+    "model": "GM7 2TB",
+    "price_new": 1899.0,
+    "price_used": 1445.0,
+    "recorded_at": "2026-05-13 13:46:04.786963+00"
+  },
+  {
+    "id": 80,
+    "model": "银爵 16G (8G×2) DDR4 3200",
+    "price_new": 659.0,
+    "price_used": null,
+    "recorded_at": "2026-05-19 07:42:09.128232+00"
+  },
+  {
+    "id": 81,
+    "model": "银爵 32G (16G×2) DDR4 3200",
+    "price_new": 1069.0,
+    "price_used": null,
+    "recorded_at": "2026-05-19 07:42:28.578531+00"
+  },
+  {
+    "id": 82,
+    "model": "B760M BOMBER DDR4",
+    "price_new": 699.0,
+    "price_used": null,
+    "recorded_at": "2026-05-19 07:44:29.684556+00"
+  },
+  {
+    "id": 97,
+    "model": "银爵 16G (8G×2) DDR4 3200",
+    "price_new": 659.0,
+    "price_used": null,
+    "recorded_at": "2026-05-30 13:39:48.162231+00"
+  },
+  {
+    "id": 98,
+    "model": "银爵 32G (16G×2) DDR4 3200",
+    "price_new": 1059.0,
+    "price_used": null,
+    "recorded_at": "2026-05-30 13:39:48.162231+00"
+  },
+  {
+    "id": 99,
+    "model": "Hermes冰刃 16G (16G×1) DDR5 6000",
+    "price_new": 1699.0,
+    "price_used": null,
+    "recorded_at": "2026-05-30 13:39:48.162231+00"
+  },
+  {
+    "id": 100,
+    "model": "Hermes冰刃 32G (16G×2) DDR5 6000",
+    "price_new": 3099.0,
+    "price_used": null,
+    "recorded_at": "2026-05-30 13:39:48.162231+00"
+  },
+  {
+    "id": 101,
+    "model": "Hermes冰刃 48G (24G×2) DDR5 6000",
+    "price_new": 3599.0,
+    "price_used": null,
+    "recorded_at": "2026-05-30 13:39:48.162231+00"
+  },
+  {
+    "id": 102,
+    "model": "GM7 512G",
+    "price_new": 669.0,
+    "price_used": null,
+    "recorded_at": "2026-05-30 13:39:48.162231+00"
+  },
+  {
+    "id": 103,
+    "model": "GM7 1TB",
+    "price_new": 1099.0,
+    "price_used": null,
+    "recorded_at": "2026-05-30 13:39:48.162231+00"
+  },
+  {
+    "id": 104,
+    "model": "GM7 2TB",
+    "price_new": 1899.0,
+    "price_used": null,
+    "recorded_at": "2026-05-30 13:39:48.162231+00"
+  },
+  {
+    "id": 105,
+    "model": "B550M PRO-VDH WIFI",
+    "price_new": 599.0,
+    "price_used": null,
+    "recorded_at": "2026-05-30 13:39:48.162231+00"
+  },
+  {
+    "id": 106,
+    "model": "B760M BOMBER DDR4",
+    "price_new": 699.0,
+    "price_used": null,
+    "recorded_at": "2026-05-30 13:39:48.162231+00"
+  },
+  {
+    "id": 107,
+    "model": "MAG B860M MORTAR WIFI7",
+    "price_new": 1199.0,
+    "price_used": null,
+    "recorded_at": "2026-05-30 13:39:48.162231+00"
+  },
+  {
+    "id": 108,
+    "model": "MAG B850M MORTAR WIFI7",
+    "price_new": 1299.0,
+    "price_used": null,
+    "recorded_at": "2026-05-30 13:39:48.162231+00"
+  },
+  {
+    "id": 109,
+    "model": "银爵 16G (8G×2) DDR4 3200",
+    "price_new": null,
+    "price_used": 580.0,
+    "recorded_at": "2026-05-30 13:53:44.771278+00"
+  },
+  {
+    "id": 110,
+    "model": "银爵 32G (16G×2) DDR4 3200",
+    "price_new": null,
+    "price_used": 850.0,
+    "recorded_at": "2026-05-30 13:53:44.771278+00"
+  },
+  {
+    "id": 111,
+    "model": "Hermes冰刃 16G (16G×1) DDR5 6000",
+    "price_new": null,
+    "price_used": 1410.0,
+    "recorded_at": "2026-05-30 13:53:44.771278+00"
+  },
+  {
+    "id": 112,
+    "model": "Hermes冰刃 32G (16G×2) DDR5 6000",
+    "price_new": null,
+    "price_used": 2700.0,
+    "recorded_at": "2026-05-30 13:53:44.771278+00"
+  },
+  {
+    "id": 113,
+    "model": "Hermes冰刃 48G (24G×2) DDR5 6000",
+    "price_new": null,
+    "price_used": 3120.0,
+    "recorded_at": "2026-05-30 13:53:44.771278+00"
+  },
+  {
+    "id": 114,
+    "model": "GM7 512G",
+    "price_new": null,
+    "price_used": 579.0,
+    "recorded_at": "2026-05-30 13:53:44.771278+00"
+  },
+  {
+    "id": 115,
+    "model": "GM7 1TB",
+    "price_new": null,
+    "price_used": 920.0,
+    "recorded_at": "2026-05-30 13:53:44.771278+00"
+  },
+  {
+    "id": 116,
+    "model": "GM7 2TB",
+    "price_new": null,
+    "price_used": 1400.0,
+    "recorded_at": "2026-05-30 13:53:44.771278+00"
+  },
+  {
+    "id": 117,
+    "model": "B550M PRO-VDH WIFI",
+    "price_new": null,
+    "price_used": 378.0,
+    "recorded_at": "2026-05-30 13:53:44.771278+00"
+  },
+  {
+    "id": 118,
+    "model": "B760M BOMBER DDR4",
+    "price_new": null,
+    "price_used": 324.0,
+    "recorded_at": "2026-05-30 13:53:44.771278+00"
+  },
+  {
+    "id": 119,
+    "model": "MAG B860M MORTAR WIFI7",
+    "price_new": null,
+    "price_used": 950.0,
+    "recorded_at": "2026-05-30 13:53:44.771278+00"
+  },
+  {
+    "id": 120,
+    "model": "MAG B850M MORTAR WIFI7",
+    "price_new": null,
+    "price_used": 950.0,
+    "recorded_at": "2026-05-30 13:53:44.771278+00"
+  }
+]

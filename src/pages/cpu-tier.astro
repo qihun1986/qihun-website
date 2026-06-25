@@ -1,0 +1,98 @@
+---
+// CPU天梯图 - Astro 静态生成层
+import BaseLayout from '../layouts/BaseLayout.astro'
+import CpuTierDashboard from '../components/CpuTierDashboard.vue'
+import { getData } from '../lib/getData.ts'
+
+// 1. 获取 CPU 全量数据
+const { data: cpus, error: cpuError } = await getData(
+  'cpu_current',
+  '*',
+  { order: ['abs_game_performance', false] }
+)
+
+if (cpuError) {
+  console.error('预取CPU数据失败:', cpuError)
+}
+
+// 2. 获取基准 CPU (12490F)
+const benchmarkModel = 'INTEL Core i5-12490F'
+const { data: benchmarkCpu } = await getData(
+  'cpu_current',
+  '*',
+  { eq: ['model', benchmarkModel], single: true }
+)
+
+// 6. 特价轮播（取 special_deals_history 最近 3 条，每条取第一行作为摘要）
+let dealItems: { text: string }[] = []
+
+const { data: historyDeals } = await getData(
+  'special_deals_history',
+  'content',
+  { order: ['created_at', false], limit: 3 }
+)
+
+if (historyDeals && historyDeals.length > 0) {
+  dealItems = historyDeals.map(item => {
+    const raw = (item.content || '').replace(/\r/g, '')
+    const firstLine = raw.split('\n').filter(line => line.trim() !== '')[0] || ''
+    return { text: firstLine.trim() }
+  })
+}
+
+// 如果历史表为空，回退到 site_config 当前文本的前 3 行
+if (dealItems.length === 0) {
+  const { data: dealConfig } = await getData(
+    'site_config',
+    'value',
+    { eq: ['key', 'special_deals_text'], single: true }
+  )
+  if (dealConfig?.value) {
+    const raw = dealConfig.value.replace(/\r/g, '')
+    const lines = raw.split('\n').filter(line => line.trim() !== '')
+    dealItems = lines.slice(0, 3).map(line => ({ text: line.trim() }))
+  }
+}
+
+// 兜底
+if (dealItems.length === 0) {
+  dealItems = [{ text: '特价清单稍后更新' }]
+}
+
+// 7. 视频轮播（取 site_carousel 最近 3 条，字段映射为 text / link）
+const { data: rawVideoItems } = await getData(
+  'site_carousel',
+  'title, link',
+  { order: ['created_at', false], limit: 3 }
+)
+const videoItems = (rawVideoItems || []).map(item => ({
+  text: item.title || item.text || '',
+  link: item.link || ''
+}))
+
+// 4. 序列化数据
+const serializedCpus = JSON.stringify(cpus || [])
+const serializedBenchmark = JSON.stringify(benchmarkCpu || null)
+const serializedDealItems = JSON.stringify(dealItems)
+const serializedVideoItems = JSON.stringify(videoItems || [])
+---
+
+<BaseLayout title="CPU天梯图 - 奇魂的小窝" description="CPU游戏性能天梯图，基于实测数据。涵盖Intel/AMD主流处理器游戏性能、多核性能、跑分功耗对比。">
+  <div class="tier-page-wrapper">
+    <CpuTierDashboard
+      client:load
+      initialCpus={serializedCpus}
+      initialBenchmark={serializedBenchmark}
+      initialDealItems={serializedDealItems}
+      initialVideoItems={serializedVideoItems}
+    />
+  </div>
+</BaseLayout>
+
+<style>
+  .tier-page-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+</style>

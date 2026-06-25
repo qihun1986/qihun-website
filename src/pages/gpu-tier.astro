@@ -1,0 +1,108 @@
+---
+// 显卡天梯图 - Astro 静态生成层
+import BaseLayout from '../layouts/BaseLayout.astro'
+import GpuTierDashboard from '../components/GpuTierDashboard.vue'
+import { getData } from '../lib/getData'
+
+// 1. 获取显卡主表全量数据
+const { data: gpus, error: gpuError } = await getData(
+  'gpu_current',
+  '*',
+  { order: ['abs_game_performance_2k', false] }
+)
+
+if (gpuError) {
+  console.error('预取显卡数据失败:', gpuError)
+}
+
+// 2. 获取各分辨率默认基准显卡数据
+const defaultBenchmarkModels = {
+  '1080P': 'NVIDIA RTX 2060 6GB',   // 1080P 默认基准
+  '2K':   'NVIDIA RTX 4060',        // 2K 默认基准
+  '4K':   'NVIDIA RTX 5070'         // 4K 默认基准
+}
+
+const defaultBenchmarks = {}
+for (const [res, modelName] of Object.entries(defaultBenchmarkModels)) {
+  const { data } = await getData('gpu_current', '*', { eq: ['model', modelName], single: true })
+  defaultBenchmarks[res] = data || null
+}
+
+// 3. 特价轮播（取 special_deals_history 最近 3 条，每条取第一行作为摘要）
+let dealItems: { text: string }[] = []
+
+const { data: historyDeals } = await getData(
+  'special_deals_history',
+  'content',
+  { order: ['created_at', false], limit: 3 }
+)
+
+if (historyDeals && historyDeals.length > 0) {
+  dealItems = historyDeals.map(item => {
+    const raw = (item.content || '').replace(/\r/g, '')
+    const firstLine = raw.split('\n').filter(line => line.trim() !== '')[0] || ''
+    return { text: firstLine.trim() }
+  })
+}
+
+// 如果历史表为空，回退到 site_config 当前文本的前 3 行
+if (dealItems.length === 0) {
+  const { data: dealConfig } = await getData(
+    'site_config',
+    'value',
+    { eq: ['key', 'special_deals_text'], single: true }
+  )
+  if (dealConfig?.value) {
+    const raw = dealConfig.value.replace(/\r/g, '')
+    const lines = raw.split('\n').filter(line => line.trim() !== '')
+    dealItems = lines.slice(0, 3).map(line => ({ text: line.trim() }))
+  }
+}
+
+// 兜底
+if (dealItems.length === 0) {
+  dealItems = [{ text: '特价清单稍后更新' }]
+}
+
+// 4. 视频轮播（取 site_carousel 最近 3 条，字段映射为 text / link）
+const { data: rawVideoItems } = await getData(
+  'site_carousel',
+  'title, link',
+  { order: ['created_at', false], limit: 3 }
+)
+const videoItems = (rawVideoItems || []).map(item => ({
+  text: item.title || item.text || '',
+  link: item.link || ''
+}))
+
+// 5. 获取当前分辨率默认基准（2K = RTX 4060）
+const benchmarkGpu = gpus?.find(g => g.model === 'NVIDIA RTX 4060') || null
+
+// 6. 序列化数据
+const serializedGpus = JSON.stringify(gpus || [])
+const serializedBenchmark = JSON.stringify(benchmarkGpu)
+const serializedDefaultBenchmarks = JSON.stringify(defaultBenchmarks)
+const serializedDealItems = JSON.stringify(dealItems)
+const serializedVideoItems = JSON.stringify(videoItems || [])
+---
+
+<BaseLayout title="显卡天梯图 - 奇魂的小窝" description="显卡游戏性能天梯图，涵盖NVIDIA/AMD/Intel主流显卡，支持1080P/2K/4K分辨率对比。">
+  <div class="gpu-tier-page">
+    <GpuTierDashboard
+  client:load
+  initialGpus={serializedGpus}
+  initialBenchmark={serializedBenchmark}
+  initialDefaultBenchmarks={serializedDefaultBenchmarks}
+  initialDealItems={serializedDealItems}
+  initialVideoItems={serializedVideoItems}
+/>
+  </div>
+</BaseLayout>
+
+<style>
+  .gpu-tier-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+</style>

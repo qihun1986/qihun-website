@@ -1,0 +1,79 @@
+---
+// DualCarousel.astro —— 统一特价 + 视频轮播
+// 使用：<DualCarousel />  无需传参
+import { getData } from '../lib/getData.ts'
+import CarouselBanner from './CarouselBanner.vue'
+
+// 1. 特价轮播数据（取 site_config 里 special_deals_text 前三行摘要）
+const { data: dealConfig } = await getData(
+  'site_config',
+  'value',
+  { eq: ['key', 'special_deals_text'], single: true }
+)
+
+let dealItems: { text: string }[] = []
+if (dealConfig?.value) {
+  const lines = dealConfig.value.split('\n').filter(line => line.trim() !== '')
+  dealItems = lines.slice(0, 3).map(line => ({
+    text: line.trim().substring(0, 15)
+  }))
+}
+// 兜底，保证组件渲染
+if (dealItems.length === 0) {
+  dealItems = [{ text: '特价清单稍后更新' }]
+}
+
+// 2. 视频轮播数据（取 site_carousel 最新 3 条，字段映射为 text / link）
+const { data: rawVideoItems } = await getData(
+  'site_carousel',
+  'title, link',
+  { order: ['created_at', false], limit: 3 }
+)
+const videoItems = (rawVideoItems || []).map(item => ({
+  text: item.title || '',
+  link: item.link || ''
+}))
+---
+
+<div class="top-bar-dual">
+  <div class="carousel-container" data-type="deal">
+    <CarouselBanner
+      type="deal"
+      :items={JSON.stringify(dealItems)}
+      client:load
+    />
+  </div>
+  <div class="carousel-container" data-type="video">
+    <CarouselBanner
+      type="video"
+      :items={JSON.stringify(videoItems)}
+      client:load
+    />
+  </div>
+</div>
+
+<style>
+  .top-bar-dual {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .carousel-container {
+    flex: 1;
+    min-width: 0;
+  }
+  @media (max-width: 768px) {
+    .top-bar-dual {
+      flex-direction: column;
+    }
+  }
+</style>
+
+<script>
+  // 点击特价卡片，打开全局 DealModal
+  document.querySelectorAll('[data-type="deal"]').forEach(el => {
+    el.addEventListener('click', () => {
+      window.__showDealModal?.()
+    })
+  })
+</script>

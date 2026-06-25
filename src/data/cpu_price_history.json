@@ -1,0 +1,3502 @@
+[
+  {
+    "id": 1521,
+    "model": "AMD Ryzen 3 3100",
+    "new_price": null,
+    "used_price": 160,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1522,
+    "model": "AMD Ryzen 3 3300X",
+    "new_price": null,
+    "used_price": 224,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1523,
+    "model": "AMD Ryzen 5 3500X",
+    "new_price": null,
+    "used_price": 220,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1524,
+    "model": "AMD Ryzen 5 3600",
+    "new_price": null,
+    "used_price": 300,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1525,
+    "model": "AMD Ryzen 5 3600X",
+    "new_price": null,
+    "used_price": 339,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1526,
+    "model": "AMD Ryzen 5 3600XT",
+    "new_price": null,
+    "used_price": 390,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1527,
+    "model": "AMD Ryzen 5 5500",
+    "new_price": null,
+    "used_price": 420,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1528,
+    "model": "AMD Ryzen 5 5500GT",
+    "new_price": null,
+    "used_price": 667,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1529,
+    "model": "AMD Ryzen 5 5600",
+    "new_price": null,
+    "used_price": 640,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1530,
+    "model": "AMD Ryzen 5 5600G",
+    "new_price": null,
+    "used_price": 698,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1531,
+    "model": "AMD Ryzen 5 5600GT",
+    "new_price": null,
+    "used_price": 730,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1532,
+    "model": "AMD Ryzen 5 5600X",
+    "new_price": null,
+    "used_price": 680,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1533,
+    "model": "AMD Ryzen 5 7400F",
+    "new_price": null,
+    "used_price": 699,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1534,
+    "model": "AMD Ryzen 5 7500F",
+    "new_price": null,
+    "used_price": 725,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1535,
+    "model": "AMD Ryzen 5 7600",
+    "new_price": null,
+    "used_price": 849,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1536,
+    "model": "AMD Ryzen 5 7600X",
+    "new_price": null,
+    "used_price": 890,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1537,
+    "model": "AMD Ryzen 5 7600X3D",
+    "new_price": null,
+    "used_price": 1680,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1538,
+    "model": "AMD Ryzen 5 8400F",
+    "new_price": null,
+    "used_price": 640,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1539,
+    "model": "AMD Ryzen 5 8600G",
+    "new_price": null,
+    "used_price": 900,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1540,
+    "model": "AMD Ryzen 5 9500F",
+    "new_price": null,
+    "used_price": 1030,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1541,
+    "model": "AMD Ryzen 5 9600X",
+    "new_price": null,
+    "used_price": 1170,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1542,
+    "model": "AMD Ryzen 7 3700X",
+    "new_price": null,
+    "used_price": 440,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1543,
+    "model": "AMD Ryzen 7 3800X",
+    "new_price": null,
+    "used_price": 478,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1544,
+    "model": "AMD Ryzen 7 5700G",
+    "new_price": null,
+    "used_price": 840,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1545,
+    "model": "AMD Ryzen 7 5700X",
+    "new_price": null,
+    "used_price": 845,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1546,
+    "model": "AMD Ryzen 7 5700X3D",
+    "new_price": null,
+    "used_price": 1470,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1547,
+    "model": "AMD Ryzen 7 5800",
+    "new_price": null,
+    "used_price": 750,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1548,
+    "model": "AMD Ryzen 7 5800X",
+    "new_price": null,
+    "used_price": 839,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1549,
+    "model": "AMD Ryzen 7 5800X3D",
+    "new_price": null,
+    "used_price": 2100,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1550,
+    "model": "AMD Ryzen 7 7700",
+    "new_price": null,
+    "used_price": 1100,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1551,
+    "model": "AMD Ryzen 7 7700X",
+    "new_price": null,
+    "used_price": 1220,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1552,
+    "model": "AMD Ryzen 7 7800X3D",
+    "new_price": null,
+    "used_price": 1880,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1553,
+    "model": "AMD Ryzen 7 8700F",
+    "new_price": null,
+    "used_price": 850,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1554,
+    "model": "AMD Ryzen 7 8700G",
+    "new_price": null,
+    "used_price": 1450,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1555,
+    "model": "AMD Ryzen 7 9700X",
+    "new_price": null,
+    "used_price": 1569,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1556,
+    "model": "AMD Ryzen 7 9800X3D",
+    "new_price": null,
+    "used_price": 2815,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1557,
+    "model": "AMD Ryzen 9 3900X",
+    "new_price": null,
+    "used_price": 710,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1558,
+    "model": "AMD Ryzen 9 3950X",
+    "new_price": null,
+    "used_price": 1022,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1559,
+    "model": "AMD Ryzen 9 5900X",
+    "new_price": null,
+    "used_price": 1160,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1560,
+    "model": "AMD Ryzen 9 5950X",
+    "new_price": null,
+    "used_price": 1540,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1561,
+    "model": "AMD Ryzen 9 7900X",
+    "new_price": null,
+    "used_price": 1650,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1562,
+    "model": "AMD Ryzen 9 7900X3D",
+    "new_price": null,
+    "used_price": 2000,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1563,
+    "model": "AMD Ryzen 9 7950X",
+    "new_price": null,
+    "used_price": 2300,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1564,
+    "model": "AMD Ryzen 9 7950X3D",
+    "new_price": null,
+    "used_price": 2630,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1565,
+    "model": "AMD Ryzen 9 9900X",
+    "new_price": null,
+    "used_price": 2250,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1566,
+    "model": "AMD Ryzen 9 9900X3D",
+    "new_price": null,
+    "used_price": 2989,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1567,
+    "model": "AMD Ryzen 9 9950X",
+    "new_price": null,
+    "used_price": 2950,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1568,
+    "model": "AMD Ryzen 9 9950X3D",
+    "new_price": null,
+    "used_price": 4200,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1569,
+    "model": "INTEL Core Ultra 5 225",
+    "new_price": null,
+    "used_price": 850,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1570,
+    "model": "INTEL Core Ultra 5 225F",
+    "new_price": null,
+    "used_price": 750,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1571,
+    "model": "INTEL Core Ultra 5 230F",
+    "new_price": null,
+    "used_price": 830,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1572,
+    "model": "INTEL Core Ultra 5 235",
+    "new_price": null,
+    "used_price": 1200,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1573,
+    "model": "INTEL Core Ultra 5 245K",
+    "new_price": null,
+    "used_price": 1402,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1574,
+    "model": "INTEL Core Ultra 5 245KF",
+    "new_price": null,
+    "used_price": 1179,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1575,
+    "model": "INTEL Core Ultra 7 265K",
+    "new_price": null,
+    "used_price": 1720,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1576,
+    "model": "INTEL Core Ultra 7 265KF",
+    "new_price": null,
+    "used_price": 1699,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1577,
+    "model": "INTEL Core Ultra 9 285K",
+    "new_price": null,
+    "used_price": 2800,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1578,
+    "model": "INTEL Core i3-10100",
+    "new_price": null,
+    "used_price": 515,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1579,
+    "model": "INTEL Core i3-10100F",
+    "new_price": null,
+    "used_price": 326,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1580,
+    "model": "INTEL Core i3-10105",
+    "new_price": null,
+    "used_price": 500,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1581,
+    "model": "INTEL Core i3-10105F",
+    "new_price": null,
+    "used_price": 379,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1582,
+    "model": "INTEL Core i3-12100",
+    "new_price": null,
+    "used_price": 770,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1583,
+    "model": "INTEL Core i3-12100F",
+    "new_price": null,
+    "used_price": 479,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1584,
+    "model": "INTEL Core i3-13100",
+    "new_price": null,
+    "used_price": 700,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1585,
+    "model": "INTEL Core i3-13100F",
+    "new_price": null,
+    "used_price": 499,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1586,
+    "model": "INTEL Core i3-14100",
+    "new_price": null,
+    "used_price": 800,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1587,
+    "model": "INTEL Core i3-14100F",
+    "new_price": null,
+    "used_price": 559,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1588,
+    "model": "INTEL Core i5-10400",
+    "new_price": null,
+    "used_price": 680,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1589,
+    "model": "INTEL Core i5-10400F",
+    "new_price": null,
+    "used_price": 500,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1590,
+    "model": "INTEL Core i5-10600K",
+    "new_price": null,
+    "used_price": 700,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1591,
+    "model": "INTEL Core i5-10600KF",
+    "new_price": null,
+    "used_price": 485,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1592,
+    "model": "INTEL Core i5-11400",
+    "new_price": null,
+    "used_price": 739,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1593,
+    "model": "INTEL Core i5-11400F",
+    "new_price": null,
+    "used_price": 483,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1594,
+    "model": "INTEL Core i5-11600K",
+    "new_price": null,
+    "used_price": 750,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1595,
+    "model": "INTEL Core i5-11600KF",
+    "new_price": null,
+    "used_price": 700,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1596,
+    "model": "INTEL Core i5-12400",
+    "new_price": null,
+    "used_price": 1150,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1597,
+    "model": "INTEL Core i5-12400F",
+    "new_price": null,
+    "used_price": 780,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1598,
+    "model": "INTEL Core i5-12490F",
+    "new_price": null,
+    "used_price": 795,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1599,
+    "model": "INTEL Core i5-12500",
+    "new_price": null,
+    "used_price": 1150,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1600,
+    "model": "INTEL Core i5-12600K",
+    "new_price": null,
+    "used_price": 1141,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1601,
+    "model": "INTEL Core i5-12600KF",
+    "new_price": null,
+    "used_price": 949,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1602,
+    "model": "INTEL Core i5-13400",
+    "new_price": null,
+    "used_price": 1263,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1603,
+    "model": "INTEL Core i5-13400F",
+    "new_price": null,
+    "used_price": 860,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1604,
+    "model": "INTEL Core i5-13490F",
+    "new_price": null,
+    "used_price": 880,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1605,
+    "model": "INTEL Core i5-13500",
+    "new_price": null,
+    "used_price": 1230,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1606,
+    "model": "INTEL Core i5-13600K",
+    "new_price": null,
+    "used_price": 1100,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1607,
+    "model": "INTEL Core i5-13600KF",
+    "new_price": null,
+    "used_price": 1035,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1608,
+    "model": "INTEL Core i5-14400",
+    "new_price": null,
+    "used_price": 1332,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1609,
+    "model": "INTEL Core i5-14400F",
+    "new_price": null,
+    "used_price": 987,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1610,
+    "model": "INTEL Core i5-14490F",
+    "new_price": null,
+    "used_price": 975,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1611,
+    "model": "INTEL Core i5-14500",
+    "new_price": null,
+    "used_price": 1200,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1612,
+    "model": "INTEL Core i5-14600K",
+    "new_price": null,
+    "used_price": 1277,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1613,
+    "model": "INTEL Core i5-14600KF",
+    "new_price": null,
+    "used_price": 1260,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1614,
+    "model": "INTEL Core i7-10700",
+    "new_price": null,
+    "used_price": 1200,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1615,
+    "model": "INTEL Core i7-10700F",
+    "new_price": null,
+    "used_price": 825,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1616,
+    "model": "INTEL Core i7-10700K",
+    "new_price": null,
+    "used_price": 1615,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1617,
+    "model": "INTEL Core i7-10700KF",
+    "new_price": null,
+    "used_price": 850,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1618,
+    "model": "INTEL Core i7-11700",
+    "new_price": null,
+    "used_price": 1200,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1619,
+    "model": "INTEL Core i7-11700F",
+    "new_price": null,
+    "used_price": 908,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1620,
+    "model": "INTEL Core i7-11700K",
+    "new_price": null,
+    "used_price": 1300,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1621,
+    "model": "INTEL Core i7-11700KF",
+    "new_price": null,
+    "used_price": 892,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1622,
+    "model": "INTEL Core i7-12700",
+    "new_price": null,
+    "used_price": 1656,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1623,
+    "model": "INTEL Core i7-12700F",
+    "new_price": null,
+    "used_price": 1348,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1624,
+    "model": "INTEL Core i7-12700K",
+    "new_price": null,
+    "used_price": 1650,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1625,
+    "model": "INTEL Core i7-12700KF",
+    "new_price": null,
+    "used_price": 1360,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1626,
+    "model": "INTEL Core i7-13700",
+    "new_price": null,
+    "used_price": 1850,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1627,
+    "model": "INTEL Core i7-13700F",
+    "new_price": null,
+    "used_price": 1405,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1628,
+    "model": "INTEL Core i7-13700K",
+    "new_price": null,
+    "used_price": 1920,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1629,
+    "model": "INTEL Core i7-13700KF",
+    "new_price": null,
+    "used_price": 1694,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1630,
+    "model": "INTEL Core i7-14700",
+    "new_price": null,
+    "used_price": 2350,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1631,
+    "model": "INTEL Core i7-14700F",
+    "new_price": null,
+    "used_price": 1760,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1632,
+    "model": "INTEL Core i7-14700K",
+    "new_price": null,
+    "used_price": 2044,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1633,
+    "model": "INTEL Core i7-14700KF",
+    "new_price": null,
+    "used_price": 1890,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1634,
+    "model": "INTEL Core i9-10850K",
+    "new_price": null,
+    "used_price": 1260,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1635,
+    "model": "INTEL Core i9-10900",
+    "new_price": null,
+    "used_price": 2200,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1636,
+    "model": "INTEL Core i9-10900F",
+    "new_price": null,
+    "used_price": 1100,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1637,
+    "model": "INTEL Core i9-10900K",
+    "new_price": null,
+    "used_price": 1750,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1638,
+    "model": "INTEL Core i9-10900KF",
+    "new_price": null,
+    "used_price": 1400,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1639,
+    "model": "INTEL Core i9-11900",
+    "new_price": null,
+    "used_price": 2000,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1640,
+    "model": "INTEL Core i9-11900F",
+    "new_price": null,
+    "used_price": 1309,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1641,
+    "model": "INTEL Core i9-11900K",
+    "new_price": null,
+    "used_price": 1930,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1642,
+    "model": "INTEL Core i9-11900KF",
+    "new_price": null,
+    "used_price": 1650,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1643,
+    "model": "INTEL Core i9-12900K",
+    "new_price": null,
+    "used_price": 1950,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1644,
+    "model": "INTEL Core i9-12900KF",
+    "new_price": null,
+    "used_price": 1730,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1645,
+    "model": "INTEL Core i9-12900KS",
+    "new_price": null,
+    "used_price": 1880,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1646,
+    "model": "INTEL Core i9-13900K",
+    "new_price": null,
+    "used_price": 2255,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1647,
+    "model": "INTEL Core i9-13900KF",
+    "new_price": null,
+    "used_price": 1959,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1648,
+    "model": "INTEL Core i9-13900KS",
+    "new_price": null,
+    "used_price": 2540,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1649,
+    "model": "INTEL Core i9-14900",
+    "new_price": null,
+    "used_price": 2600,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1650,
+    "model": "INTEL Core i9-14900K",
+    "new_price": null,
+    "used_price": 2712,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1651,
+    "model": "INTEL Core i9-14900KF",
+    "new_price": null,
+    "used_price": 2410,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1652,
+    "model": "INTEL Core i9-14900KS",
+    "new_price": null,
+    "used_price": 2875,
+    "recorded_at": "2025-11-27"
+  },
+  {
+    "id": 1653,
+    "model": "AMD Ryzen 5 5500",
+    "new_price": 479,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1654,
+    "model": "AMD Ryzen 5 5500GT",
+    "new_price": 799,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1655,
+    "model": "AMD Ryzen 5 5600",
+    "new_price": 709,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1656,
+    "model": "AMD Ryzen 5 5600GT",
+    "new_price": 879,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1657,
+    "model": "AMD Ryzen 5 5600X",
+    "new_price": 735,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1658,
+    "model": "AMD Ryzen 5 7400F",
+    "new_price": 769,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1659,
+    "model": "AMD Ryzen 5 7500F",
+    "new_price": 819,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1660,
+    "model": "AMD Ryzen 5 7600X",
+    "new_price": 1099,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1661,
+    "model": "AMD Ryzen 5 8400F",
+    "new_price": 799,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1662,
+    "model": "AMD Ryzen 5 8600G",
+    "new_price": 1239,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1663,
+    "model": "AMD Ryzen 5 9500F",
+    "new_price": 1039,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1664,
+    "model": "AMD Ryzen 5 9600X",
+    "new_price": 1269,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1665,
+    "model": "AMD Ryzen 7 5700G",
+    "new_price": 1099,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1666,
+    "model": "AMD Ryzen 7 5700X",
+    "new_price": 919,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1667,
+    "model": "AMD Ryzen 7 5700X3D",
+    "new_price": 2179,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1668,
+    "model": "AMD Ryzen 7 7700",
+    "new_price": 1339,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1669,
+    "model": "AMD Ryzen 7 7800X3D",
+    "new_price": 2019,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1670,
+    "model": "AMD Ryzen 7 8700F",
+    "new_price": 1049,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1671,
+    "model": "AMD Ryzen 7 8700G",
+    "new_price": 1789,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1672,
+    "model": "AMD Ryzen 7 9700X",
+    "new_price": 1679,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1673,
+    "model": "AMD Ryzen 7 9800X3D",
+    "new_price": 2899,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1674,
+    "model": "AMD Ryzen 9 9900X",
+    "new_price": 2529,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1675,
+    "model": "AMD Ryzen 9 9900X3D",
+    "new_price": 3199,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1676,
+    "model": "AMD Ryzen 9 9950X",
+    "new_price": 3099,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1677,
+    "model": "AMD Ryzen 9 9950X3D",
+    "new_price": 4499,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1678,
+    "model": "INTEL Core Ultra 5 225",
+    "new_price": 1010,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1679,
+    "model": "INTEL Core Ultra 5 225F",
+    "new_price": 839,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1680,
+    "model": "INTEL Core Ultra 5 230F",
+    "new_price": 860,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1681,
+    "model": "INTEL Core Ultra 5 235",
+    "new_price": 1240,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1682,
+    "model": "INTEL Core Ultra 5 245K",
+    "new_price": 1339,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1683,
+    "model": "INTEL Core Ultra 5 245KF",
+    "new_price": 1229,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1686,
+    "model": "INTEL Core Ultra 7 265K",
+    "new_price": 1829,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1687,
+    "model": "INTEL Core Ultra 7 265KF",
+    "new_price": 1680,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1689,
+    "model": "INTEL Core Ultra 9 285K",
+    "new_price": 3659,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1690,
+    "model": "INTEL Core i3-12100",
+    "new_price": 930,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1691,
+    "model": "INTEL Core i3-12100F",
+    "new_price": 530,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1692,
+    "model": "INTEL Core i3-13100",
+    "new_price": 765,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1693,
+    "model": "INTEL Core i3-13100F",
+    "new_price": 480,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1694,
+    "model": "INTEL Core i3-14100",
+    "new_price": 850,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1695,
+    "model": "INTEL Core i3-14100F",
+    "new_price": 555,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1696,
+    "model": "INTEL Core i5-12400",
+    "new_price": 1200,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1697,
+    "model": "INTEL Core i5-12400F",
+    "new_price": 830,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1698,
+    "model": "INTEL Core i5-12490F",
+    "new_price": 815,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1699,
+    "model": "INTEL Core i5-12500",
+    "new_price": 1235,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1700,
+    "model": "INTEL Core i5-12600K",
+    "new_price": 1240,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1701,
+    "model": "INTEL Core i5-12600KF",
+    "new_price": 990,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1702,
+    "model": "INTEL Core i5-13400",
+    "new_price": 1280,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1703,
+    "model": "INTEL Core i5-13400F",
+    "new_price": 870,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1704,
+    "model": "INTEL Core i5-13490F",
+    "new_price": 880,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1705,
+    "model": "INTEL Core i5-13500",
+    "new_price": 1270,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1706,
+    "model": "INTEL Core i5-13600K",
+    "new_price": 1299,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1707,
+    "model": "INTEL Core i5-13600KF",
+    "new_price": 1110,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1708,
+    "model": "INTEL Core i5-14400",
+    "new_price": 1420,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1709,
+    "model": "INTEL Core i5-14400F",
+    "new_price": 980,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1710,
+    "model": "INTEL Core i5-14490F",
+    "new_price": 1000,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1711,
+    "model": "INTEL Core i5-14500",
+    "new_price": 1410,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1712,
+    "model": "INTEL Core i5-14600K",
+    "new_price": 1388,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1713,
+    "model": "INTEL Core i5-14600KF",
+    "new_price": 1370,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1714,
+    "model": "INTEL Core i7-12700K",
+    "new_price": 1739,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1715,
+    "model": "INTEL Core i7-12700KF",
+    "new_price": 1460,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1716,
+    "model": "INTEL Core i7-14700",
+    "new_price": 2550,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1717,
+    "model": "INTEL Core i7-14700F",
+    "new_price": 1995,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1718,
+    "model": "INTEL Core i7-14700K",
+    "new_price": 2590,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1719,
+    "model": "INTEL Core i7-14700KF",
+    "new_price": 2190,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1720,
+    "model": "INTEL Core i9-14900K",
+    "new_price": 3320,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1721,
+    "model": "INTEL Core i9-14900KF",
+    "new_price": 2850,
+    "used_price": null,
+    "recorded_at": "2026-01-01"
+  },
+  {
+    "id": 1722,
+    "model": "AMD Ryzen 5 5500",
+    "new_price": 499,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1723,
+    "model": "AMD Ryzen 5 5500GT",
+    "new_price": 809,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1724,
+    "model": "AMD Ryzen 5 5600",
+    "new_price": 695,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1725,
+    "model": "AMD Ryzen 5 5600GT",
+    "new_price": 865,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1726,
+    "model": "AMD Ryzen 5 5600X",
+    "new_price": 739,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1727,
+    "model": "AMD Ryzen 5 7400F",
+    "new_price": 769,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1728,
+    "model": "AMD Ryzen 5 7500F",
+    "new_price": 809,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1729,
+    "model": "AMD Ryzen 5 7600X",
+    "new_price": 1089,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1730,
+    "model": "AMD Ryzen 5 8400F",
+    "new_price": 769,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1731,
+    "model": "AMD Ryzen 5 8600G",
+    "new_price": 1209,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1732,
+    "model": "AMD Ryzen 5 9500F",
+    "new_price": 1110,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1733,
+    "model": "AMD Ryzen 5 9600X",
+    "new_price": 1259,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1734,
+    "model": "AMD Ryzen 7 5700G",
+    "new_price": 1089,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1735,
+    "model": "AMD Ryzen 7 5700X",
+    "new_price": 929,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1736,
+    "model": "AMD Ryzen 7 5700X3D",
+    "new_price": 2179,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1737,
+    "model": "AMD Ryzen 7 7700",
+    "new_price": 1339,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1738,
+    "model": "AMD Ryzen 7 7800X3D",
+    "new_price": 1979,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1739,
+    "model": "AMD Ryzen 7 8700F",
+    "new_price": 1059,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1740,
+    "model": "AMD Ryzen 7 8700G",
+    "new_price": 1769,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1741,
+    "model": "AMD Ryzen 7 9700X",
+    "new_price": 1659,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1742,
+    "model": "AMD Ryzen 7 9800X3D",
+    "new_price": 2859,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1743,
+    "model": "AMD Ryzen 9 9900X",
+    "new_price": 2459,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1744,
+    "model": "AMD Ryzen 9 9900X3D",
+    "new_price": 3199,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1745,
+    "model": "AMD Ryzen 9 9950X",
+    "new_price": 3099,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1746,
+    "model": "AMD Ryzen 9 9950X3D",
+    "new_price": 4349,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1747,
+    "model": "INTEL Core Ultra 5 225",
+    "new_price": 1010,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1748,
+    "model": "INTEL Core Ultra 5 225F",
+    "new_price": 835,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1749,
+    "model": "INTEL Core Ultra 5 230F",
+    "new_price": 860,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1750,
+    "model": "INTEL Core Ultra 5 235",
+    "new_price": 1240,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1751,
+    "model": "INTEL Core Ultra 5 245K",
+    "new_price": 1339,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1752,
+    "model": "INTEL Core Ultra 5 245KF",
+    "new_price": 1229,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1755,
+    "model": "INTEL Core Ultra 7 265K",
+    "new_price": 1850,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1756,
+    "model": "INTEL Core Ultra 7 265KF",
+    "new_price": 1680,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1758,
+    "model": "INTEL Core Ultra 9 285K",
+    "new_price": 3699,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1759,
+    "model": "INTEL Core i3-12100",
+    "new_price": 799,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1760,
+    "model": "INTEL Core i3-12100F",
+    "new_price": 499,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1761,
+    "model": "INTEL Core i3-13100",
+    "new_price": 765,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1762,
+    "model": "INTEL Core i3-13100F",
+    "new_price": 480,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1763,
+    "model": "INTEL Core i3-14100",
+    "new_price": 850,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1764,
+    "model": "INTEL Core i3-14100F",
+    "new_price": 555,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1765,
+    "model": "INTEL Core i5-12400",
+    "new_price": 1159,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1766,
+    "model": "INTEL Core i5-12400F",
+    "new_price": 799,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1767,
+    "model": "INTEL Core i5-12490F",
+    "new_price": 815,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1768,
+    "model": "INTEL Core i5-12500",
+    "new_price": 1235,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1769,
+    "model": "INTEL Core i5-12600K",
+    "new_price": 1240,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1770,
+    "model": "INTEL Core i5-12600KF",
+    "new_price": 990,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1771,
+    "model": "INTEL Core i5-13400",
+    "new_price": 1280,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1772,
+    "model": "INTEL Core i5-13400F",
+    "new_price": 870,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1773,
+    "model": "INTEL Core i5-13490F",
+    "new_price": 880,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1774,
+    "model": "INTEL Core i5-13500",
+    "new_price": 1270,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1775,
+    "model": "INTEL Core i5-13600K",
+    "new_price": 1259,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1776,
+    "model": "INTEL Core i5-13600KF",
+    "new_price": 1110,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1777,
+    "model": "INTEL Core i5-14400",
+    "new_price": 1420,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1778,
+    "model": "INTEL Core i5-14400F",
+    "new_price": 980,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1779,
+    "model": "INTEL Core i5-14490F",
+    "new_price": 1000,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1780,
+    "model": "INTEL Core i5-14500",
+    "new_price": 1410,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1781,
+    "model": "INTEL Core i5-14600K",
+    "new_price": 1488,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1782,
+    "model": "INTEL Core i5-14600KF",
+    "new_price": 1470,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1783,
+    "model": "INTEL Core i7-12700K",
+    "new_price": 1729,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1784,
+    "model": "INTEL Core i7-12700KF",
+    "new_price": 1460,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1785,
+    "model": "INTEL Core i7-14700",
+    "new_price": 2550,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1786,
+    "model": "INTEL Core i7-14700F",
+    "new_price": 1995,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1787,
+    "model": "INTEL Core i7-14700K",
+    "new_price": 2590,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1788,
+    "model": "INTEL Core i7-14700KF",
+    "new_price": 2190,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1789,
+    "model": "INTEL Core i9-14900K",
+    "new_price": 3320,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1790,
+    "model": "INTEL Core i9-14900KF",
+    "new_price": 2850,
+    "used_price": null,
+    "recorded_at": "2026-01-07"
+  },
+  {
+    "id": 1791,
+    "model": "AMD Ryzen 5 5500",
+    "new_price": 489,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1792,
+    "model": "AMD Ryzen 5 5500GT",
+    "new_price": 799,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1793,
+    "model": "AMD Ryzen 5 5600",
+    "new_price": 695,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1794,
+    "model": "AMD Ryzen 5 5600GT",
+    "new_price": 859,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1795,
+    "model": "AMD Ryzen 5 5600X",
+    "new_price": 744,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1796,
+    "model": "AMD Ryzen 5 7400F",
+    "new_price": 769,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1797,
+    "model": "AMD Ryzen 5 7500F",
+    "new_price": 809,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1798,
+    "model": "AMD Ryzen 5 7600X",
+    "new_price": 1089,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1799,
+    "model": "AMD Ryzen 5 8400F",
+    "new_price": 769,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1800,
+    "model": "AMD Ryzen 5 8600G",
+    "new_price": 1209,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1801,
+    "model": "AMD Ryzen 5 9500F",
+    "new_price": 1110,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1802,
+    "model": "AMD Ryzen 5 9600X",
+    "new_price": 1249,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1803,
+    "model": "AMD Ryzen 7 5700G",
+    "new_price": 1089,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1804,
+    "model": "AMD Ryzen 7 5700X",
+    "new_price": 895,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1805,
+    "model": "AMD Ryzen 7 5700X3D",
+    "new_price": 2179,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1806,
+    "model": "AMD Ryzen 7 7700",
+    "new_price": 1339,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1807,
+    "model": "AMD Ryzen 7 7800X3D",
+    "new_price": 1989,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1808,
+    "model": "AMD Ryzen 7 8700F",
+    "new_price": 959,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1809,
+    "model": "AMD Ryzen 7 8700G",
+    "new_price": 1769,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1810,
+    "model": "AMD Ryzen 7 9700X",
+    "new_price": 1649,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1811,
+    "model": "AMD Ryzen 7 9800X3D",
+    "new_price": 2849,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1812,
+    "model": "AMD Ryzen 9 9900X",
+    "new_price": 2459,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1813,
+    "model": "AMD Ryzen 9 9900X3D",
+    "new_price": 3199,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1814,
+    "model": "AMD Ryzen 9 9950X",
+    "new_price": 2979,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1815,
+    "model": "AMD Ryzen 9 9950X3D",
+    "new_price": 4349,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1816,
+    "model": "INTEL Core Ultra 5 225",
+    "new_price": 1010,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1817,
+    "model": "INTEL Core Ultra 5 225F",
+    "new_price": 835,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1818,
+    "model": "INTEL Core Ultra 5 230F",
+    "new_price": 860,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1819,
+    "model": "INTEL Core Ultra 5 235",
+    "new_price": 1240,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1820,
+    "model": "INTEL Core Ultra 5 245K",
+    "new_price": 1339,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1821,
+    "model": "INTEL Core Ultra 5 245KF",
+    "new_price": 1229,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1824,
+    "model": "INTEL Core Ultra 7 265K",
+    "new_price": 1850,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1825,
+    "model": "INTEL Core Ultra 7 265KF",
+    "new_price": 1680,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1827,
+    "model": "INTEL Core Ultra 9 285K",
+    "new_price": 3950,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1828,
+    "model": "INTEL Core i3-12100",
+    "new_price": 789,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1829,
+    "model": "INTEL Core i3-12100F",
+    "new_price": 519,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1830,
+    "model": "INTEL Core i3-13100",
+    "new_price": 765,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1831,
+    "model": "INTEL Core i3-13100F",
+    "new_price": 480,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1832,
+    "model": "INTEL Core i3-14100",
+    "new_price": 850,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1833,
+    "model": "INTEL Core i3-14100F",
+    "new_price": 555,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1834,
+    "model": "INTEL Core i5-12400",
+    "new_price": 1159,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1835,
+    "model": "INTEL Core i5-12400F",
+    "new_price": 789,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1836,
+    "model": "INTEL Core i5-12490F",
+    "new_price": 815,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1837,
+    "model": "INTEL Core i5-12500",
+    "new_price": 1235,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1838,
+    "model": "INTEL Core i5-12600K",
+    "new_price": 1240,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1839,
+    "model": "INTEL Core i5-12600KF",
+    "new_price": 990,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1840,
+    "model": "INTEL Core i5-13400",
+    "new_price": 1280,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1841,
+    "model": "INTEL Core i5-13400F",
+    "new_price": 870,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1842,
+    "model": "INTEL Core i5-13490F",
+    "new_price": 880,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1843,
+    "model": "INTEL Core i5-13500",
+    "new_price": 1270,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1844,
+    "model": "INTEL Core i5-13600K",
+    "new_price": 1279,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1845,
+    "model": "INTEL Core i5-13600KF",
+    "new_price": 1110,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1846,
+    "model": "INTEL Core i5-14400",
+    "new_price": 1420,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1847,
+    "model": "INTEL Core i5-14400F",
+    "new_price": 980,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1848,
+    "model": "INTEL Core i5-14490F",
+    "new_price": 1000,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1849,
+    "model": "INTEL Core i5-14500",
+    "new_price": 1410,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1850,
+    "model": "INTEL Core i5-14600K",
+    "new_price": 1488,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1851,
+    "model": "INTEL Core i5-14600KF",
+    "new_price": 1470,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1852,
+    "model": "INTEL Core i7-12700K",
+    "new_price": 1739,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1853,
+    "model": "INTEL Core i7-12700KF",
+    "new_price": 1460,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1854,
+    "model": "INTEL Core i7-14700",
+    "new_price": 2550,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1855,
+    "model": "INTEL Core i7-14700F",
+    "new_price": 1929,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1856,
+    "model": "INTEL Core i7-14700K",
+    "new_price": 2590,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1857,
+    "model": "INTEL Core i7-14700KF",
+    "new_price": 2069,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1858,
+    "model": "INTEL Core i9-14900K",
+    "new_price": 3320,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1859,
+    "model": "INTEL Core i9-14900KF",
+    "new_price": 2849,
+    "used_price": null,
+    "recorded_at": "2026-01-12"
+  },
+  {
+    "id": 1860,
+    "model": "AMD Ryzen 3 3100",
+    "new_price": null,
+    "used_price": 180,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1861,
+    "model": "AMD Ryzen 3 3300X",
+    "new_price": null,
+    "used_price": 235,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1862,
+    "model": "AMD Ryzen 5 3500X",
+    "new_price": null,
+    "used_price": 233,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1863,
+    "model": "AMD Ryzen 5 3600",
+    "new_price": null,
+    "used_price": 349,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1864,
+    "model": "AMD Ryzen 5 3600X",
+    "new_price": null,
+    "used_price": 368,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1865,
+    "model": "AMD Ryzen 5 3600XT",
+    "new_price": null,
+    "used_price": 380,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1866,
+    "model": "AMD Ryzen 5 5500",
+    "new_price": null,
+    "used_price": 425,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1867,
+    "model": "AMD Ryzen 5 5500GT",
+    "new_price": null,
+    "used_price": 699,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1868,
+    "model": "AMD Ryzen 5 5600",
+    "new_price": null,
+    "used_price": 640,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1869,
+    "model": "AMD Ryzen 5 5600G",
+    "new_price": null,
+    "used_price": 700,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1870,
+    "model": "AMD Ryzen 5 5600GT",
+    "new_price": null,
+    "used_price": 740,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1871,
+    "model": "AMD Ryzen 5 5600X",
+    "new_price": null,
+    "used_price": 680,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1872,
+    "model": "AMD Ryzen 5 7400F",
+    "new_price": null,
+    "used_price": 610,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1873,
+    "model": "AMD Ryzen 5 7500F",
+    "new_price": null,
+    "used_price": 685,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1874,
+    "model": "AMD Ryzen 5 7600",
+    "new_price": null,
+    "used_price": 1076,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1875,
+    "model": "AMD Ryzen 5 7600X",
+    "new_price": null,
+    "used_price": 820,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1876,
+    "model": "AMD Ryzen 5 7600X3D",
+    "new_price": null,
+    "used_price": 1700,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1877,
+    "model": "AMD Ryzen 5 8400F",
+    "new_price": null,
+    "used_price": 588,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1878,
+    "model": "AMD Ryzen 5 8600G",
+    "new_price": null,
+    "used_price": 1250,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1879,
+    "model": "AMD Ryzen 5 9500F",
+    "new_price": null,
+    "used_price": 945,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1880,
+    "model": "AMD Ryzen 5 9600X",
+    "new_price": null,
+    "used_price": 1110,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1881,
+    "model": "AMD Ryzen 7 3700X",
+    "new_price": null,
+    "used_price": 470,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1882,
+    "model": "AMD Ryzen 7 3800X",
+    "new_price": null,
+    "used_price": 529,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1883,
+    "model": "AMD Ryzen 7 5700G",
+    "new_price": null,
+    "used_price": 880,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1884,
+    "model": "AMD Ryzen 7 5700X",
+    "new_price": null,
+    "used_price": 845,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1885,
+    "model": "AMD Ryzen 7 5700X3D",
+    "new_price": null,
+    "used_price": 1780,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1886,
+    "model": "AMD Ryzen 7 5800",
+    "new_price": null,
+    "used_price": 800,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1887,
+    "model": "AMD Ryzen 7 5800X",
+    "new_price": null,
+    "used_price": 920,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1888,
+    "model": "AMD Ryzen 7 5800X3D",
+    "new_price": null,
+    "used_price": 2300,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1889,
+    "model": "AMD Ryzen 7 7700",
+    "new_price": null,
+    "used_price": 1000,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1890,
+    "model": "AMD Ryzen 7 7700X",
+    "new_price": null,
+    "used_price": 1115,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1891,
+    "model": "AMD Ryzen 7 7800X3D",
+    "new_price": null,
+    "used_price": 1823,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1892,
+    "model": "AMD Ryzen 7 8700F",
+    "new_price": null,
+    "used_price": 820,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1893,
+    "model": "AMD Ryzen 7 8700G",
+    "new_price": null,
+    "used_price": 1300,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1894,
+    "model": "AMD Ryzen 7 9700X",
+    "new_price": null,
+    "used_price": 1495,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1895,
+    "model": "AMD Ryzen 7 9800X3D",
+    "new_price": null,
+    "used_price": 2710,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1896,
+    "model": "AMD Ryzen 9 3900X",
+    "new_price": null,
+    "used_price": 760,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1897,
+    "model": "AMD Ryzen 9 3950X",
+    "new_price": null,
+    "used_price": 1160,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1898,
+    "model": "AMD Ryzen 9 5900X",
+    "new_price": null,
+    "used_price": 1298,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1899,
+    "model": "AMD Ryzen 9 5950X",
+    "new_price": null,
+    "used_price": 1700,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1900,
+    "model": "AMD Ryzen 9 7900X",
+    "new_price": null,
+    "used_price": 1700,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1901,
+    "model": "AMD Ryzen 9 7900X3D",
+    "new_price": null,
+    "used_price": 1799,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1902,
+    "model": "AMD Ryzen 9 7950X",
+    "new_price": null,
+    "used_price": 2200,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1903,
+    "model": "AMD Ryzen 9 7950X3D",
+    "new_price": null,
+    "used_price": 2774,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1904,
+    "model": "AMD Ryzen 9 9900X",
+    "new_price": null,
+    "used_price": 2100,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1905,
+    "model": "AMD Ryzen 9 9900X3D",
+    "new_price": null,
+    "used_price": 2850,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1906,
+    "model": "AMD Ryzen 9 9950X",
+    "new_price": null,
+    "used_price": 2888,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1907,
+    "model": "AMD Ryzen 9 9950X3D",
+    "new_price": null,
+    "used_price": 4150,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1908,
+    "model": "INTEL Core Ultra 5 225",
+    "new_price": null,
+    "used_price": 890,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1909,
+    "model": "INTEL Core Ultra 5 225F",
+    "new_price": null,
+    "used_price": 740,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1910,
+    "model": "INTEL Core Ultra 5 230F",
+    "new_price": null,
+    "used_price": 780,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1911,
+    "model": "INTEL Core Ultra 5 235",
+    "new_price": null,
+    "used_price": 990,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1912,
+    "model": "INTEL Core Ultra 5 245K",
+    "new_price": null,
+    "used_price": 1224,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1913,
+    "model": "INTEL Core Ultra 5 245KF",
+    "new_price": null,
+    "used_price": 1090,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1914,
+    "model": "INTEL Core Ultra 7 265K",
+    "new_price": null,
+    "used_price": 1630,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1915,
+    "model": "INTEL Core Ultra 7 265KF",
+    "new_price": null,
+    "used_price": 1580,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1916,
+    "model": "INTEL Core Ultra 9 285K",
+    "new_price": null,
+    "used_price": 3350,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1917,
+    "model": "INTEL Core i3-10100",
+    "new_price": null,
+    "used_price": 441,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1918,
+    "model": "INTEL Core i3-10100F",
+    "new_price": null,
+    "used_price": 300,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1919,
+    "model": "INTEL Core i3-10105",
+    "new_price": null,
+    "used_price": 440,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1920,
+    "model": "INTEL Core i3-10105F",
+    "new_price": null,
+    "used_price": 310,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1921,
+    "model": "INTEL Core i3-12100",
+    "new_price": null,
+    "used_price": 700,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1922,
+    "model": "INTEL Core i3-12100F",
+    "new_price": null,
+    "used_price": 440,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1923,
+    "model": "INTEL Core i3-13100",
+    "new_price": null,
+    "used_price": 599,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1924,
+    "model": "INTEL Core i3-13100F",
+    "new_price": null,
+    "used_price": 480,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1925,
+    "model": "INTEL Core i3-14100",
+    "new_price": null,
+    "used_price": 670,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1926,
+    "model": "INTEL Core i3-14100F",
+    "new_price": null,
+    "used_price": 510,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1927,
+    "model": "INTEL Core i5-10400",
+    "new_price": null,
+    "used_price": 605,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1928,
+    "model": "INTEL Core i5-10400F",
+    "new_price": null,
+    "used_price": 492,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1929,
+    "model": "INTEL Core i5-10600K",
+    "new_price": null,
+    "used_price": 725,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1930,
+    "model": "INTEL Core i5-10600KF",
+    "new_price": null,
+    "used_price": 519,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1931,
+    "model": "INTEL Core i5-11400",
+    "new_price": null,
+    "used_price": 702,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1932,
+    "model": "INTEL Core i5-11400F",
+    "new_price": null,
+    "used_price": 510,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1933,
+    "model": "INTEL Core i5-11600K",
+    "new_price": null,
+    "used_price": 750,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1934,
+    "model": "INTEL Core i5-11600KF",
+    "new_price": null,
+    "used_price": 619,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1935,
+    "model": "INTEL Core i5-12400",
+    "new_price": null,
+    "used_price": 1020,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1936,
+    "model": "INTEL Core i5-12400F",
+    "new_price": null,
+    "used_price": 720,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1937,
+    "model": "INTEL Core i5-12490F",
+    "new_price": null,
+    "used_price": 740,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1938,
+    "model": "INTEL Core i5-12500",
+    "new_price": null,
+    "used_price": 1060,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1939,
+    "model": "INTEL Core i5-12600K",
+    "new_price": null,
+    "used_price": 1120,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1940,
+    "model": "INTEL Core i5-12600KF",
+    "new_price": null,
+    "used_price": 1000,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1941,
+    "model": "INTEL Core i5-13400",
+    "new_price": null,
+    "used_price": 1100,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1942,
+    "model": "INTEL Core i5-13400F",
+    "new_price": null,
+    "used_price": 850,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1943,
+    "model": "INTEL Core i5-13490F",
+    "new_price": null,
+    "used_price": 850,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1944,
+    "model": "INTEL Core i5-13500",
+    "new_price": null,
+    "used_price": 1280,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1945,
+    "model": "INTEL Core i5-13600K",
+    "new_price": null,
+    "used_price": 1198,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1946,
+    "model": "INTEL Core i5-13600KF",
+    "new_price": null,
+    "used_price": 1100,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1947,
+    "model": "INTEL Core i5-14400",
+    "new_price": null,
+    "used_price": 1365,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1948,
+    "model": "INTEL Core i5-14400F",
+    "new_price": null,
+    "used_price": 937,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1949,
+    "model": "INTEL Core i5-14490F",
+    "new_price": null,
+    "used_price": 975,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1950,
+    "model": "INTEL Core i5-14500",
+    "new_price": null,
+    "used_price": 1100,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1951,
+    "model": "INTEL Core i5-14600K",
+    "new_price": null,
+    "used_price": 1400,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1952,
+    "model": "INTEL Core i5-14600KF",
+    "new_price": null,
+    "used_price": 1410,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1953,
+    "model": "INTEL Core i7-10700",
+    "new_price": null,
+    "used_price": 1150,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1954,
+    "model": "INTEL Core i7-10700F",
+    "new_price": null,
+    "used_price": 911,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1955,
+    "model": "INTEL Core i7-10700K",
+    "new_price": null,
+    "used_price": 1650,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1956,
+    "model": "INTEL Core i7-10700KF",
+    "new_price": null,
+    "used_price": 900,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1957,
+    "model": "INTEL Core i7-11700",
+    "new_price": null,
+    "used_price": 1180,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1958,
+    "model": "INTEL Core i7-11700F",
+    "new_price": null,
+    "used_price": 939,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1959,
+    "model": "INTEL Core i7-11700K",
+    "new_price": null,
+    "used_price": 1109,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1960,
+    "model": "INTEL Core i7-11700KF",
+    "new_price": null,
+    "used_price": 950,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1961,
+    "model": "INTEL Core i7-12700",
+    "new_price": null,
+    "used_price": 1684,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1962,
+    "model": "INTEL Core i7-12700F",
+    "new_price": null,
+    "used_price": 1417,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1963,
+    "model": "INTEL Core i7-12700K",
+    "new_price": null,
+    "used_price": 1515,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1964,
+    "model": "INTEL Core i7-12700KF",
+    "new_price": null,
+    "used_price": 1430,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1965,
+    "model": "INTEL Core i7-13700",
+    "new_price": null,
+    "used_price": 2050,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1966,
+    "model": "INTEL Core i7-13700F",
+    "new_price": null,
+    "used_price": 1445,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1967,
+    "model": "INTEL Core i7-13700K",
+    "new_price": null,
+    "used_price": 1960,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1968,
+    "model": "INTEL Core i7-13700KF",
+    "new_price": null,
+    "used_price": 1560,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1969,
+    "model": "INTEL Core i7-14700",
+    "new_price": null,
+    "used_price": 1850,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1970,
+    "model": "INTEL Core i7-14700F",
+    "new_price": null,
+    "used_price": 1780,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1971,
+    "model": "INTEL Core i7-14700K",
+    "new_price": null,
+    "used_price": 2300,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1972,
+    "model": "INTEL Core i7-14700KF",
+    "new_price": null,
+    "used_price": 1880,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1973,
+    "model": "INTEL Core i9-10850K",
+    "new_price": null,
+    "used_price": 1480,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1974,
+    "model": "INTEL Core i9-10900",
+    "new_price": null,
+    "used_price": 2324,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1975,
+    "model": "INTEL Core i9-10900F",
+    "new_price": null,
+    "used_price": 1300,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1976,
+    "model": "INTEL Core i9-10900K",
+    "new_price": null,
+    "used_price": 2017,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1977,
+    "model": "INTEL Core i9-10900KF",
+    "new_price": null,
+    "used_price": 1858,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1978,
+    "model": "INTEL Core i9-11900",
+    "new_price": null,
+    "used_price": 1950,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1979,
+    "model": "INTEL Core i9-11900F",
+    "new_price": null,
+    "used_price": 1350,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1980,
+    "model": "INTEL Core i9-11900K",
+    "new_price": null,
+    "used_price": 1919,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1981,
+    "model": "INTEL Core i9-11900KF",
+    "new_price": null,
+    "used_price": 1500,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1982,
+    "model": "INTEL Core i9-12900K",
+    "new_price": null,
+    "used_price": 1888,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1983,
+    "model": "INTEL Core i9-12900KF",
+    "new_price": null,
+    "used_price": 1695,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1984,
+    "model": "INTEL Core i9-12900KS",
+    "new_price": null,
+    "used_price": 1800,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1985,
+    "model": "INTEL Core i9-13900K",
+    "new_price": null,
+    "used_price": 1925,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1986,
+    "model": "INTEL Core i9-13900KF",
+    "new_price": null,
+    "used_price": 1800,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1987,
+    "model": "INTEL Core i9-13900KS",
+    "new_price": null,
+    "used_price": 2055,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1988,
+    "model": "INTEL Core i9-14900",
+    "new_price": null,
+    "used_price": 2300,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1989,
+    "model": "INTEL Core i9-14900K",
+    "new_price": null,
+    "used_price": 2930,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1990,
+    "model": "INTEL Core i9-14900KF",
+    "new_price": null,
+    "used_price": 2400,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1991,
+    "model": "INTEL Core i9-14900KS",
+    "new_price": null,
+    "used_price": 2944,
+    "recorded_at": "2026-01-14"
+  },
+  {
+    "id": 1992,
+    "model": "AMD Ryzen 5 5500",
+    "new_price": 499,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 1993,
+    "model": "AMD Ryzen 5 5500GT",
+    "new_price": 799,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 1994,
+    "model": "AMD Ryzen 5 5600",
+    "new_price": 695,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 1995,
+    "model": "AMD Ryzen 5 5600GT",
+    "new_price": 849,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 1996,
+    "model": "AMD Ryzen 5 5600X",
+    "new_price": 779,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 1997,
+    "model": "AMD Ryzen 5 7400F",
+    "new_price": 769,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 1998,
+    "model": "AMD Ryzen 5 7500F",
+    "new_price": 799,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 1999,
+    "model": "AMD Ryzen 5 7600X",
+    "new_price": 1089,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2000,
+    "model": "AMD Ryzen 5 8400F",
+    "new_price": 769,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2001,
+    "model": "AMD Ryzen 5 8600G",
+    "new_price": 1209,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2002,
+    "model": "AMD Ryzen 5 9500F",
+    "new_price": 1100,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2003,
+    "model": "AMD Ryzen 5 9600X",
+    "new_price": 1199,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2004,
+    "model": "AMD Ryzen 7 5700G",
+    "new_price": 1089,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2005,
+    "model": "AMD Ryzen 7 5700X",
+    "new_price": 915,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2006,
+    "model": "AMD Ryzen 7 5700X3D",
+    "new_price": 2099,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2007,
+    "model": "AMD Ryzen 7 7700",
+    "new_price": 1339,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2008,
+    "model": "AMD Ryzen 7 7800X3D",
+    "new_price": 1949,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2009,
+    "model": "AMD Ryzen 7 8700F",
+    "new_price": 959,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2010,
+    "model": "AMD Ryzen 7 8700G",
+    "new_price": 1749,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2011,
+    "model": "AMD Ryzen 7 9700X",
+    "new_price": 1609,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2012,
+    "model": "AMD Ryzen 7 9800X3D",
+    "new_price": 2829,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2013,
+    "model": "AMD Ryzen 7 9850X3D",
+    "new_price": 3699,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2014,
+    "model": "AMD Ryzen 9 9900X",
+    "new_price": 2459,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2015,
+    "model": "AMD Ryzen 9 9900X3D",
+    "new_price": 3199,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2016,
+    "model": "AMD Ryzen 9 9950X",
+    "new_price": 2979,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2017,
+    "model": "AMD Ryzen 9 9950X3D",
+    "new_price": 4349,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2018,
+    "model": "INTEL Core Ultra 5 225",
+    "new_price": 995,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2019,
+    "model": "INTEL Core Ultra 5 225F",
+    "new_price": 795,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2020,
+    "model": "INTEL Core Ultra 5 230F",
+    "new_price": 829,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2021,
+    "model": "INTEL Core Ultra 5 235",
+    "new_price": 1200,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2022,
+    "model": "INTEL Core Ultra 5 245K",
+    "new_price": 1329,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2023,
+    "model": "INTEL Core Ultra 5 245KF",
+    "new_price": 1169,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2026,
+    "model": "INTEL Core Ultra 7 265K",
+    "new_price": 1830,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2027,
+    "model": "INTEL Core Ultra 7 265KF",
+    "new_price": 1590,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2029,
+    "model": "INTEL Core Ultra 9 285K",
+    "new_price": 4190,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2030,
+    "model": "INTEL Core i3-12100",
+    "new_price": 779,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2031,
+    "model": "INTEL Core i3-12100F",
+    "new_price": 499,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  },
+  {
+    "id": 2032,
+    "model": "INTEL Core i3-13100",
+    "new_price": 765,
+    "used_price": null,
+    "recorded_at": "2026-01-19"
+  }
+]

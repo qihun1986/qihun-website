@@ -1,0 +1,165 @@
+---
+import fs from 'fs'
+import path from 'path'
+import BaseLayout from '../layouts/BaseLayout.astro'
+import GpuDashboard from '../components/GpuDashboard.vue'
+import { getData } from '../lib/getData.ts'
+
+// 1. 获取显卡主表全量数据
+const { data: gpus, error: gpuError } = await getData(
+  'gpu_current',
+  '*',
+  { order: ['abs_game_performance_2k', false] }
+)
+
+if (gpuError) {
+  console.error('预取显卡数据失败:', gpuError)
+}
+
+// 2. 获取历史最低价聚合（用于火焰标）
+const { data: priceHistory, error: priceError } = await getData(
+  'gpu_price_history',
+  'model, new_price, used_price'
+)
+
+const minPriceMap = new Map()
+if (!priceError && priceHistory) {
+  for (const item of priceHistory) {
+    if (!minPriceMap.has(item.model)) {
+      minPriceMap.set(item.model, { min_new: null, min_used: null })
+    }
+    const entry = minPriceMap.get(item.model)
+    if (item.new_price !== null && (entry.min_new === null || item.new_price < entry.min_new)) {
+      entry.min_new = item.new_price
+    }
+    if (item.used_price !== null && (entry.min_used === null || item.used_price < entry.min_used)) {
+      entry.min_used = item.used_price
+    }
+  }
+}
+
+// 3. 获取热门型号列表
+const { data: hotConfig } = await getData(
+  'site_config',
+  'value',
+  { eq: ['key', 'gpu_hot_models'], single: true }
+)
+
+let hotSet: Set<string> = new Set()
+if (hotConfig?.value) {
+  try {
+    const arr = JSON.parse(hotConfig.value)
+    if (Array.isArray(arr)) hotSet = new Set(arr)
+  } catch (e) {
+    console.error('解析热门显卡型号失败', e)
+  }
+}
+
+// 4. 分别获取不同分辨率的基准显卡
+const benchmark1080 = gpus?.find(g => g.model.toUpperCase().includes('RTX 2060') && g.model.toUpperCase().includes('6GB')) || null
+const benchmark2K = gpus?.find(g => g.model.toUpperCase().includes('RTX 4060') && !g.model.toUpperCase().includes('TI')) || null
+const benchmark4K = gpus?.find(g => g.model.toUpperCase().includes('RTX 5070') && !g.model.toUpperCase().includes('TI')) || null
+const benchmarkRender = benchmark2K // 创作效率基准暂时也用 4060
+
+const benchmarks = {
+  perf1080: benchmark1080,
+  perf2k: benchmark2K,
+  perf4k: benchmark4K,
+  render: benchmarkRender
+}
+
+// 6. 特价轮播（取 special_deals_history 最近 3 条，每条取第一行作为摘要）
+let dealItems: { text: string }[] = []
+
+const { data: historyDeals } = await getData(
+  'special_deals_history',
+  'content',
+  { order: ['created_at', false], limit: 3 }
+)
+
+if (historyDeals && historyDeals.length > 0) {
+  dealItems = historyDeals.map(item => {
+    const raw = (item.content || '').replace(/\r/g, '')
+    const firstLine = raw.split('\n').filter(line => line.trim() !== '')[0] || ''
+    return { text: firstLine.trim() }
+  })
+}
+
+// 如果历史表为空，回退到 site_config 当前文本的前 3 行
+if (dealItems.length === 0) {
+  const { data: dealConfig } = await getData(
+    'site_config',
+    'value',
+    { eq: ['key', 'special_deals_text'], single: true }
+  )
+  if (dealConfig?.value) {
+    const raw = dealConfig.value.replace(/\r/g, '')
+    const lines = raw.split('\n').filter(line => line.trim() !== '')
+    dealItems = lines.slice(0, 3).map(line => ({ text: line.trim() }))
+  }
+}
+
+// 兜底
+if (dealItems.length === 0) {
+  dealItems = [{ text: '特价清单稍后更新' }]
+}
+
+// 7. 视频轮播（取 site_carousel 最近 3 条，字段映射为 text / link）
+const { data: rawVideoItems } = await getData(
+  'site_carousel',
+  'title, link',
+  { order: ['created_at', false], limit: 3 }
+)
+const videoItems = (rawVideoItems || []).map(item => ({
+  text: item.title || item.text || '',
+  link: item.link || ''
+}))
+
+// 6. 生成全量数据 JSON 文件（供"全部"模式按需加载）
+const publicDataDir = path.join(process.cwd(), 'public', 'data')
+if (!fs.existsSync(publicDataDir)) {
+  fs.mkdirSync(publicDataDir, { recursive: true })
+}
+fs.writeFileSync(
+  path.join(publicDataDir, 'gpu-all.json'),
+  JSON.stringify(gpus || [])
+)
+
+// 7. 序列化数据（只传热门型号给组件）
+const gpuReleaseDates = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'src', 'assets', 'gpu_release_dates.json'), 'utf-8'))
+const serializedReleaseDates = JSON.stringify(gpuReleaseDates)
+
+// 只传热门型号，首屏瘦身
+const hotGpus = (gpus || []).filter(g => hotSet.has(g.model))
+const serializedGpus = JSON.stringify(hotGpus)
+const serializedMinPriceMap = JSON.stringify(Array.from(minPriceMap.entries()))
+const serializedHotSet = JSON.stringify(Array.from(hotSet))
+const serializedBenchmarks = JSON.stringify(benchmarks)
+const serializedDealItems = JSON.stringify(dealItems)
+const serializedDealsText = JSON.stringify(dealItems.map(d => d.text).join('\n') || '')
+const serializedVideoItems = JSON.stringify(videoItems || [])
+---
+
+<BaseLayout title="显卡性价比排行榜 - 奇魂的小窝" description="显卡性价比排行榜，涵盖NVIDIA/AMD/Intel主流显卡游戏性能、创作效率、价格走势。">
+  <div class="gpu-page">
+    <GpuDashboard
+      client:load
+      initialGpus={serializedGpus}
+      initialMinPriceMap={serializedMinPriceMap}
+      initialHotSet={serializedHotSet}
+      initialBenchmarks={serializedBenchmarks}
+      initialDealItems={serializedDealItems}
+      initialDealsText={serializedDealsText}
+      initialVideoItems={serializedVideoItems}
+      initialReleaseDates={serializedReleaseDates}
+    />
+  </div>
+</BaseLayout>
+
+<style>
+  .gpu-page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+</style>

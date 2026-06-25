@@ -1,0 +1,281 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { getData } from '../lib/getData.ts'
+import ThanksWall from '../components/ThanksWall.vue'
+
+// 更新日志
+const { data: logs } = await getData(
+  'changelog',
+  'date, content',
+  { order: ['date', false] }
+)
+
+// 弹幕留言（已审核）
+const { data: thanksMessages } = await getData(
+  'thanks_messages',
+  '*',
+  { eq: ['status', 'approved'], order: ['created_at', false] }
+)
+
+// 时间轴
+const { data: timeline } = await getData(
+  'site_timeline',
+  '*',
+  { order: ['event_date', true] }
+)
+---
+
+<BaseLayout title="关于 - 奇魂的小窝">
+  <main class="page-main" style="max-width:800px;margin:0 auto;padding:2rem 1.5rem">
+   <!-- 感谢卡片 -->
+    <section style="margin-bottom:2rem">
+      <h2 style="color:var(--accent);font-size:1.2rem;margin-bottom:1rem">🙏 感谢有你</h2>
+      <div style="background:var(--bg-secondary);border: 1px solid var(--table-border-gold);outline: 1.5px solid var(--table-outline-blue);outline-offset:2px;border-radius:12px;padding:1.5rem;box-shadow: var(--card-shadow)">
+            <ThanksWall
+      client:load
+      initialMessages={thanksMessages || []}
+      initialTimeline={timeline || []}
+    />
+      </div>
+    </section>
+
+    <!-- 作者介绍 -->
+    <section style="margin-bottom:2rem">
+      <h2 style="color:var(--accent);font-size:1.2rem;margin-bottom:1rem">关于作者</h2>
+      <div style="background:var(--bg-secondary);border: 1px solid var(--table-border-gold);outline: 1.5px solid var(--table-outline-blue);outline-offset:2px;border-radius:12px;box-shadow: var(--card-shadow);padding:1.5rem">
+        <p style="color:var(--text-secondary);margin-bottom:0.75rem;line-height:1.7">我是奇魂，一个热爱游戏、热爱硬件的B站小UP。
+
+说实话，我就是那个比你多装了几台机、多跑了几圈测试的普通玩家。我踩过的坑，你就别踩了；我觉得香的，你也不一定合适。咱们一起看看数据，你自己拿主意。
+
+网站上的榜单和天梯图，数据都是我自己一台台跑出来的。能实测的绝不推算，能推算的绝不瞎猜。</p>
+        <p style="color:var(--text-secondary);margin-bottom:0.75rem;line-height:1.7">每周更新 行情价格，帮助大家在预算内找到最适合自己的硬件，特价也在网站分享给大家。没事的话，周日在B站直播和大家聊聊天</p>
+        <div class="about-links" style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem">
+          <button type="button" id="bili-btn" style="display:inline-flex;align-items:center;gap:0.4rem;padding:0.6rem 1.2rem;background:#fb7299;color:#fff;border:none;border-radius:8px;font-size:0.9rem;font-weight:500;cursor:pointer;min-height:44px;transition:all 0.15s ease">访问B站主页</button>
+          <button type="button" id="charge-btn" style="display:inline-flex;align-items:center;padding:0.6rem 1.2rem;background:#4a90d9;color:#fff;border:none;border-radius:8px;font-size:0.9rem;font-weight:600;cursor:pointer;min-height:44px;transition:all 0.15s ease">充电支持</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 数据说明 -->
+    <section style="margin-bottom:2rem">
+      <h2 style="color:var(--accent);font-size:1.2rem;margin-bottom:1rem">数据说明</h2>
+      <div style="background:var(--bg-secondary);border: 1px solid var(--table-border-gold);outline: 1.5px solid var(--table-outline-blue);outline-offset:2px;border-radius:12px;box-shadow: var(--card-shadow);padding:1.5rem;display:flex;flex-direction:column;gap:1rem">
+        <div style="display:flex;gap:1rem;align-items:flex-start;padding:1rem;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px">
+          <span style="font-size:1.5rem;flex-shrink:0">📐</span>
+          <div>
+            <h3 style="color:var(--text-primary);font-size:0.95rem;font-weight:600;margin-bottom:0.4rem">独立测试，不依赖厂商数据</h3>
+            <p style="color:var(--text-secondary);font-size:0.88rem;line-height:1.65;margin:0">所有游戏帧数，都是我拿小飞机一帧一帧跑出来的。不引用第三方，不搬运别人数据。测试环境统一，默认设置，不开小灶。模拟的是你我正常使用的场景。</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:1rem;align-items:flex-start;padding:1rem;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px">
+          <span style="font-size:1.5rem;flex-shrink:0">🔁</span>
+          <div>
+            <h3 style="color:var(--text-primary);font-size:0.95rem;font-weight:600;margin-bottom:0.4rem">第三方数据交叉验证</h3>
+            <p style="color:var(--text-secondary);font-size:0.88rem;line-height:1.65;margin:0">实测数据会与 TechPowerUp、PassMark 等独立评测平台的公开数据进行横向对比，偏差超过10%时会重新测试确认。</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:1rem;align-items:flex-start;padding:1rem;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px">
+          <span style="font-size:1.5rem;flex-shrink:0">💰</span>
+          <div>
+            <h3 style="color:var(--text-primary);font-size:0.95rem;font-weight:600;margin-bottom:0.4rem">价格数据透明说明</h3>
+            <p style="color:var(--text-secondary);font-size:0.88rem;line-height:1.65;margin:0">价格是手动定期收录的，不靠爬虫瞎抓。全新价取自京东/淘宝/拼多多的日常价；二手价取自闲鱼近一周的成交均价。热门型号更新更勤，冷门型号也不会晾着不管。</p>
+          </div>
+        </div>
+        <div style="display:flex;gap:1rem;align-items:flex-start;padding:1rem;background:var(--bg-primary);border:1px solid var(--border);border-radius:8px">
+          <span style="font-size:1.5rem;flex-shrink:0">⚠️</span>
+          <div>
+            <h3 style="color:var(--text-primary);font-size:0.95rem;font-weight:600;margin-bottom:0.4rem">数据错误修正机制</h3>
+            <p style="color:var(--text-secondary);font-size:0.88rem;line-height:1.65;margin:0">数据有错？兄弟你指出来（微信qh20241230），我核实后第一时间改，更新日志里也会记一笔。真诚是唯一的路。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 更新日志 -->
+    <section style="margin-bottom:2rem">
+      <h2 style="color:var(--accent);font-size:1.2rem;margin-bottom:1rem">更新日志</h2>
+      <div style="background:var(--bg-secondary);border: 1px solid var(--table-border-gold);outline: 1.5px solid var(--table-outline-blue);outline-offset:2px;border-radius:12px;box-shadow: var(--card-shadow);padding:1.5rem">
+        <div class="log-list">
+          {logs?.slice(0,3).map(log => (
+            <div class="log-entry" style="margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--border)">
+              <div class="log-date" style="color:var(--accent);font-size:0.8rem;font-weight:600;margin-bottom:0.3rem;font-family:'JetBrains Mono',monospace">{log.date}</div>
+              <div class="log-content" style="color:var(--text-secondary);font-size:0.9rem;line-height:1.6;white-space:pre-wrap">{log.content}</div>
+            </div>
+          ))}
+        </div>
+        {logs?.length > 3 && (
+          <button id="show-all-logs" type="button" style="color:var(--accent);border:1px solid var(--accent);cursor:pointer;background:transparent;border-radius:6px;margin-top:1rem;padding:0.5rem 1rem;font-size:0.85rem;transition:all 0.15s ease">查看全部 ({logs.length}条)</button>
+        )}
+      </div>
+    </section>
+
+    <!-- 联系方式 -->
+    <section>
+      <h2 style="color:var(--accent);font-size:1.2rem;margin-bottom:1rem">联系作者</h2>
+      <div style="background:var(--bg-secondary);border: 1px solid var(--table-border-gold);outline: 1.5px solid var(--table-outline-blue);outline-offset:2px;border-radius:12px;box-shadow: var(--card-shadow);padding:1.5rem;text-align:center">
+        <img class="wechat-qr" src="/images/vx.png" alt="UP主微信二维码" style="width:150px;height:150px;object-fit:cover;border-radius:12px;margin-bottom:0.75rem;box-shadow:0 4px 20px var(--shadow-card)" />
+        <p style="color:var(--text-secondary);font-size:0.9rem;margin:0">微信号：<span style="color:var(--accent);font-family:'JetBrains Mono',monospace;font-weight:600">qh20241230</span></p>
+        <p style="color:var(--text-secondary);font-size:0.85rem;margin-top:0.5rem;opacity:0.8">商务合作、咨询交流欢迎扫码添加</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- 日志弹窗（标杆） -->
+  <div id="log-modal" class="modal-overlay">
+    <div id="log-modal-panel" class="modal-panel">
+      <div class="modal-handle"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 1rem;border-bottom:1px solid var(--border);flex-shrink:0">
+        <h3 style="color:var(--accent);margin:0;font-size:1rem">📋 全部更新日志</h3>
+        <button id="log-modal-close" type="button" style="background:none;border:none;color:var(--text-secondary);font-size:1.4rem;cursor:pointer;min-width:44px;min-height:44px;transition:all 0.15s ease">×</button>
+      </div>
+      <div style="flex:1;overflow-y:auto;padding:1rem">
+        {logs?.map(log => (
+          <div style="margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--border)">
+            <div style="color:var(--accent);font-size:0.8rem;font-weight:600;font-family:'JetBrains Mono',monospace;margin-bottom:0.3rem">{log.date}</div>
+            <div style="color:var(--text-secondary);font-size:0.9rem;line-height:1.6;white-space:pre-wrap">{log.content}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- 充电弹窗（统一标杆样式） -->
+  <div id="charge-modal" class="modal-overlay">
+    <div class="modal-panel" style="max-width:400px">
+      <div class="modal-handle"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 1rem;border-bottom:1px solid var(--border);flex-shrink:0">
+        <h3 style="color:var(--accent);margin:0;font-size:1rem">⚡ 充电支持</h3>
+        <button id="charge-modal-close" type="button" style="background:none;border:none;color:var(--text-secondary);font-size:1.4rem;cursor:pointer;min-width:44px;min-height:44px;transition:all 0.15s ease">×</button>
+      </div>
+      <div style="padding:1.5rem;text-align:center">
+        <img src="/images/payment.png" alt="充电收款码" style="width:240px;height:240px;object-fit:cover;border-radius:12px;box-shadow:0 4px 20px var(--shadow-card)" />
+      <p style="color:var(--text-secondary);margin:1rem 0 0;font-size:0.9rem">🍻 谢了兄弟，电量满格，下期实测已经在路上了</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- B站跳转确认弹窗 -->
+  <div id="bili-modal" class="modal-overlay">
+    <div class="modal-panel" style="max-width:360px">
+      <div class="modal-handle"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 1rem;border-bottom:1px solid var(--border);flex-shrink:0">
+        <h3 style="color:var(--accent);margin:0;font-size:1rem">📺 即将离开奇魂的小窝</h3>
+        <button id="bili-modal-close" type="button" style="background:none;border:none;color:var(--text-secondary);font-size:1.4rem;cursor:pointer;min-width:44px;min-height:44px;transition:all 0.15s ease">×</button>
+      </div>
+      <div style="padding:1.5rem;text-align:center">
+        <p style="color:var(--text-secondary);margin-bottom:1.5rem">前往 B站主页，更多实测视频等着你</p>
+        <div style="display:flex;gap:0.5rem">
+          <button id="bili-cancel" type="button" style="flex:1;padding:0.65rem;background:var(--overlay-white-04);border:1px solid var(--overlay-white-06);border-radius:10px;color:rgba(255,255,255,0.8);font-size:0.85rem;cursor:pointer;transition:all 0.15s ease">取消</button>
+          <a id="bili-go" href="https://space.bilibili.com/3546785037420940" target="_blank" rel="noopener" style="flex:1;padding:0.65rem;background:var(--accent);color:#000;font-weight:600;border:none;border-radius:10px;font-size:0.85rem;text-align:center;text-decoration:none;transition:all 0.15s ease">去看看</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    /* 按钮点击反馈（统一修复圆角） */
+    #bili-btn:active { transform: scale(0.95); filter: brightness(0.9); border-radius: 8px; }
+    #show-all-logs:active { transform: scale(0.95); background: var(--brand-border-weak); border-radius: 6px; }
+    #log-modal-close:active, #bili-modal-close:active, #charge-modal-close:active { transform: scale(0.85); color: #fff; }
+    #bili-cancel:active { background: var(--overlay-white-10); }
+    #bili-go:active { filter: brightness(0.9); }
+
+    @media (max-width: 640px) {
+      .about-links { flex-direction: column; }
+      .about-links button { width: 100%; justify-content: center; }
+      img.wechat-qr { width: 120px; height: 120px; }
+    }
+
+    /* 弹窗标杆样式（log-modal / bili-modal / charge-modal 共用） */
+        .modal-overlay {
+      position: fixed; inset: 0; background:var(--modal-overlay);
+      display: flex; align-items: flex-end; justify-content: center;
+      z-index: 1000;
+      opacity: 0; visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
+    }
+    .modal-overlay.show {
+      opacity: 1; visibility: visible;
+      pointer-events: auto;
+    }
+    .modal-panel {
+      background: var(--modal-bg); border-radius: 20px 20px 0 0;
+      width: 100%; max-height: 85vh; display: flex; flex-direction: column;
+      box-shadow: 0 -4px 20px var(--modal-overlay);
+      transform: translateY(100%); transition: transform 0.3s ease;
+    }
+    .modal-overlay.show .modal-panel { transform: translateY(0); }
+    .modal-handle {
+      width: 36px; height: 4px; background: var(--overlay-white-30);
+      border-radius: 2px; margin: 8px auto 0;
+    }
+    @media (min-width: 769px) {
+      .modal-overlay { align-items: center; }
+      .modal-panel { max-width: 680px; border-radius: 16px; }
+    }
+  </style>
+
+  <script>
+    (function() {
+      // 通用：打开弹窗
+      function openModal(modal) {
+        modal.classList.add('show');
+        history.pushState({ modal: 'open' }, '', window.location.href);
+      }
+      // 通用：关闭弹窗
+      function closeModal(modal) {
+        modal.classList.remove('show');
+        // 清理下拉偏移
+        const panel = modal.querySelector('.modal-panel');
+        if (panel) panel.style.transform = '';
+      }
+      // 绑定关闭按钮、遮罩关闭、下拉关闭、返回键关闭
+      function bindModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (!modal) return;
+        const panel = modal.querySelector('.modal-panel');
+        // 遮罩点击关闭
+        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(modal); });
+        // ×按钮关闭
+        const closeBtn = modal.querySelector('button[id$="-close"]');
+        if (closeBtn) closeBtn.addEventListener('click', () => closeModal(modal));
+        // 下拉关闭
+        if (panel) {
+          let startY = 0, movedY = 0;
+          panel.addEventListener('touchstart', (e) => { startY = e.touches[0].clientY; });
+          panel.addEventListener('touchmove', (e) => {
+            movedY = e.touches[0].clientY - startY;
+            if (movedY > 0) panel.style.transform = 'translateY(' + movedY + 'px)';
+          });
+          panel.addEventListener('touchend', () => {
+            if (movedY > 120) closeModal(modal);
+            else panel.style.transform = '';
+            movedY = 0;
+          });
+        }
+        return modal;
+      }
+
+      // 初始化所有弹窗
+      const logModal = bindModal('log-modal');
+      const chargeModal = bindModal('charge-modal');
+      const biliModal = bindModal('bili-modal');
+
+      // 打开按钮绑定
+      document.getElementById('show-all-logs')?.addEventListener('click', () => openModal(logModal));
+      document.getElementById('charge-btn').addEventListener('click', () => openModal(chargeModal));
+      document.getElementById('bili-btn').addEventListener('click', () => openModal(biliModal));
+
+      // 返回键关闭任意弹窗
+      window.addEventListener('popstate', () => {
+        [logModal, chargeModal, biliModal].forEach(modal => {
+          if (modal && modal.classList.contains('show')) {
+            closeModal(modal);
+            history.pushState({ modal: 'open' }, '', window.location.href);
+          }
+        });
+      });
+    })();
+  </script>
+</BaseLayout>
